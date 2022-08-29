@@ -20,7 +20,7 @@ import java.security.Key;
 import java.util.Date;
 import java.util.Optional;
 
-import static com.sparta.rhythme.util.Authority.ROLE_MEMBER;
+import static com.example.rhythme_backend.util.Authority.ROLE_MEMBER;
 
 
 @Slf4j
