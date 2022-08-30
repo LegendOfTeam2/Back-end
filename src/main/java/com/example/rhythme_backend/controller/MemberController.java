@@ -3,6 +3,7 @@ package com.example.rhythme_backend.controller;
 import com.example.rhythme_backend.dto.TokenDto;
 import com.example.rhythme_backend.dto.requestDto.EmailCheckRequestDto;
 import com.example.rhythme_backend.dto.requestDto.LoginRequestDto;
+import com.example.rhythme_backend.dto.requestDto.ResignRequestDto;
 import com.example.rhythme_backend.dto.requestDto.SignupRequestDto;
 import com.example.rhythme_backend.service.MemberService;
 import com.example.rhythme_backend.util.Message;
@@ -44,8 +45,8 @@ public class MemberController {
     }
 
     @DeleteMapping("/auth/member")
-    public ResponseEntity<?> resignMember(HttpServletRequest request) {
-        return memberService.resignMember(request);
+    public ResponseEntity<?> resignMember(@RequestBody ResignRequestDto requestDto, HttpServletRequest request) {
+        return memberService.resignMember(requestDto,request);
     }
 
 }

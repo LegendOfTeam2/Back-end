@@ -1,16 +1,15 @@
 package com.example.rhythme_backend.service;
 
 import com.example.rhythme_backend.domain.Member;
+import com.example.rhythme_backend.domain.RefreshToken;
 import com.example.rhythme_backend.dto.TokenDto;
-import com.example.rhythme_backend.dto.requestDto.EmailCheckRequestDto;
-import com.example.rhythme_backend.dto.requestDto.KakaoUserInfoDto;
-import com.example.rhythme_backend.dto.requestDto.LoginRequestDto;
-import com.example.rhythme_backend.dto.requestDto.SignupRequestDto;
+import com.example.rhythme_backend.dto.requestDto.*;
 import com.example.rhythme_backend.dto.responseDto.ResignResponseDto;
 import com.example.rhythme_backend.exception.CustomException;
 import com.example.rhythme_backend.exception.ErrorCode;
 import com.example.rhythme_backend.jwt.TokenProvider;
 import com.example.rhythme_backend.repository.MemberRepository;
+import com.example.rhythme_backend.repository.RefreshTokenRepository;
 import com.example.rhythme_backend.util.Message;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -41,6 +40,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
+    private final RefreshTokenRepository refreshTokenRepository;
 
 
     @Transactional
@@ -86,7 +86,7 @@ public class MemberService {
 
 
     @Transactional
-    public ResponseEntity<?> resignMember(HttpServletRequest request) {
+    public ResponseEntity<?> resignMember(ResignRequestDto requestDto, HttpServletRequest request) {
 
         if (null == request.getHeader("Refresh-Token")) {
             return new ResponseEntity<>(Message.fail("MEMBER_NOT_FOUND","로그인이 필요합니다."),HttpStatus.UNAUTHORIZED);
@@ -101,17 +101,20 @@ public class MemberService {
             return new ResponseEntity<>(Message.fail("INVALID_TOKEN", "Token이 유효하지 않습니다."), HttpStatus.UNAUTHORIZED);
         }
 
-        String deleteId = request.getHeader("id");
-        Long deleteIdToLong = Long.parseLong(deleteId);
-        Member deleteMember = getDeleteMember(deleteIdToLong);
-        if (null == deleteMember) {
+        RefreshToken deleteToken = getDeleteToken(member);
+        String deleteEmail = requestDto.getEmail();
+        Member deleteMember = getPresentEmail(deleteEmail);
+        Long deleteMemberId = deleteMember.getId();
+        Member resignMember = getDeleteMember(deleteMemberId);
+
+        if (null == resignMember) {
             return new ResponseEntity<>(Message.fail("MEMBER_NOT_FOUND", "해당 멤버가 없습니다."), HttpStatus.NOT_FOUND);
         }
-
-        memberRepository.delete(deleteMember);
+        refreshTokenRepository.delete(deleteToken);
+        memberRepository.delete(resignMember);
         return new ResponseEntity<>(Message.success(
                 ResignResponseDto.builder()
-                        .id(deleteMember.getId())
+                        .id(resignMember.getId())
                         .build()
         ),HttpStatus.OK);
 
@@ -249,6 +252,11 @@ public class MemberService {
 
     public Member getDeleteMember(Long id) {
         Optional<Member> optionalMember = memberRepository.findById(id);
+        return optionalMember.orElse(null);
+    }
+
+    public RefreshToken getDeleteToken(Member member) {
+        Optional<RefreshToken> optionalMember = refreshTokenRepository.findByMember(member);
         return optionalMember.orElse(null);
     }
 
