@@ -1,5 +1,6 @@
-package com.example.rhythme_backend.domain;
+package com.example.rhythme_backend.util;
 
+import com.example.rhythme_backend.domain.Member;
 import com.example.rhythme_backend.util.Timestamped;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

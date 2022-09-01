@@ -1,15 +1,12 @@
 package com.example.rhythme_backend.controller;
 
-import com.example.rhythme_backend.dto.requestDto.PostRequestDto;
+import com.example.rhythme_backend.dto.requestDto.post.PostCreateRequestDto;
+import com.example.rhythme_backend.dto.requestDto.post.PostDeleteRequestDto;
+import com.example.rhythme_backend.dto.requestDto.post.PostPatchRequestDto;
 import com.example.rhythme_backend.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpServletRequest;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,24 +17,30 @@ public class PostController {
     // 카테고리별 게시판 전체 조회
     @GetMapping("/auth/makerpost")
     public ResponseEntity<?> getMakerPost(){
-      return postService.getAllSingerPost();
+      return postService.getAllMakerPost();
     }
 
     @GetMapping("/auth/singerpost")
     public ResponseEntity<?> getSingerPost(){
-        return postService.getAllMakerPost();
+        return postService.getAllSingerPost();
     }
 
 
-
-    // 카테고리별 게시판 글 쓰기
-    @PostMapping("/auth/makerpost")
-    public ResponseEntity<?> createMakerPost(@RequestBody PostRequestDto postRequestDto){
-        return postService.createMakerPost(postRequestDto);
+    // 글 쓰기 API
+    @PostMapping("/auth/post")
+    public ResponseEntity<?> createPost(@RequestBody PostCreateRequestDto postCreateRequestDto){
+        return postService.createPost(postCreateRequestDto);
     }
 
-    @PostMapping("/auth/singerpost")
-    public ResponseEntity<?> createSingerPost(@RequestBody PostRequestDto postRequestDto){
-        return postService.createSingerPost(postRequestDto);
+    //글 수정 API
+    @PatchMapping("/auth/post")
+    public ResponseEntity<?> patchPost(@RequestBody PostPatchRequestDto postPatchRequestDto){
+        return postService.patchPost(postPatchRequestDto);
+    }
+
+    // 글삭제 API
+    @DeleteMapping("/auth/post")
+    public ResponseEntity<?> deletePost(@RequestBody PostDeleteRequestDto postDeleteRequestDto){
+        return postService.deletePost(postDeleteRequestDto);
     }
 }

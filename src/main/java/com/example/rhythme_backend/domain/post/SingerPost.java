@@ -3,6 +3,8 @@ package com.example.rhythme_backend.domain.post;
 import com.example.rhythme_backend.domain.Member;
 import com.example.rhythme_backend.domain.media.ImageUrl;
 import com.example.rhythme_backend.domain.media.MediaUrl;
+import com.example.rhythme_backend.dto.requestDto.post.PostPatchRequestDto;
+import com.example.rhythme_backend.util.Timestamped;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,7 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class SingerPost {
+public class SingerPost extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -39,8 +41,13 @@ public class SingerPost {
     @ManyToOne(fetch = FetchType.LAZY)
     private MediaUrl mediaUrl;
 
-    @Column(name="tags")
+    @Column(name="tag")
     @ElementCollection(targetClass=String.class)
-    private List<String> tags;
+    private List<String> tag;
 
+    public void updateSingerPost(PostPatchRequestDto patchRequestDto){
+        this.content = patchRequestDto.getContent();
+        this.title = patchRequestDto.getTitle();
+        this.tag = patchRequestDto.getTag();
+    }
 }
