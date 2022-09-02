@@ -7,6 +7,7 @@ import lombok.Getter;
 @Builder
 public class ResignResponseDto {
 
+    private String email;
     private Long id;
 
 }
