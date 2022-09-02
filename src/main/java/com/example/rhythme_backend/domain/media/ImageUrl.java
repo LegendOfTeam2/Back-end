@@ -26,15 +26,16 @@ public class ImageUrl extends Timestamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "maker_post_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private MakerPost makerPost;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "singer_post_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private SingerPost singerPost;
+
 
     @Column(nullable = false)
     private String imageUrl;
