@@ -36,7 +36,8 @@ public class TokenProvider {
 
     private final RefreshTokenRepository refreshTokenRepository;
 
-    public TokenProvider(@Value("${jwt.secret}") String secretKey, RefreshTokenRepository refreshTokenRepository) {
+    public TokenProvider(@Value("${jwt.secret}") String secretKey,
+                         RefreshTokenRepository refreshTokenRepository) {
         this.refreshTokenRepository = refreshTokenRepository;
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
@@ -46,7 +47,7 @@ public class TokenProvider {
         long now = (new Date().getTime());
         Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
         String accessToken = Jwts.builder()
-                .setSubject(member.getNickname())
+                .setSubject(member.getEmail())
                 .claim(AUTHORITIES_KEY, ROLE_MEMBER.toString())
                 .setExpiration(accessTokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -117,7 +118,7 @@ public class TokenProvider {
 
         Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
         String accessToken = Jwts.builder()
-                .setSubject(member.getNickname())
+                .setSubject(member.getEmail())
                 .claim(AUTHORITIES_KEY, ROLE_MEMBER.toString())
                 .setExpiration(accessTokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS256)
