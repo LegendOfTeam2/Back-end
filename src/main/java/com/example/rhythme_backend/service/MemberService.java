@@ -27,13 +27,14 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Date;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class MemberService {
-
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
@@ -41,7 +42,6 @@ public class MemberService {
     private final GoogleOauth googleOauth;
     private final HttpServletResponse response;
     private final KakaoOauth kakaoOauth;
-
 
     @Transactional
     public ResponseEntity<?> signupMember(SignupRequestDto requestDto) {
@@ -130,7 +130,6 @@ public class MemberService {
                         .id(resignMember.getId())
                         .build()
         ),HttpStatus.OK);
-
     }
 
 
@@ -149,14 +148,11 @@ public class MemberService {
             // 회원가입
             // username: kakao nickname
             String nickname = kakaoUserInfo.getNickname();
-
             // password: random UUID
             String password = UUID.randomUUID().toString();
             String encodedPassword = passwordEncoder.encode(password);
-
             //카카오 이메일
             String email = kakaoUserInfo.getEmail();
-
             kakaoUser = Member.builder()
                     .kakaoId(kakaoId)
                     .email(email)
@@ -165,7 +161,6 @@ public class MemberService {
                     .build();
             memberRepository.save(kakaoUser);
         }
-
         // 4. 강제 kakao로그인 처리
         UserDetails kakaouserDetails = new UserDetailsImpl(kakaoUser);
         Authentication authentication = new UsernamePasswordAuthenticationToken(kakaouserDetails, null, kakaouserDetails.getAuthorities());
@@ -174,7 +169,6 @@ public class MemberService {
         Member member = getPresentEmail(kakaoUser.getEmail());
         TokenDto tokenDto = tokenProvider.generateTokenDto(member);
         return tokenDto;
-
     }
 
     //google
@@ -182,7 +176,6 @@ public class MemberService {
     public void request(Constant.SocialLoginType socialLoginType) throws IOException {
         String redirectURL;
         switch (socialLoginType) {
-
             case GOOGLE: {
                 //각 소셜 로그인을 요청하면 소셜로그인 페이지로 리다이렉트 해주는 프로세스이다.
                 redirectURL = googleOauth.getOauthRedirectURL();
@@ -198,14 +191,12 @@ public class MemberService {
 
     @Transactional
     public TokenDto oAuthLogin(String code) throws IOException {
-
                 //구글로 일회성 코드를 보내 액세스 토큰이 담긴 응답객체를 받아옴
                 ResponseEntity<String> accessTokenResponse = googleOauth.requestAccessToken(code);
                 //응답 객체가 JSON형식으로 되어 있으므로, 이를 deserialization해서 자바 객체에 담을 것이다.
                 GoogleOAuthTokenDto oAuthTokenDto = googleOauth.getAccessToken(accessTokenResponse);
                 //액세스 토큰을 다시 구글로 보내 구글에 저장된 사용자 정보가 담긴 응답 객체를 받아온다.
                 GoogleUserInfoDto googleUser=googleOauth.requestUserInfo(oAuthTokenDto);
-
                 String googleId = googleUser.getGoogleId();
                 Member googleLoginUser = memberRepository.findByGoogleId(googleId)
                         .orElse(null);
@@ -215,14 +206,11 @@ public class MemberService {
                     // username/nickname
                     String name = googleUser.getName();
                     String nickname = googleUser.getNickname();
-
                     // password: random UUID
                     String password = UUID.randomUUID().toString();
                     String encodedPassword = passwordEncoder.encode(password);
-
                     //google 이메일
                     String email = googleUser.getEmail();
-
                     googleLoginUser = Member.builder()
                             .googleId(googleId)
                             .nickname(nickname)
@@ -231,7 +219,6 @@ public class MemberService {
                             .password(encodedPassword)
                             .build();
                     memberRepository.save(googleLoginUser);
-
                 }
                 // 4. 강제 구글로그인 처리
                 UserDetails googleUserDetails = new UserDetailsImpl(googleLoginUser);
@@ -243,6 +230,31 @@ public class MemberService {
                 return googleTokenDto;
     }
 
+
+    public ResponseEntity<?> refreshToken(HttpServletRequest request, HttpServletResponse response) {
+
+        tokenProvider.validateToken(request.getHeader("Refresh-Token"));
+        Member requestingMember = validateMember(request);
+        long accessTokenExpire = Long.parseLong(request.getHeader("Access-Token-Expire-Time"));
+        long now = (new Date().getTime());
+
+        if (now>accessTokenExpire){
+            tokenProvider.deleteRefreshToken(requestingMember);
+            throw new CustomException(ErrorCode.INVALID_TOKEN);}
+
+        RefreshToken refreshTokenConfirm = refreshTokenRepository.findByMember(requestingMember).orElse(null);
+        if (refreshTokenConfirm == null) {
+            throw new CustomException(ErrorCode.REFRESH_TOKEN_IS_EXPIRED);
+        }
+        if (Objects.equals(refreshTokenConfirm.getValue(), request.getHeader("Refresh-Token"))) {
+            TokenDto tokenDto = tokenProvider.generateAccessTokenDto(requestingMember);
+            accessTokenToHeaders(tokenDto, response);
+            return new ResponseEntity<>(Message.success("ACCESS_TOKEN_REISSUE"), HttpStatus.OK);
+        } else {
+            tokenProvider.deleteRefreshToken(requestingMember);
+            throw new CustomException(ErrorCode.INVALID_TOKEN);
+        }
+    }
 
 
     @Transactional(readOnly = true)
@@ -278,6 +290,11 @@ public class MemberService {
     public void tokenToHeaders(TokenDto tokenDto, HttpServletResponse response) {
         response.addHeader("Authorization", "Bearer " + tokenDto.getAccessToken());
         response.addHeader("Refresh-Token", tokenDto.getRefreshToken());
+        response.addHeader("Access-Token-Expire-Time", tokenDto.getAccessTokenExpiresIn().toString());
+    }
+
+    public void accessTokenToHeaders(TokenDto tokenDto, HttpServletResponse response) {
+        response.addHeader("Authorization", "Bearer " + tokenDto.getAccessToken());
         response.addHeader("Access-Token-Expire-Time", tokenDto.getAccessTokenExpiresIn().toString());
     }
 

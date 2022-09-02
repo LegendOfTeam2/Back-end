@@ -19,12 +19,10 @@ public class KakaoOauth {
 
     @Transactional
     public KakaoUserInfoDto getKakaoUserInfo(String accessToken) throws JsonProcessingException {
-
         // HTTP Header 생성
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + accessToken);
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
-
         // HTTP 요청 보내기
         HttpEntity<MultiValueMap<String, String>> kakaoUserInfoRequest = new HttpEntity<>(headers);
         RestTemplate rt = new RestTemplate();
@@ -44,7 +42,6 @@ public class KakaoOauth {
         String email = jsonNode.get("kakao_account")
                 .get("email").asText();
 
-
         System.out.println("카카오 사용자 정보: " + id + ", " + nickname + ", " + email);
         return KakaoUserInfoDto.builder()
                 .kakaoid(id)
@@ -61,14 +58,12 @@ public class KakaoOauth {
         // HTTP Header 생성
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
-
         // HTTP Body 생성
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
         body.add("client_id", myKaKaoRestAplKey);
         body.add("redirect_uri", "http://localhost:3000/kakao/callback");
         body.add("code", code);
-
         // HTTP 요청 보내기
         HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest =
                 new HttpEntity<>(body, headers);
@@ -79,7 +74,6 @@ public class KakaoOauth {
                 kakaoTokenRequest,
                 String.class
         );
-
         // HTTP 응답 (JSON) -> 액세스 토큰 파싱
         String responseBody = response.getBody();
         ObjectMapper objectMapper = new ObjectMapper();
