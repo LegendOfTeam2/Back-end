@@ -52,7 +52,6 @@ public class PostService<T>{
                             .title(makerPost.getTitle())
                             .content(makerPost.getContent())
                             .imageUrl(makerPost.getImageUrl().getImageUrl())
-                            .tag(makerPost.getTags())
                             .build()
             );
         }
@@ -71,7 +70,6 @@ public class PostService<T>{
                             .title(singerPost.getTitle())
                             .content(singerPost.getContent())
                             .imageUrl(singerPost.getImageUrl().getImageUrl())
-                            .tag(singerPost.getTags())
                             .build()
             );
         }
@@ -91,7 +89,7 @@ public class PostService<T>{
         MediaUrl mediaUrl = mediaUrlSave(postCreateRequestDto);
 
         if(postCreateRequestDto.getPosition().equals("Maker")){
-//            List<Tag> tag = stringListToTag(postCreateRequestDto.getTags());
+//
             MakerPost createdMakerPost = MakerPost.builder()
                     .member(memberWhoCreated)
                     .title(postCreateRequestDto.getTitle())
@@ -100,7 +98,7 @@ public class PostService<T>{
                     .mediaUrl(mediaUrl)
                     .build();
             makerPostRepository.save(createdMakerPost);
-            tagSave(postCreateRequestDto.getTags(),createdMakerPost,null);
+            tagSave(postCreateRequestDto.getTags());
 
             result = new ResponseEntity<>(Message.success(createdMakerPost),HttpStatus.OK);
             imageUrl.setPostId(createdMakerPost.getId());
@@ -117,7 +115,7 @@ public class PostService<T>{
                     .mediaUrl(mediaUrl)
                     .build();
             singerPostRepository.save(createdSingerPost);
-            tagSave(postCreateRequestDto.getTags(),new MakerPost(),createdSingerPost);
+            tagSave(postCreateRequestDto.getTags());
 
             result = new ResponseEntity<>(Message.success(createdSingerPost),HttpStatus.OK);
             imageUrl.setPostId(createdSingerPost.getId());
@@ -223,8 +221,8 @@ public class PostService<T>{
         ImageUrl imageUrl =  ImageUrl.builder()
                 .postId(null)
                 .position(postCreateRequestDto.getPosition())
-                            .imageUrl(postCreateRequestDto.getImageUrl())
-                            .build();
+                .imageUrl(postCreateRequestDto.getImageUrl())
+                .build();
 
         imageUrlRepository.save(imageUrl);
         return imageUrl;
@@ -234,8 +232,8 @@ public class PostService<T>{
         MediaUrl mediaUrl = MediaUrl.builder()
                 .postId(null)
                 .position(postCreateRequestDto.getPosition())
-                            .mediaUrl(postCreateRequestDto.getMediaUrl())
-                            .build();
+                .mediaUrl(postCreateRequestDto.getMediaUrl())
+                .build();
         mediaUrlRepository.save(mediaUrl);
         return mediaUrl;
     }
@@ -249,13 +247,11 @@ public class PostService<T>{
         }
         return tagList;
     }
-    public void tagSave(List<String> tags,MakerPost makerPost,SingerPost singerPost){
+    public void tagSave(List<String> tags){
         for(String tag : tags){
             tagRepository.save(
                     Tag.builder()
                             .tag(tag)
-                            .maker_post(makerPost)
-                            .singer_post(singerPost)
                             .build());
         }
     }

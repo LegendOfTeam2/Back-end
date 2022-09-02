@@ -41,7 +41,6 @@ public class Member extends Timestamped {
     @Column(unique = true)
     private String googleId;
 
-
     public boolean validatePassword(PasswordEncoder passwordEncoder, String password) {
         return passwordEncoder.matches(password, this.password);
     }
