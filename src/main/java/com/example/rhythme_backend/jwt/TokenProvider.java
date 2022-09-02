@@ -1,7 +1,7 @@
 package com.example.rhythme_backend.jwt;
 
 import com.example.rhythme_backend.domain.Member;
-import com.example.rhythme_backend.domain.RefreshToken;
+import com.example.rhythme_backend.util.RefreshToken;
 import com.example.rhythme_backend.dto.TokenDto;
 import com.example.rhythme_backend.repository.RefreshTokenRepository;
 import com.example.rhythme_backend.service.UserDetailsImpl;
@@ -31,13 +31,10 @@ public class TokenProvider {
     private static final String BEARER_PREFIX = "Bearer ";
     public static final long ACCESS_TOKEN_EXPIRE_TIME = 10800000;
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 604800000;
-
     private final Key key;
-
     private final RefreshTokenRepository refreshTokenRepository;
 
-    public TokenProvider(@Value("${jwt.secret}") String secretKey,
-                         RefreshTokenRepository refreshTokenRepository) {
+    public TokenProvider(@Value("${jwt.secret}") String secretKey, RefreshTokenRepository refreshTokenRepository) {
         this.refreshTokenRepository = refreshTokenRepository;
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
@@ -47,7 +44,7 @@ public class TokenProvider {
         long now = (new Date().getTime());
         Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
         String accessToken = Jwts.builder()
-                .setSubject(member.getNickname())
+                .setSubject(member.getEmail())
                 .claim(AUTHORITIES_KEY, ROLE_MEMBER.toString())
                 .setExpiration(accessTokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -101,7 +98,6 @@ public class TokenProvider {
         return false;
     }
 
-
     @Transactional(readOnly = true)
     public RefreshToken isPresentRefreshToken(Member member) {
         Optional<RefreshToken> optionalRefreshToken = refreshTokenRepository.findByMember(member);
@@ -119,7 +115,7 @@ public class TokenProvider {
 
         Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
         String accessToken = Jwts.builder()
-                .setSubject(member.getNickname())
+                .setSubject(member.getEmail())
                 .claim(AUTHORITIES_KEY, ROLE_MEMBER.toString())
                 .setExpiration(accessTokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS256)

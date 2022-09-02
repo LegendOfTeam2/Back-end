@@ -1,11 +1,11 @@
-package com.example.rhythme_backend.dto.requestDto;
+package com.example.rhythme_backend.dto.requestDto.post;
 
 import lombok.Getter;
 
 import java.util.List;
 
 @Getter
-public class PostRequestDto {
+public class PostCreateRequestDto {
 
     private String email;
     private String position;
@@ -13,5 +13,5 @@ public class PostRequestDto {
     private String content;
     private String imageUrl;
     private String mediaUrl;
-    private List<String> tag;
+    private List<String> tags;
 }

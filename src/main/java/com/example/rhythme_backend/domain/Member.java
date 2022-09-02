@@ -25,11 +25,11 @@ public class Member extends Timestamped {
     @Column(unique = true)
     private String email;
 
-    @Column
-    private String name;
-
     @Column(unique = true)
     private String nickname;
+
+    @Column
+    private String name;
 
     @Column(nullable = false)
     @JsonIgnore
@@ -37,6 +37,9 @@ public class Member extends Timestamped {
 
     @Column(unique = true)
     private Long kakaoId;
+
+    @Column(unique = true)
+    private String googleId;
 
 
     public boolean validatePassword(PasswordEncoder passwordEncoder, String password) {
