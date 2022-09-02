@@ -26,13 +26,15 @@ import java.util.Optional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class PostService {
+public class PostService<T>{
     private final MemberRepository memberRepository;
     private final SingerPostRepository singerPostRepository;
     private final MakerPostRepository makerPostRepository;
 
     private final ImageUrlRepository imageUrlRepository;
     private final MediaUrlRepository mediaUrlRepository;
+
+    private T positionValue;
 
 
     //============ 카테고리별 게시판 전체 조회 로직.
@@ -84,8 +86,8 @@ public class PostService {
         ResponseEntity<?> result = new ResponseEntity<>("",HttpStatus.OK);
 
         Member memberWhoCreated = validateByEmail(postCreateRequestDto.getEmail());
-        ImageUrl imageUrl = imageUrlSave(postCreateRequestDto,memberWhoCreated);
-        MediaUrl mediaUrl = mediaUrlSave(postCreateRequestDto,memberWhoCreated);
+        ImageUrl imageUrl = imageUrlSave(postCreateRequestDto);
+        MediaUrl mediaUrl = mediaUrlSave(postCreateRequestDto);
 
         if(postCreateRequestDto.getPosition().equals("Singer")){
             MakerPost createdMakerPost = MakerPost.builder()
@@ -146,11 +148,19 @@ public class PostService {
 
     //imageUrl 과 mediaUrl 수정 .
     public void updateUrl(PostPatchRequestDto postPatchRequestDto){
-        Member member = validateByEmail(postPatchRequestDto.getEmail());
-        ImageUrl imageUrl = imageUrlRepository.findByMember(member).orElseGet(ImageUrl::new);
-        MediaUrl mediaUrl = mediaUrlRepository.findByMember(member).orElseGet(MediaUrl::new);
-        imageUrl.updateUrl(postPatchRequestDto.getImageUrl());
-        mediaUrl.updateUrl(postPatchRequestDto.getMediaUrl());
+        if(postPatchRequestDto.getPosition().equals("Maker")){
+           MakerPost makerPost = findMakerPostByPostId(postPatchRequestDto.getPosition(), postPatchRequestDto.getPostId());
+           ImageUrl imageUrl = makerPost.getImageUrl();
+           MediaUrl mediaUrl = makerPost.getMediaUrl();
+           imageUrl.updateUrl(postPatchRequestDto.getImageUrl());
+           mediaUrl.updateUrl(postPatchRequestDto.getMediaUrl());
+        }else if(postPatchRequestDto.getPosition().equals("Signer")){
+            SingerPost singerPost = findSingerPostByPostId(postPatchRequestDto.getPosition(), postPatchRequestDto.getPostId());
+            ImageUrl imageUrl = singerPost.getImageUrl();
+            MediaUrl mediaUrl = singerPost.getMediaUrl();
+            imageUrl.updateUrl(postPatchRequestDto.getImageUrl());
+            mediaUrl.updateUrl(postPatchRequestDto.getMediaUrl());
+        }
     }
 
 
@@ -190,14 +200,20 @@ public class PostService {
         }
         return member;
     }
-    //Position
-
+    //Position 으로 FK 값 찾기
+    public MakerPost findMakerPostByPostId(String position,Long postId){
+        MakerPost makerPost = makerPostRepository.findById(postId).orElseGet(MakerPost::new);
+        return makerPost;
+    }
+    public SingerPost findSingerPostByPostId(String position,Long postId){
+        SingerPost singerPost = singerPostRepository.findById(postId).orElseGet(SingerPost::new);
+        return singerPost;
+    }
 
     // 이미지 엔티티에 저장 로직
-    public ImageUrl imageUrlSave(PostCreateRequestDto postCreateRequestDto, Member member){
+    public ImageUrl imageUrlSave(PostCreateRequestDto postCreateRequestDto){
         ImageUrl imageUrl =  ImageUrl.builder()
-                            .member(member)
-                            .ImageUrl(postCreateRequestDto.getImageUrl())
+                            .imageUrl(postCreateRequestDto.getImageUrl())
                             .build();
 
         imageUrlRepository.save(imageUrl);
@@ -206,10 +222,9 @@ public class PostService {
 
 
     // 미디어 엔티티에 저장 로직
-    public MediaUrl mediaUrlSave(PostCreateRequestDto postCreateRequestDto, Member member){
+    public MediaUrl mediaUrlSave(PostCreateRequestDto postCreateRequestDto){
         MediaUrl mediaUrl = MediaUrl.builder()
-                            .member(member)
-                            .MediaUrl(postCreateRequestDto.getMediaUrl())
+                            .mediaUrl(postCreateRequestDto.getMediaUrl())
                             .build();
         mediaUrlRepository.save(mediaUrl);
         return mediaUrl;

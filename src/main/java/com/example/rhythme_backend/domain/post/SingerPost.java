@@ -33,12 +33,13 @@ public class SingerPost extends Timestamped {
     @Column(nullable = false)
     private String content;
 
-    @JoinColumn(name = "imageUrl")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "image_url")
+    @OneToOne(fetch = FetchType.EAGER)
     private ImageUrl imageUrl;
 
-    @JoinColumn
-    @ManyToOne(fetch = FetchType.LAZY)
+
+    @JoinColumn(name = "media_url")
+    @OneToOne(fetch = FetchType.EAGER)
     private MediaUrl mediaUrl;
 
     @Column(name="tag")

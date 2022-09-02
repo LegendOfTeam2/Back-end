@@ -8,17 +8,15 @@ import com.example.rhythme_backend.dto.requestDto.post.PostPatchRequestDto;
 import com.example.rhythme_backend.util.Timestamped;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Builder
 @Getter
-@NoArgsConstructor
+@RequiredArgsConstructor
 @AllArgsConstructor
 @Entity
 public class MakerPost extends Timestamped {
@@ -37,12 +35,14 @@ public class MakerPost extends Timestamped {
     @Column(nullable = false)
     private String content;
 
-    @JoinColumn(name = "imageUrl")
-    @ManyToOne(fetch = FetchType.EAGER)
+
+    @JoinColumn(name = "image_url")
+    @OneToOne(fetch = FetchType.EAGER)
     private ImageUrl imageUrl;
 
-    @JoinColumn
-    @ManyToOne(fetch = FetchType.EAGER)
+
+    @JoinColumn(name = "media_url")
+    @OneToOne(fetch = FetchType.EAGER)
     private MediaUrl mediaUrl;
 
     @Column(name="tag")

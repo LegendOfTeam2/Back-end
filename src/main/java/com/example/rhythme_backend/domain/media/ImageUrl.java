@@ -1,6 +1,8 @@
 package com.example.rhythme_backend.domain.media;
 
 import com.example.rhythme_backend.domain.Member;
+import com.example.rhythme_backend.domain.post.MakerPost;
+import com.example.rhythme_backend.domain.post.SingerPost;
 import com.example.rhythme_backend.util.Timestamped;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -8,6 +10,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 
@@ -22,15 +26,20 @@ public class ImageUrl extends Timestamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JsonIgnore
-    @JoinColumn(name = "Member", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    private Member member;
+    @JoinColumn(name = "maker_post_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private MakerPost makerPost;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "singer_post_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private SingerPost singerPost;
 
     @Column(nullable = false)
-    private String ImageUrl;
+    private String imageUrl;
 
     public void updateUrl(String imageUrl){
-        this.ImageUrl = imageUrl;
+        this.imageUrl = imageUrl;
     }
 }
