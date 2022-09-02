@@ -67,5 +67,9 @@ public class MemberController {
         return new ResponseEntity<>(Message.success(socialOAuthResponseDto),HttpStatus.OK);
     }
 
+    @PostMapping("/member/refreshtoken")
+    public ResponseEntity<?> refreshTokenCheck( HttpServletRequest request, HttpServletResponse response){
+        return memberService.refreshToken(request, response);
+    }
 
 }

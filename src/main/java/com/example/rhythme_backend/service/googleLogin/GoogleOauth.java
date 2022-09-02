@@ -16,12 +16,8 @@ import org.springframework.http.client.BufferingClientHttpRequestFactory;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
@@ -57,7 +53,6 @@ public class GoogleOauth implements SocialOauth {
         params.put("response_type","code");
         params.put("client_id",GOOGLE_SNS_CLIENT_ID);
         params.put("redirect_uri",GOOGLE_SNS_CALLBACK_URL);
-
         //parameter를 형식에 맞춰 구성해주는 함수
         String parameterString = params.entrySet().stream()
                 .map(x->x.getKey()+"="+x.getValue())
@@ -98,19 +93,15 @@ public class GoogleOauth implements SocialOauth {
 
     public GoogleUserInfoDto requestUserInfo(GoogleOAuthTokenDto oAuthToken) throws JsonProcessingException {
         String GOOGLE_USERINFO_REQUEST_URL="https://www.googleapis.com/oauth2/v1/userinfo";
-
         //header에 accessToken을 담는다.
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization","Bearer "+oAuthToken.getAccess_token());
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
-
-
         //HttpEntity를 하나 생성해 헤더를 담아서 restTemplate으로 구글과 통신하게 된다.
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity(headers);
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> response = restTemplate.exchange(GOOGLE_USERINFO_REQUEST_URL, HttpMethod.GET,request,String.class);
         System.out.println("response.getBody() = " + response.getBody());
-
 
         String responseBody = response.getBody();
         ObjectMapper objectMapper = new ObjectMapper();
