@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -39,6 +40,18 @@ public class SecurityConfiguration {
         return new BCryptPasswordEncoder();
     }
 
+    // 테스트용 H2 콘솔 관련 설정 추가
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        // h2-console 사용에 대한 허용 (CSRF, FrameOptions 무시)
+        return (web) -> web.ignoring()
+                .antMatchers(
+                        "/h2-console/**"
+                        ,"/favicon.ico"
+                        ,"/error"
+                );
+    }
+
     @Bean
     @Order(SecurityProperties.BASIC_AUTH_ORDER)
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -59,8 +72,7 @@ public class SecurityConfiguration {
 
                 .and()
                 .authorizeRequests()
-                .antMatchers("/member/**").permitAll()
-                .antMatchers("/api/**").permitAll()
+                .antMatchers("/**").permitAll()
                 .anyRequest().authenticated()
 
                 .and()

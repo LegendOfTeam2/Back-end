@@ -1,7 +1,7 @@
 package com.example.rhythme_backend.jwt;
 
 import com.example.rhythme_backend.domain.Member;
-import com.example.rhythme_backend.domain.RefreshToken;
+import com.example.rhythme_backend.util.RefreshToken;
 import com.example.rhythme_backend.dto.TokenDto;
 import com.example.rhythme_backend.repository.RefreshTokenRepository;
 import com.example.rhythme_backend.service.UserDetailsImpl;
