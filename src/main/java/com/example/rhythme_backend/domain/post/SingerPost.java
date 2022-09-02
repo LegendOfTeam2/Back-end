@@ -1,6 +1,7 @@
 package com.example.rhythme_backend.domain.post;
 
 import com.example.rhythme_backend.domain.Member;
+import com.example.rhythme_backend.domain.Tag;
 import com.example.rhythme_backend.domain.media.ImageUrl;
 import com.example.rhythme_backend.domain.media.MediaUrl;
 import com.example.rhythme_backend.dto.requestDto.post.PostPatchRequestDto;
@@ -11,6 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Builder
@@ -42,13 +44,11 @@ public class SingerPost extends Timestamped {
     @OneToOne(fetch = FetchType.EAGER)
     private MediaUrl mediaUrl;
 
-    @Column(name="tag")
-    @ElementCollection(targetClass=String.class)
-    private List<String> tag;
+    @OneToMany(mappedBy = "singer_post",fetch = FetchType.LAZY)
+    private List<Tag> tags;
 
     public void updateSingerPost(PostPatchRequestDto patchRequestDto){
         this.content = patchRequestDto.getContent();
         this.title = patchRequestDto.getTitle();
-        this.tag = patchRequestDto.getTag();
     }
 }

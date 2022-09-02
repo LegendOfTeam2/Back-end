@@ -1,5 +1,6 @@
 package com.example.rhythme_backend.dto.responseDto.post;
 
+import com.example.rhythme_backend.domain.Tag;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -15,5 +16,5 @@ public class PostCreateResponseDto {
     private String content;
     private String imageUrl;
     private String mediaUrl;
-    private List<String> tag;
+    private List<Tag> tag;
 }

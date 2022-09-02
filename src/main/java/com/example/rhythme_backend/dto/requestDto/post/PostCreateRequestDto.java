@@ -13,5 +13,5 @@ public class PostCreateRequestDto {
     private String content;
     private String imageUrl;
     private String mediaUrl;
-    private List<String> tag;
+    private List<String> tags;
 }

@@ -2,6 +2,7 @@ package com.example.rhythme_backend.service;
 
 
 import com.example.rhythme_backend.domain.Member;
+import com.example.rhythme_backend.domain.Tag;
 import com.example.rhythme_backend.domain.media.ImageUrl;
 import com.example.rhythme_backend.domain.media.MediaUrl;
 import com.example.rhythme_backend.domain.post.MakerPost;
@@ -31,10 +32,10 @@ public class PostService<T>{
     private final SingerPostRepository singerPostRepository;
     private final MakerPostRepository makerPostRepository;
 
+    private final TagRepository tagRepository;
     private final ImageUrlRepository imageUrlRepository;
     private final MediaUrlRepository mediaUrlRepository;
 
-    private T positionValue;
 
 
     //============ 카테고리별 게시판 전체 조회 로직.
@@ -51,7 +52,7 @@ public class PostService<T>{
                             .title(makerPost.getTitle())
                             .content(makerPost.getContent())
                             .imageUrl(makerPost.getImageUrl().getImageUrl())
-                            .tag(makerPost.getTag())
+                            .tag(makerPost.getTags())
                             .build()
             );
         }
@@ -70,7 +71,7 @@ public class PostService<T>{
                             .title(singerPost.getTitle())
                             .content(singerPost.getContent())
                             .imageUrl(singerPost.getImageUrl().getImageUrl())
-                            .tag(singerPost.getTag())
+                            .tag(singerPost.getTags())
                             .build()
             );
         }
@@ -89,31 +90,38 @@ public class PostService<T>{
         ImageUrl imageUrl = imageUrlSave(postCreateRequestDto);
         MediaUrl mediaUrl = mediaUrlSave(postCreateRequestDto);
 
-        if(postCreateRequestDto.getPosition().equals("Singer")){
+        if(postCreateRequestDto.getPosition().equals("Maker")){
+//            List<Tag> tag = stringListToTag(postCreateRequestDto.getTags());
             MakerPost createdMakerPost = MakerPost.builder()
                     .member(memberWhoCreated)
                     .title(postCreateRequestDto.getTitle())
                     .content(postCreateRequestDto.getContent())
                     .imageUrl(imageUrl)
                     .mediaUrl(mediaUrl)
-                    .tag(postCreateRequestDto.getTag())
                     .build();
             makerPostRepository.save(createdMakerPost);
+            tagSave(postCreateRequestDto.getTags(),createdMakerPost,null);
+
             result = new ResponseEntity<>(Message.success(createdMakerPost),HttpStatus.OK);
+            imageUrl.setPostId(createdMakerPost.getId());
+            mediaUrl.setPostId(createdMakerPost.getId());
 
             return result;
 
-        }else if(postCreateRequestDto.getPosition().equals("Maker")){
+        }else if(postCreateRequestDto.getPosition().equals("Singer")){
             SingerPost createdSingerPost = SingerPost.builder()
                     .member(memberWhoCreated)
                     .title(postCreateRequestDto.getTitle())
                     .content(postCreateRequestDto.getContent())
                     .imageUrl(imageUrl)
                     .mediaUrl(mediaUrl)
-                    .tag(postCreateRequestDto.getTag())
                     .build();
             singerPostRepository.save(createdSingerPost);
+            tagSave(postCreateRequestDto.getTags(),new MakerPost(),createdSingerPost);
+
             result = new ResponseEntity<>(Message.success(createdSingerPost),HttpStatus.OK);
+            imageUrl.setPostId(createdSingerPost.getId());
+            mediaUrl.setPostId(createdSingerPost.getId());
 
             return result;
         }
@@ -210,9 +218,11 @@ public class PostService<T>{
         return singerPost;
     }
 
-    // 이미지 엔티티에 저장 로직
+    // URL엔티티에 저장 로직
     public ImageUrl imageUrlSave(PostCreateRequestDto postCreateRequestDto){
         ImageUrl imageUrl =  ImageUrl.builder()
+                .postId(null)
+                .position(postCreateRequestDto.getPosition())
                             .imageUrl(postCreateRequestDto.getImageUrl())
                             .build();
 
@@ -220,14 +230,33 @@ public class PostService<T>{
         return imageUrl;
     }
 
-
-    // 미디어 엔티티에 저장 로직
     public MediaUrl mediaUrlSave(PostCreateRequestDto postCreateRequestDto){
         MediaUrl mediaUrl = MediaUrl.builder()
+                .postId(null)
+                .position(postCreateRequestDto.getPosition())
                             .mediaUrl(postCreateRequestDto.getMediaUrl())
                             .build();
         mediaUrlRepository.save(mediaUrl);
         return mediaUrl;
     }
 
+    public List<Tag> stringListToTag(List<String> tags){
+        List<Tag> tagList = new ArrayList<>();
+        Tag tag = new Tag();
+        for(int i=0; i<tags.size(); i++){
+            tag.setTag(tags.get(i));
+            tagList.add(tag);
+        }
+        return tagList;
+    }
+    public void tagSave(List<String> tags,MakerPost makerPost,SingerPost singerPost){
+        for(String tag : tags){
+            tagRepository.save(
+                    Tag.builder()
+                            .tag(tag)
+                            .maker_post(makerPost)
+                            .singer_post(singerPost)
+                            .build());
+        }
+    }
 }
