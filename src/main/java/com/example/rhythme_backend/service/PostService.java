@@ -6,7 +6,9 @@ import com.example.rhythme_backend.domain.Tag;
 import com.example.rhythme_backend.domain.media.ImageUrl;
 import com.example.rhythme_backend.domain.media.MediaUrl;
 import com.example.rhythme_backend.domain.post.MakerPost;
+import com.example.rhythme_backend.domain.post.MakerPostTag;
 import com.example.rhythme_backend.domain.post.SingerPost;
+import com.example.rhythme_backend.domain.post.SingerPostTag;
 import com.example.rhythme_backend.dto.requestDto.post.PostCreateRequestDto;
 import com.example.rhythme_backend.dto.requestDto.post.PostDeleteRequestDto;
 import com.example.rhythme_backend.dto.requestDto.post.PostPatchRequestDto;
@@ -35,6 +37,10 @@ public class PostService<T>{
     private final TagRepository tagRepository;
     private final ImageUrlRepository imageUrlRepository;
     private final MediaUrlRepository mediaUrlRepository;
+
+    private final MakerPostTagRepository makerPostTagRepository;
+
+    private final SingerPostTagRepository singerPostTagRepository;
 
 
 
@@ -98,7 +104,8 @@ public class PostService<T>{
                     .mediaUrl(mediaUrl)
                     .build();
             makerPostRepository.save(createdMakerPost);
-            tagSave(postCreateRequestDto.getTags());
+            makerPostTagSave(postCreateRequestDto.getTags(),createdMakerPost);
+
 
             result = new ResponseEntity<>(Message.success(createdMakerPost),HttpStatus.OK);
             imageUrl.setPostId(createdMakerPost.getId());
@@ -115,7 +122,7 @@ public class PostService<T>{
                     .mediaUrl(mediaUrl)
                     .build();
             singerPostRepository.save(createdSingerPost);
-            tagSave(postCreateRequestDto.getTags());
+            singerPostTagSave(postCreateRequestDto.getTags(),createdSingerPost);
 
             result = new ResponseEntity<>(Message.success(createdSingerPost),HttpStatus.OK);
             imageUrl.setPostId(createdSingerPost.getId());
@@ -247,12 +254,27 @@ public class PostService<T>{
         }
         return tagList;
     }
-    public void tagSave(List<String> tags){
+    public void makerPostTagSave(List<String> tags,MakerPost makerPost){
         for(String tag : tags){
-            tagRepository.save(
+            Tag tag1 = tagRepository.save(
                     Tag.builder()
                             .tag(tag)
                             .build());
+            MakerPostTag makerPostTag = new MakerPostTag(makerPost,tag1);
+            makerPostTagRepository.save(makerPostTag);
         }
     }
+
+    public void singerPostTagSave(List<String> tags,SingerPost singerPost){
+        for(String tag : tags){
+            Tag tag1 = tagRepository.save(
+                    Tag.builder()
+                            .tag(tag)
+                            .build());
+            SingerPostTag singerPostTag = new SingerPostTag(singerPost,tag1);
+            singerPostTagRepository.save(singerPostTag);
+        }
+    }
+
+
 }
