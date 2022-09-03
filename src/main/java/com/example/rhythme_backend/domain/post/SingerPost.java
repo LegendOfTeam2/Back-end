@@ -6,10 +6,7 @@ import com.example.rhythme_backend.domain.media.ImageUrl;
 import com.example.rhythme_backend.domain.media.MediaUrl;
 import com.example.rhythme_backend.dto.requestDto.post.PostPatchRequestDto;
 import com.example.rhythme_backend.util.Timestamped;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -17,6 +14,7 @@ import java.util.List;
 
 @Builder
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -44,8 +42,8 @@ public class SingerPost extends Timestamped {
     @OneToOne(fetch = FetchType.EAGER)
     private MediaUrl mediaUrl;
 
-    @OneToMany(mappedBy = "singer_post",fetch = FetchType.LAZY)
-    private List<Tag> tags;
+    @OneToMany(mappedBy = "tag_id",fetch = FetchType.LAZY)
+    private List<SingerPostTag> tags;
 
     public void updateSingerPost(PostPatchRequestDto patchRequestDto){
         this.content = patchRequestDto.getContent();

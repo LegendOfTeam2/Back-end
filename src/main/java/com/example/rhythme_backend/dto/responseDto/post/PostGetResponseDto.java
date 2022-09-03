@@ -1,13 +1,14 @@
-package com.example.rhythme_backend.dto.requestDto.post;
+package com.example.rhythme_backend.dto.responseDto.post;
 
-import com.example.rhythme_backend.domain.media.ImageUrl;
-import com.example.rhythme_backend.domain.media.MediaUrl;
+import com.example.rhythme_backend.domain.Tag;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.util.List;
 
+@Builder
 @Getter
-public class PostPatchRequestDto {
+public class PostGetResponseDto {
     private Long postId;
     private String email;
     private String position;
@@ -15,6 +16,5 @@ public class PostPatchRequestDto {
     private String content;
     private String imageUrl;
     private String mediaUrl;
-    private List<String> tags;
+    private List<Tag> tags;
 }
-

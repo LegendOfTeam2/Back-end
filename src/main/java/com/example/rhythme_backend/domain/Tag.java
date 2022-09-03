@@ -1,7 +1,9 @@
 package com.example.rhythme_backend.domain;
 
 import com.example.rhythme_backend.domain.post.MakerPost;
+import com.example.rhythme_backend.domain.post.MakerPostTag;
 import com.example.rhythme_backend.domain.post.SingerPost;
+import com.example.rhythme_backend.domain.post.SingerPostTag;
 import lombok.*;
 
 import javax.persistence.*;
@@ -22,12 +24,10 @@ public class Tag {
     @Column(nullable = false)
     private String tag;
 
-    @ManyToOne
-    @JoinColumn(name = "maker_post")
-    private MakerPost maker_post;
+    @OneToMany(mappedBy = "maker_post_id")
+    private List<MakerPostTag> makerPostTags;
 
-    @ManyToOne
-    @JoinColumn(name = "singer_post")
-    private SingerPost singer_post;
+    @OneToMany(mappedBy = "singer_post_id")
+    private List<SingerPostTag> singerPostTags;
 
 }
