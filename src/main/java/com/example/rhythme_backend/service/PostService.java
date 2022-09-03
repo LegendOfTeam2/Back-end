@@ -27,7 +27,7 @@ import java.util.Optional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class PostService<T>{
+public class PostService{
     private final MemberRepository memberRepository;
     private final SingerPostRepository singerPostRepository;
     private final MakerPostRepository makerPostRepository;
