@@ -3,26 +3,26 @@ package com.example.rhythme_backend.service;
 import com.example.rhythme_backend.domain.Member;
 import com.example.rhythme_backend.domain.MemberTag;
 import com.example.rhythme_backend.domain.Tag;
-import com.example.rhythme_backend.domain.post.MakerPost;
-import com.example.rhythme_backend.domain.post.MakerPostTag;
-import com.example.rhythme_backend.dto.requestDto.member.*;
-import com.example.rhythme_backend.repository.MemberTagRepository;
-import com.example.rhythme_backend.repository.TagRepository;
-import com.example.rhythme_backend.util.RefreshToken;
 import com.example.rhythme_backend.dto.TokenDto;
+import com.example.rhythme_backend.dto.requestDto.member.*;
 import com.example.rhythme_backend.dto.responseDto.ResignResponseDto;
 import com.example.rhythme_backend.exception.CustomException;
 import com.example.rhythme_backend.exception.ErrorCode;
-import com.example.rhythme_backend.service.googleLogin.Constant;
-import com.example.rhythme_backend.service.googleLogin.GoogleOauth;
 import com.example.rhythme_backend.jwt.TokenProvider;
 import com.example.rhythme_backend.repository.MemberRepository;
+import com.example.rhythme_backend.repository.MemberTagRepository;
 import com.example.rhythme_backend.repository.RefreshTokenRepository;
+import com.example.rhythme_backend.repository.TagRepository;
+import com.example.rhythme_backend.service.googleLogin.Constant;
+import com.example.rhythme_backend.service.googleLogin.GoogleOauth;
 import com.example.rhythme_backend.service.kakaoLogin.KakaoOauth;
 import com.example.rhythme_backend.util.Message;
+import com.example.rhythme_backend.util.RefreshToken;
+import com.example.rhythme_backend.util.ResponseDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -93,11 +93,11 @@ public class MemberService {
     public ResponseEntity<?> loginMember(LoginRequestDto requestDto, HttpServletResponse response) {
         Member member = getPresentEmail(requestDto.getEmail());
         if (null == member) {
-            return new ResponseEntity<>(Message.fail("EMAIL_DUPLICATED","이메일을 입력하세요."),HttpStatus.ALREADY_REPORTED);
+            return new ResponseEntity<>(Message.fail("EMAIL_NOT_FOUND","존재하지 않는 이메일입니다."),HttpStatus.NOT_FOUND);
         }
 
         if (!member.validatePassword(passwordEncoder, requestDto.getPassword())) {
-            throw new CustomException(ErrorCode.INVALID_MEMBER_INFO);
+            return new ResponseEntity<>(Message.fail("PASSWORD_NOT_FOUND","비밀번호를 다시 입력해주세요."),HttpStatus.NOT_FOUND);
         }
 
         TokenDto tokenDto = tokenProvider.generateTokenDto(member);
@@ -273,6 +273,18 @@ public class MemberService {
             tokenProvider.deleteRefreshToken(requestingMember);
             throw new CustomException(ErrorCode.INVALID_TOKEN);
         }
+    }
+
+    public ResponseEntity<?> logoutMember(HttpServletRequest request) {
+        if (!tokenProvider.validateToken(request.getHeader("Refresh-Token"))) {
+            return new ResponseEntity<>(Message.fail("INVALID_TOKEN", "Token이 유효하지 않습니다."),HttpStatus.UNAUTHORIZED);
+        }
+        Member member = tokenProvider.getMemberFromAuthentication();
+        if (null == member) {
+            return new ResponseEntity<>(Message.fail("MEMBER_NOT_FOUND","사용자를 찾을 수 없습니다."),HttpStatus.NOT_FOUND);
+        }
+        tokenProvider.deleteRefreshToken(member);
+        return new ResponseEntity<>(Message.success("로그아웃 되었습니다."),HttpStatus.OK);
     }
 
 

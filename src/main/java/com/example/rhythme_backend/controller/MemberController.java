@@ -68,8 +68,13 @@ public class MemberController {
     }
 
     @PostMapping("/member/refreshtoken")
-    public ResponseEntity<?> refreshTokenCheck( HttpServletRequest request, HttpServletResponse response){
+    public ResponseEntity<?> refreshTokenCheck(HttpServletRequest request, HttpServletResponse response){
         return memberService.refreshToken(request, response);
+    }
+
+    @PostMapping("/auth/member/signout")
+    public ResponseEntity<?> signOutMember(HttpServletRequest request) {
+        return memberService.logoutMember(request);
     }
 
 }
