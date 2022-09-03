@@ -55,7 +55,6 @@ public class MemberService {
                 .imgUrl(requestDto.getImgUrl())
                 .nickname(requestDto.getNickname())
                 .position(requestDto.getPosition())
-                .hashtag(requestDto.getHashtag())
                 .password(passwordEncoder.encode(requestDto.getPassword()))
                 .build();
         memberRepository.save(member);

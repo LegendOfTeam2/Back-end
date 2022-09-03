@@ -48,8 +48,8 @@ public class MakerPost extends Timestamped {
     private MediaUrl mediaUrl;
 
 
-    @OneToMany(mappedBy ="maker_post", fetch = FetchType.LAZY)
-    private List<Tag> tags;
+    @OneToMany(mappedBy ="tag_id", fetch = FetchType.LAZY)
+    private List<MakerPostTag> tags;
 
 
     public void updateMakerPost(PostPatchRequestDto patchRequestDto){
