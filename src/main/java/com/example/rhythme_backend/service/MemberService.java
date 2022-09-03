@@ -124,7 +124,6 @@ public class MemberService {
         RefreshToken deleteToken = getDeleteToken(member);
         memberTagRepository.deleteAllByMemberId(member);
         tagRepository.deleteAllByMemberId(member);
-        //MemberTag deleteMemberTag = getDeleteTag(member);
         String deleteEmail = requestDto.getEmail();
         Member deleteMember = getPresentEmail(deleteEmail);
         Long deleteMemberId = deleteMember.getId();
@@ -134,7 +133,6 @@ public class MemberService {
             return new ResponseEntity<>(Message.fail("MEMBER_NOT_FOUND", "해당 멤버가 없습니다."), HttpStatus.NOT_FOUND);
         }
         refreshTokenRepository.delete(deleteToken);
-        //memberTagRepository.delete(deleteMemberTag);
         memberRepository.delete(resignMember);
         return new ResponseEntity<>(Message.success(
                 ResignResponseDto.builder()
@@ -142,6 +140,22 @@ public class MemberService {
                         .id(resignMember.getId())
                         .build()
         ),HttpStatus.OK);
+    }
+
+    public ResponseEntity<?> logoutMember(LogoutRequestDto requestDto, HttpServletRequest request) {
+        if (!tokenProvider.validateToken(request.getHeader("Refresh-Token"))) {
+            return new ResponseEntity<>(Message.fail("INVALID_TOKEN", "Token이 유효하지 않습니다."),HttpStatus.UNAUTHORIZED);
+        }
+        Member member = tokenProvider.getMemberFromAuthentication();
+        if (null == member) {
+            return new ResponseEntity<>(Message.fail("MEMBER_NOT_FOUND","사용자를 찾을 수 없습니다."),HttpStatus.NOT_FOUND);
+        }
+        String logoutEmail = requestDto.getEmail();
+        Member logoutMember = getPresentEmail(logoutEmail);
+        Long logoutMemberId = logoutMember.getId();
+        Member logout = getDeleteMember(logoutMemberId);
+        tokenProvider.deleteRefreshToken(logout);
+        return new ResponseEntity<>(Message.success("로그아웃 되었습니다."),HttpStatus.OK);
     }
 
 
@@ -279,18 +293,6 @@ public class MemberService {
         }
     }
 
-    public ResponseEntity<?> logoutMember(HttpServletRequest request) {
-        if (!tokenProvider.validateToken(request.getHeader("Refresh-Token"))) {
-            return new ResponseEntity<>(Message.fail("INVALID_TOKEN", "Token이 유효하지 않습니다."),HttpStatus.UNAUTHORIZED);
-        }
-        Member member = tokenProvider.getMemberFromAuthentication();
-        if (null == member) {
-            return new ResponseEntity<>(Message.fail("MEMBER_NOT_FOUND","사용자를 찾을 수 없습니다."),HttpStatus.NOT_FOUND);
-        }
-        tokenProvider.deleteRefreshToken(member);
-        return new ResponseEntity<>(Message.success("로그아웃 되었습니다."),HttpStatus.OK);
-    }
-
 
     @Transactional(readOnly = true)
     public Member getPresentEmail(String email) {
@@ -320,15 +322,6 @@ public class MemberService {
     public RefreshToken getDeleteToken(Member member) {
         Optional<RefreshToken> optionalMember = refreshTokenRepository.findByMember(member);
         return optionalMember.orElse(null);
-    }
-
-    public MemberTag getDeleteTag(Member member) {
-        Optional<MemberTag> optionalMemberTag = memberTagRepository.deleteAllByMemberId(member);
-        return optionalMemberTag.orElse(null);
-    }
-
-    public void deleteTag(Member member) {
-        memberTagRepository.deleteAllByMemberId(member);
     }
 
 

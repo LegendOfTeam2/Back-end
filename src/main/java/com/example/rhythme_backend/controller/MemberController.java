@@ -52,6 +52,11 @@ public class MemberController {
         return memberService.resignMember(requestDto,request);
     }
 
+    @PostMapping("/auth/member/signout")
+    public ResponseEntity<?> signOutMember(@RequestBody LogoutRequestDto requestDto, HttpServletRequest request) {
+        return memberService.logoutMember(requestDto,request);
+    }
+
 
     @GetMapping("/api/google")
     public void socialLoginRedirect(String SocialLoginPath) throws IOException {
@@ -72,9 +77,6 @@ public class MemberController {
         return memberService.refreshToken(request, response);
     }
 
-    @PostMapping("/auth/member/signout")
-    public ResponseEntity<?> signOutMember(HttpServletRequest request) {
-        return memberService.logoutMember(request);
-    }
+
 
 }
