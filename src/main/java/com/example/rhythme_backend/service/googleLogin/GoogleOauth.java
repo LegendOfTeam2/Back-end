@@ -1,7 +1,7 @@
 package com.example.rhythme_backend.service.googleLogin;
 
-import com.example.rhythme_backend.dto.requestDto.GoogleOAuthTokenDto;
-import com.example.rhythme_backend.dto.requestDto.GoogleUserInfoDto;
+import com.example.rhythme_backend.dto.requestDto.member.GoogleOAuthTokenDto;
+import com.example.rhythme_backend.dto.requestDto.member.GoogleUserInfoDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

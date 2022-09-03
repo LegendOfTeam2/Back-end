@@ -1,7 +1,7 @@
 package com.example.rhythme_backend.controller;
 
 import com.example.rhythme_backend.dto.TokenDto;
-import com.example.rhythme_backend.dto.requestDto.*;
+import com.example.rhythme_backend.dto.requestDto.member.*;
 import com.example.rhythme_backend.service.googleLogin.Constant;
 import com.example.rhythme_backend.service.MemberService;
 import com.example.rhythme_backend.util.Message;

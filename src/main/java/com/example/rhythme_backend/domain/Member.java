@@ -1,5 +1,6 @@
 package com.example.rhythme_backend.domain;
 
+import com.example.rhythme_backend.domain.post.SingerPostTag;
 import com.example.rhythme_backend.util.Timestamped;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
@@ -48,6 +49,9 @@ public class Member extends Timestamped {
 
     @Column
     private String position;
+
+    @OneToMany(mappedBy = "tag_id",fetch = FetchType.LAZY)
+    private List<MemberTag> hashtag;
 
     public boolean validatePassword(PasswordEncoder passwordEncoder, String password) {
         return passwordEncoder.matches(password, this.password);

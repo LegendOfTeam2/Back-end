@@ -1,9 +1,15 @@
 package com.example.rhythme_backend.service;
 
 import com.example.rhythme_backend.domain.Member;
+import com.example.rhythme_backend.domain.MemberTag;
+import com.example.rhythme_backend.domain.Tag;
+import com.example.rhythme_backend.domain.post.MakerPost;
+import com.example.rhythme_backend.domain.post.MakerPostTag;
+import com.example.rhythme_backend.dto.requestDto.member.*;
+import com.example.rhythme_backend.repository.MemberTagRepository;
+import com.example.rhythme_backend.repository.TagRepository;
 import com.example.rhythme_backend.util.RefreshToken;
 import com.example.rhythme_backend.dto.TokenDto;
-import com.example.rhythme_backend.dto.requestDto.*;
 import com.example.rhythme_backend.dto.responseDto.ResignResponseDto;
 import com.example.rhythme_backend.exception.CustomException;
 import com.example.rhythme_backend.exception.ErrorCode;
@@ -27,10 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Date;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -42,6 +45,8 @@ public class MemberService {
     private final GoogleOauth googleOauth;
     private final HttpServletResponse response;
     private final KakaoOauth kakaoOauth;
+    private final TagRepository tagRepository;
+    private final MemberTagRepository memberTagRepository;
 
     @Transactional
     public ResponseEntity<?> signupMember(SignupRequestDto requestDto) {
@@ -58,6 +63,7 @@ public class MemberService {
                 .password(passwordEncoder.encode(requestDto.getPassword()))
                 .build();
         memberRepository.save(member);
+        memberTagSave(requestDto.getHashtag(),member);
 
         return new ResponseEntity<>(Message.success("회원가입에 성공했습니다."), HttpStatus.OK);
     }
@@ -232,6 +238,17 @@ public class MemberService {
                 return googleTokenDto;
     }
 
+
+    public void memberTagSave(List<String> hashtag,Member member){
+        for(String tag : hashtag){
+            Tag memberHashtag = tagRepository.save(
+                    Tag.builder()
+                            .tag(tag)
+                            .build());
+            MemberTag memberTag = new MemberTag(member,memberHashtag);
+            memberTagRepository.save(memberTag);
+        }
+    }
 
     public ResponseEntity<?> refreshToken(HttpServletRequest request, HttpServletResponse response) {
 

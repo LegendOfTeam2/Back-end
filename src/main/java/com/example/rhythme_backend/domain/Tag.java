@@ -1,8 +1,6 @@
 package com.example.rhythme_backend.domain;
 
-import com.example.rhythme_backend.domain.post.MakerPost;
 import com.example.rhythme_backend.domain.post.MakerPostTag;
-import com.example.rhythme_backend.domain.post.SingerPost;
 import com.example.rhythme_backend.domain.post.SingerPostTag;
 import lombok.*;
 
@@ -28,5 +26,8 @@ public class Tag {
 
     @OneToMany(mappedBy = "singer_post_id")
     private List<SingerPostTag> singerPostTags;
+
+    @OneToMany(mappedBy = "member_id")
+    private List<MemberTag> memberTags;
 
 }

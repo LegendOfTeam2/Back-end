@@ -1,6 +1,8 @@
-package com.example.rhythme_backend.dto.requestDto;
+package com.example.rhythme_backend.dto.requestDto.member;
 
 import lombok.Getter;
+
+import java.util.List;
 
 @Getter
 public class SignupRequestDto {
@@ -10,5 +12,5 @@ public class SignupRequestDto {
     private String imgUrl;
     private String position;
     private String nickname;
-
+    private List<String> hashtag;
 }
