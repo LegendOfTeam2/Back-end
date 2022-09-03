@@ -12,8 +12,10 @@ import com.example.rhythme_backend.domain.post.SingerPostTag;
 import com.example.rhythme_backend.dto.requestDto.post.PostCreateRequestDto;
 import com.example.rhythme_backend.dto.requestDto.post.PostDeleteRequestDto;
 import com.example.rhythme_backend.dto.requestDto.post.PostPatchRequestDto;
-import com.example.rhythme_backend.dto.responseDto.post.PostCreateResponseDto;
+import com.example.rhythme_backend.dto.responseDto.post.PostGetResponseDto;
+import com.example.rhythme_backend.dto.responseDto.post.PostsCreateResponseDto;
 import com.example.rhythme_backend.repository.*;
+import com.example.rhythme_backend.repository.posts.*;
 import com.example.rhythme_backend.util.Message;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,10 +50,10 @@ public class PostService<T>{
     @Transactional(readOnly = true)
     public ResponseEntity<?> getAllMakerPost(){
         List<MakerPost> makerPostList = makerPostRepository.findAll();
-        List<PostCreateResponseDto> postCreateResponseDtoList = new ArrayList<>();
+        List<PostGetResponseDto> postGetResponseDtoList = new ArrayList<>();
         for(MakerPost makerPost : makerPostList){
-            postCreateResponseDtoList.add(
-                    PostCreateResponseDto.builder()
+            postGetResponseDtoList.add(
+                    PostGetResponseDto.builder()
                             .postId(makerPost.getId())
                             .email(makerPost.getMember().getEmail())
                             .position("Maker")
@@ -61,15 +63,15 @@ public class PostService<T>{
                             .build()
             );
         }
-        return new ResponseEntity<>(Message.success(postCreateResponseDtoList),HttpStatus.OK);
+        return new ResponseEntity<>(Message.success(postGetResponseDtoList),HttpStatus.OK);
     }
 
     public ResponseEntity<?> getAllSingerPost(){
         List<SingerPost> singerPostList = singerPostRepository.findAll();
-        List<PostCreateResponseDto> postCreateResponseDtoList = new ArrayList<>();
+        List<PostGetResponseDto> postGetResponseDtoList = new ArrayList<>();
         for(SingerPost singerPost : singerPostList){
-            postCreateResponseDtoList.add(
-                    PostCreateResponseDto.builder()
+            postGetResponseDtoList.add(
+                    PostGetResponseDto.builder()
                             .postId(singerPost.getId())
                             .email(singerPost.getMember().getEmail())
                             .position("Singer")
@@ -79,7 +81,7 @@ public class PostService<T>{
                             .build()
             );
         }
-        return new ResponseEntity<>(Message.success(postCreateResponseDtoList),HttpStatus.OK);
+        return new ResponseEntity<>(Message.success(postGetResponseDtoList),HttpStatus.OK);
     }
 
 
@@ -105,11 +107,25 @@ public class PostService<T>{
                     .build();
             makerPostRepository.save(createdMakerPost);
             makerPostTagSave(postCreateRequestDto.getTags(),createdMakerPost);
-
-
-            result = new ResponseEntity<>(Message.success(createdMakerPost),HttpStatus.OK);
             imageUrl.setPostId(createdMakerPost.getId());
             mediaUrl.setPostId(createdMakerPost.getId());
+            List<MakerPostTag> makerPostTags= makerPostTagRepository.findAllById(createdMakerPost.getId());
+            createdMakerPost.setTags(makerPostTags);
+
+            PostsCreateResponseDto responseDto = PostsCreateResponseDto.builder()
+                    .postId(createdMakerPost.getId())
+                    .email(memberWhoCreated.getEmail())
+                    .position("Maker")
+                    .title(createdMakerPost.getTitle())
+                    .content(createdMakerPost.getContent())
+                    .imageUrl(imageUrl.getImageUrl())
+                    .mediaUrl(mediaUrl.getMediaUrl())
+                    .tags(postCreateRequestDto.getTags())
+                    .build();
+
+
+            result = new ResponseEntity<>(Message.success(responseDto),HttpStatus.OK);
+
 
             return result;
 
@@ -123,10 +139,24 @@ public class PostService<T>{
                     .build();
             singerPostRepository.save(createdSingerPost);
             singerPostTagSave(postCreateRequestDto.getTags(),createdSingerPost);
-
-            result = new ResponseEntity<>(Message.success(createdSingerPost),HttpStatus.OK);
             imageUrl.setPostId(createdSingerPost.getId());
             mediaUrl.setPostId(createdSingerPost.getId());
+            List<SingerPostTag> singerPostTags= singerPostTagRepository.findAllById(createdSingerPost.getId());
+            createdSingerPost.setTags(singerPostTags);
+
+            PostsCreateResponseDto responseDto = PostsCreateResponseDto.builder()
+                    .postId(createdSingerPost.getId())
+                    .email(memberWhoCreated.getEmail())
+                    .position("Singer")
+                    .title(createdSingerPost.getTitle())
+                    .content(createdSingerPost.getContent())
+                    .imageUrl(imageUrl.getImageUrl())
+                    .mediaUrl(mediaUrl.getMediaUrl())
+                    .tags(postCreateRequestDto.getTags())
+                    .build();
+
+            result = new ResponseEntity<>(Message.success(responseDto),HttpStatus.OK);
+
 
             return result;
         }
@@ -145,16 +175,16 @@ public class PostService<T>{
         String position = postPutRequestDto.getPosition();
         Long postId = postPutRequestDto.getPostId();
 
-        if(position.equals("Singer")){
-            updateUrl(postPutRequestDto);
-           SingerPost singerPost = singerPostRepository.findById(postId).orElse(new SingerPost());
-           singerPost.updateSingerPost(postPutRequestDto);
-           result = new ResponseEntity<>(Message.success(singerPost),HttpStatus.OK);
-        }else if(position.equals("Maker")){
+        if(position.equals("Maker")){
             updateUrl(postPutRequestDto);
             MakerPost makerPost = makerPostRepository.findById(postId).orElse(new MakerPost());
             makerPost.updateMakerPost(postPutRequestDto);
             result = new ResponseEntity<>(Message.success(makerPost),HttpStatus.OK);
+        } else if(position.equals("Singer")){
+            updateUrl(postPutRequestDto);
+           SingerPost singerPost = singerPostRepository.findById(postId).orElse(new SingerPost());
+           singerPost.updateSingerPost(postPutRequestDto);
+           result = new ResponseEntity<>(Message.success(singerPost),HttpStatus.OK);
         }
         return result;
     }
@@ -187,14 +217,15 @@ public class PostService<T>{
         String position = postDeleteRequestDto.getPosition();
         Long postId = postDeleteRequestDto.getPostId();
 
-        if (position.equals("Singer")) {
-            SingerPost singerPost = singerPostRepository.findById(postId).orElseGet(SingerPost::new);
-            singerPostRepository.delete(singerPost);
-            result = new ResponseEntity<>(Message.success("Singer 게시글이 삭제되었습니다."),HttpStatus.OK);
-        } else if(position.equals("Maker")) {
+        if(position.equals("Maker")) {
             MakerPost makerPost = makerPostRepository.findById(postId).orElseGet(MakerPost::new);
             makerPostRepository.delete(makerPost);
             result = new ResponseEntity<>(Message.success("Maker 게시글이 삭제되었습니다"), HttpStatus.OK);
+        }
+        else if (position.equals("Singer")) {
+            SingerPost singerPost = singerPostRepository.findById(postId).orElseGet(SingerPost::new);
+            singerPostRepository.delete(singerPost);
+            result = new ResponseEntity<>(Message.success("Singer 게시글이 삭제되었습니다."),HttpStatus.OK);
         }
         return result;
     }
@@ -274,6 +305,7 @@ public class PostService<T>{
             SingerPostTag singerPostTag = new SingerPostTag(singerPost,tag1);
             singerPostTagRepository.save(singerPostTag);
         }
+
     }
 
 

@@ -20,9 +20,11 @@ public class MediaUrl extends Timestamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonIgnore
     @Column
     private Long postId;
 
+    @JsonIgnore
     @Column(nullable = false)
     private String position;
 

@@ -1,4 +1,4 @@
-package com.example.rhythme_backend.repository;
+package com.example.rhythme_backend.repository.posts;
 
 import com.example.rhythme_backend.domain.Member;
 import com.example.rhythme_backend.domain.media.ImageUrl;

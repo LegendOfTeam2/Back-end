@@ -1,14 +1,15 @@
 package com.example.rhythme_backend.dto.responseDto.post;
 
-import com.example.rhythme_backend.domain.Tag;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
-@Builder
 @Getter
-public class PostCreateResponseDto {
+@Setter
+@Builder
+public class PostsCreateResponseDto {
     private Long postId;
     private String email;
     private String position;
@@ -16,5 +17,5 @@ public class PostCreateResponseDto {
     private String content;
     private String imageUrl;
     private String mediaUrl;
-    private List<Tag> tag;
+    private List<String> tags;
 }
