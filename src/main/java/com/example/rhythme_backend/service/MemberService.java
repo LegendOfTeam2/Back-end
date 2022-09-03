@@ -52,6 +52,10 @@ public class MemberService {
 
         Member member = Member.builder()
                 .email(requestDto.getEmail())
+                .imgUrl(requestDto.getImgUrl())
+                .nickname(requestDto.getNickname())
+                .position(requestDto.getPosition())
+                .hashtag(requestDto.getHashtag())
                 .password(passwordEncoder.encode(requestDto.getPassword()))
                 .build();
         memberRepository.save(member);
@@ -64,7 +68,7 @@ public class MemberService {
     public ResponseEntity<?> emailCheck(EmailCheckRequestDto requestDto) {
 
         if (null != getPresentEmail(requestDto.getEmail())) {
-            throw new CustomException(ErrorCode.DUPLICATED_EMAIL);
+            return new ResponseEntity<>(Message.fail("DUPLICATED_EMAIL","사용 불가능한 이메일입니다."), HttpStatus.OK);
         }
         return new ResponseEntity<>(Message.success("사용 가능한 이메일입니다."), HttpStatus.OK);
     }
@@ -74,7 +78,7 @@ public class MemberService {
     public ResponseEntity<?> nicknameCheck(NicknameCheckRequestDto requestDto) {
 
         if (null != getPresentNickname(requestDto.getNickname())) {
-            throw new CustomException(ErrorCode.DUPLICATED_NICKNAME);
+            return new ResponseEntity<>(Message.fail("DUPLICATED_NICKNAME","사용 불가능한 닉네임입니다."), HttpStatus.OK);
         }
         return new ResponseEntity<>(Message.success("사용 가능한 닉네임입니다."), HttpStatus.OK);
     }
@@ -180,7 +184,6 @@ public class MemberService {
                 //각 소셜 로그인을 요청하면 소셜로그인 페이지로 리다이렉트 해주는 프로세스이다.
                 redirectURL = googleOauth.getOauthRedirectURL();
             }break;
-
             default: {
                 throw new IllegalArgumentException("알 수 없는 소셜 로그인 형식입니다.");
             }

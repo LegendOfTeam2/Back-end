@@ -5,8 +5,6 @@ import com.example.rhythme_backend.domain.post.SingerPost;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @NoArgsConstructor
