@@ -6,7 +6,9 @@ import com.example.rhythme_backend.domain.Tag;
 import com.example.rhythme_backend.domain.media.ImageUrl;
 import com.example.rhythme_backend.domain.media.MediaUrl;
 import com.example.rhythme_backend.domain.post.MakerPost;
+import com.example.rhythme_backend.domain.post.MakerPostTag;
 import com.example.rhythme_backend.domain.post.SingerPost;
+import com.example.rhythme_backend.domain.post.SingerPostTag;
 import com.example.rhythme_backend.dto.requestDto.post.PostCreateRequestDto;
 import com.example.rhythme_backend.dto.requestDto.post.PostDeleteRequestDto;
 import com.example.rhythme_backend.dto.requestDto.post.PostPatchRequestDto;
@@ -36,6 +38,10 @@ public class PostService<T>{
     private final ImageUrlRepository imageUrlRepository;
     private final MediaUrlRepository mediaUrlRepository;
 
+    private final MakerPostTagRepository makerPostTagRepository;
+
+    private final SingerPostTagRepository singerPostTagRepository;
+
 
 
     //============ 카테고리별 게시판 전체 조회 로직.
@@ -52,7 +58,6 @@ public class PostService<T>{
                             .title(makerPost.getTitle())
                             .content(makerPost.getContent())
                             .imageUrl(makerPost.getImageUrl().getImageUrl())
-                            .tag(makerPost.getTags())
                             .build()
             );
         }
@@ -71,7 +76,6 @@ public class PostService<T>{
                             .title(singerPost.getTitle())
                             .content(singerPost.getContent())
                             .imageUrl(singerPost.getImageUrl().getImageUrl())
-                            .tag(singerPost.getTags())
                             .build()
             );
         }
@@ -91,7 +95,7 @@ public class PostService<T>{
         MediaUrl mediaUrl = mediaUrlSave(postCreateRequestDto);
 
         if(postCreateRequestDto.getPosition().equals("Maker")){
-//            List<Tag> tag = stringListToTag(postCreateRequestDto.getTags());
+//
             MakerPost createdMakerPost = MakerPost.builder()
                     .member(memberWhoCreated)
                     .title(postCreateRequestDto.getTitle())
@@ -100,7 +104,8 @@ public class PostService<T>{
                     .mediaUrl(mediaUrl)
                     .build();
             makerPostRepository.save(createdMakerPost);
-            tagSave(postCreateRequestDto.getTags(),createdMakerPost,null);
+            makerPostTagSave(postCreateRequestDto.getTags(),createdMakerPost);
+
 
             result = new ResponseEntity<>(Message.success(createdMakerPost),HttpStatus.OK);
             imageUrl.setPostId(createdMakerPost.getId());
@@ -117,7 +122,7 @@ public class PostService<T>{
                     .mediaUrl(mediaUrl)
                     .build();
             singerPostRepository.save(createdSingerPost);
-            tagSave(postCreateRequestDto.getTags(),new MakerPost(),createdSingerPost);
+            singerPostTagSave(postCreateRequestDto.getTags(),createdSingerPost);
 
             result = new ResponseEntity<>(Message.success(createdSingerPost),HttpStatus.OK);
             imageUrl.setPostId(createdSingerPost.getId());
@@ -223,8 +228,8 @@ public class PostService<T>{
         ImageUrl imageUrl =  ImageUrl.builder()
                 .postId(null)
                 .position(postCreateRequestDto.getPosition())
-                            .imageUrl(postCreateRequestDto.getImageUrl())
-                            .build();
+                .imageUrl(postCreateRequestDto.getImageUrl())
+                .build();
 
         imageUrlRepository.save(imageUrl);
         return imageUrl;
@@ -234,8 +239,8 @@ public class PostService<T>{
         MediaUrl mediaUrl = MediaUrl.builder()
                 .postId(null)
                 .position(postCreateRequestDto.getPosition())
-                            .mediaUrl(postCreateRequestDto.getMediaUrl())
-                            .build();
+                .mediaUrl(postCreateRequestDto.getMediaUrl())
+                .build();
         mediaUrlRepository.save(mediaUrl);
         return mediaUrl;
     }
@@ -249,14 +254,27 @@ public class PostService<T>{
         }
         return tagList;
     }
-    public void tagSave(List<String> tags,MakerPost makerPost,SingerPost singerPost){
+    public void makerPostTagSave(List<String> tags,MakerPost makerPost){
         for(String tag : tags){
-            tagRepository.save(
+            Tag tag1 = tagRepository.save(
                     Tag.builder()
                             .tag(tag)
-                            .maker_post(makerPost)
-                            .singer_post(singerPost)
                             .build());
+            MakerPostTag makerPostTag = new MakerPostTag(makerPost,tag1);
+            makerPostTagRepository.save(makerPostTag);
         }
     }
+
+    public void singerPostTagSave(List<String> tags,SingerPost singerPost){
+        for(String tag : tags){
+            Tag tag1 = tagRepository.save(
+                    Tag.builder()
+                            .tag(tag)
+                            .build());
+            SingerPostTag singerPostTag = new SingerPostTag(singerPost,tag1);
+            singerPostTagRepository.save(singerPostTag);
+        }
+    }
+
+
 }
