@@ -19,15 +19,15 @@ public class MemberTag {
 
     @ManyToOne
     @JoinColumn(name = "member_id")
-    private Member member_id;
+    private Member memberId;
 
     @ManyToOne
     @JoinColumn(name = "tag_id")
-    private Tag tag_id;
+    private Tag tagId;
 
     public MemberTag(Member member, Tag tag){
-        this.member_id = member;
-        this.tag_id = tag;
+        this.memberId = member;
+        this.tagId = tag;
     }
 
 }

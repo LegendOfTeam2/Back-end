@@ -13,4 +13,5 @@ public class SignupRequestDto {
     private String position;
     private String nickname;
     private List<String> hashtag;
+
 }

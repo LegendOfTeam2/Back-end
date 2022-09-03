@@ -50,7 +50,7 @@ public class Member extends Timestamped {
     @Column
     private String position;
 
-    @OneToMany(mappedBy = "tag_id",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "tagId",fetch = FetchType.LAZY)
     private List<MemberTag> hashtag;
 
     public boolean validatePassword(PasswordEncoder passwordEncoder, String password) {

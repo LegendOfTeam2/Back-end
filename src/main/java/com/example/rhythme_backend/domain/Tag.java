@@ -27,7 +27,11 @@ public class Tag {
     @OneToMany(mappedBy = "singer_post_id")
     private List<SingerPostTag> singerPostTags;
 
-    @OneToMany(mappedBy = "member_id")
+    @OneToMany(mappedBy = "memberId",cascade = CascadeType.ALL)
     private List<MemberTag> memberTags;
+
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member memberId;
 
 }

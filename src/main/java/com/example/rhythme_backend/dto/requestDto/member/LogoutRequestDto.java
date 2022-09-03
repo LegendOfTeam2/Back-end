@@ -3,7 +3,7 @@ package com.example.rhythme_backend.dto.requestDto.member;
 import lombok.Getter;
 
 @Getter
-public class ResignRequestDto {
+public class LogoutRequestDto {
 
     private String email;
 
