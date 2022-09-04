@@ -42,11 +42,10 @@ public class Member extends Timestamped {
     @Column(unique = true)
     private String googleId;
 
-<<<<<<< HEAD
+
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Follow> follows;
-=======
->>>>>>> 1cd13b8ed407e408bd5559be92a0aba935ef7d25
+
     public boolean validatePassword(PasswordEncoder passwordEncoder, String password) {
         return passwordEncoder.matches(password, this.password);
     }

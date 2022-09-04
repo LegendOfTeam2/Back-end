@@ -11,9 +11,9 @@ import com.example.rhythme_backend.exception.CustomException;
 import com.example.rhythme_backend.exception.ErrorCode;
 import com.example.rhythme_backend.jwt.TokenProvider;
 import com.example.rhythme_backend.repository.MakerLikeRepository;
-import com.example.rhythme_backend.repository.MakerPostRepository;
 import com.example.rhythme_backend.repository.SingerLikeRepository;
-import com.example.rhythme_backend.repository.SingerPostRepository;
+import com.example.rhythme_backend.repository.posts.MakerPostRepository;
+import com.example.rhythme_backend.repository.posts.SingerPostRepository;
 import com.example.rhythme_backend.util.ResponseDto;
 import com.example.rhythme_backend.util.exception.NotFoundPostException;
 import lombok.RequiredArgsConstructor;
@@ -75,17 +75,6 @@ public class LikeService {
             return ResponseDto.success(false);
         }
     }
-
-
-
-
-
-
-
-
-
-
-
 
     public Member validateMember(HttpServletRequest request) {
         if (!tokenProvider.validateToken(request.getHeader("Authorization").substring(7))) {
