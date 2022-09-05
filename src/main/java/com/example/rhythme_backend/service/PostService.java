@@ -14,7 +14,8 @@ import com.example.rhythme_backend.dto.requestDto.post.PostDeleteRequestDto;
 import com.example.rhythme_backend.dto.requestDto.post.PostPatchRequestDto;
 import com.example.rhythme_backend.dto.responseDto.post.PostGetResponseDto;
 import com.example.rhythme_backend.dto.responseDto.post.PostsCreateResponseDto;
-import com.example.rhythme_backend.repository.*;
+import com.example.rhythme_backend.repository.MemberRepository;
+import com.example.rhythme_backend.repository.TagRepository;
 import com.example.rhythme_backend.repository.posts.*;
 import com.example.rhythme_backend.util.Message;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,7 @@ import java.util.Optional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class PostService<T>{
+public class PostService{
     private final MemberRepository memberRepository;
     private final SingerPostRepository singerPostRepository;
     private final MakerPostRepository makerPostRepository;
@@ -66,10 +67,10 @@ public class PostService<T>{
         return new ResponseEntity<>(Message.success(postGetResponseDtoList),HttpStatus.OK);
     }
 
-    public ResponseEntity<?> getAllSingerPost(){
+    public ResponseEntity<?> getAllSingerPost() {
         List<SingerPost> singerPostList = singerPostRepository.findAll();
         List<PostGetResponseDto> postGetResponseDtoList = new ArrayList<>();
-        for(SingerPost singerPost : singerPostList){
+        for (SingerPost singerPost : singerPostList) {
             postGetResponseDtoList.add(
                     PostGetResponseDto.builder()
                             .postId(singerPost.getId())
@@ -81,9 +82,8 @@ public class PostService<T>{
                             .build()
             );
         }
-        return new ResponseEntity<>(Message.success(postGetResponseDtoList),HttpStatus.OK);
-    }
-
+            return new ResponseEntity<>(Message.success(postGetResponseDtoList), HttpStatus.OK);
+        }
 
 
     // =============게시판 글 쓰기 로직.
