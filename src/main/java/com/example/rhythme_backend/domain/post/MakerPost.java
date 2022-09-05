@@ -38,6 +38,8 @@ public class MakerPost extends Timestamped {
     @Column(nullable = false)
     private String content;
 
+    @Column
+    private String lyrics;
 
     @JoinColumn(name = "image_url")
     @OneToOne(fetch = FetchType.EAGER)

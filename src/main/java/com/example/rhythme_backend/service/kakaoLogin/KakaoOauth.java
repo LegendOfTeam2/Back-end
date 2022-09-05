@@ -1,6 +1,6 @@
 package com.example.rhythme_backend.service.kakaoLogin;
 
-import com.example.rhythme_backend.dto.requestDto.KakaoUserInfoDto;
+import com.example.rhythme_backend.dto.requestDto.member.KakaoUserInfoDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

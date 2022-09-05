@@ -16,6 +16,8 @@ import com.example.rhythme_backend.dto.responseDto.post.PostGetResponseDto;
 import com.example.rhythme_backend.dto.responseDto.post.PostsCreateResponseDto;
 import com.example.rhythme_backend.repository.MemberRepository;
 import com.example.rhythme_backend.repository.TagRepository;
+import com.example.rhythme_backend.repository.media.ImageUrlRepository;
+import com.example.rhythme_backend.repository.media.MediaUrlRepository;
 import com.example.rhythme_backend.repository.posts.*;
 import com.example.rhythme_backend.util.Message;
 import lombok.RequiredArgsConstructor;
@@ -92,7 +94,7 @@ public class PostService{
     public ResponseEntity<?> createPost(PostCreateRequestDto postCreateRequestDto){
         ResponseEntity<?> result = new ResponseEntity<>("",HttpStatus.OK);
 
-        Member memberWhoCreated = validateByEmail(postCreateRequestDto.getEmail());
+        Member memberWhoCreated = validateByNickname(postCreateRequestDto.getNickname());
         ImageUrl imageUrl = imageUrlSave(postCreateRequestDto);
         MediaUrl mediaUrl = mediaUrlSave(postCreateRequestDto);
 
@@ -114,7 +116,7 @@ public class PostService{
 
             PostsCreateResponseDto responseDto = PostsCreateResponseDto.builder()
                     .postId(createdMakerPost.getId())
-                    .email(memberWhoCreated.getEmail())
+                    .email(memberWhoCreated.getNickname())
                     .position("Maker")
                     .title(createdMakerPost.getTitle())
                     .content(createdMakerPost.getContent())
@@ -192,13 +194,13 @@ public class PostService{
     //imageUrl 과 mediaUrl 수정 .
     public void updateUrl(PostPatchRequestDto postPatchRequestDto){
         if(postPatchRequestDto.getPosition().equals("Maker")){
-           MakerPost makerPost = findMakerPostByPostId(postPatchRequestDto.getPosition(), postPatchRequestDto.getPostId());
+           MakerPost makerPost = findMakerPostByPostId(postPatchRequestDto.getPostId());
            ImageUrl imageUrl = makerPost.getImageUrl();
            MediaUrl mediaUrl = makerPost.getMediaUrl();
            imageUrl.updateUrl(postPatchRequestDto.getImageUrl());
            mediaUrl.updateUrl(postPatchRequestDto.getMediaUrl());
         }else if(postPatchRequestDto.getPosition().equals("Signer")){
-            SingerPost singerPost = findSingerPostByPostId(postPatchRequestDto.getPosition(), postPatchRequestDto.getPostId());
+            SingerPost singerPost = findSingerPostByPostId(postPatchRequestDto.getPostId());
             ImageUrl imageUrl = singerPost.getImageUrl();
             MediaUrl mediaUrl = singerPost.getMediaUrl();
             imageUrl.updateUrl(postPatchRequestDto.getImageUrl());
@@ -234,24 +236,22 @@ public class PostService{
     //
 
     // EMAIL로 아이디 찾은 Optional 처리 로직.
-    public Member validateByEmail(String email){
+    public Member validateByNickname(String nickname){
         Member member;
-        Optional<Member> memberRepositoryByEmail = memberRepository.findByEmail(email);
-        if(memberRepositoryByEmail.isPresent()){
-            member = memberRepositoryByEmail.get();
+        Optional<Member> memberRepositoryByNickname = memberRepository.findByNickname(nickname);
+        if(memberRepositoryByNickname.isPresent()){
+            member = memberRepositoryByNickname.get();
         }else{
-            throw new NullPointerException("찾는 이메일 정보가 없습니다.");
+            throw new NullPointerException("찾는 닉네임 정보가 없습니다.");
         }
         return member;
     }
     //Position 으로 FK 값 찾기
-    public MakerPost findMakerPostByPostId(String position,Long postId){
-        MakerPost makerPost = makerPostRepository.findById(postId).orElseGet(MakerPost::new);
-        return makerPost;
+    public MakerPost findMakerPostByPostId(Long postId){
+        return makerPostRepository.findById(postId).orElseGet(MakerPost::new);
     }
-    public SingerPost findSingerPostByPostId(String position,Long postId){
-        SingerPost singerPost = singerPostRepository.findById(postId).orElseGet(SingerPost::new);
-        return singerPost;
+    public SingerPost findSingerPostByPostId(Long postId){
+        return singerPostRepository.findById(postId).orElseGet(SingerPost::new);
     }
 
     // URL엔티티에 저장 로직
