@@ -49,9 +49,10 @@ public class MemberService {
 
     @Transactional
     public ResponseEntity<?> signupMember(SignupRequestDto requestDto) {
+        //"Optional.empty"
 
         if (null != getPresentEmail(requestDto.getEmail())) {
-            throw new CustomException(ErrorCode.DUPLICATED_EMAIL);
+            return new ResponseEntity<>(Message.fail("DUPLICATED_EMAIL","중복된 이메일입니다."),HttpStatus.BAD_REQUEST);
         }
 
         Member member = Member.builder()
@@ -80,11 +81,7 @@ public class MemberService {
 
     @Transactional
     public ResponseEntity<?> nicknameCheck(NicknameCheckRequestDto requestDto) {
-
-        if (null != getPresentNickname(requestDto.getNickname())) {
-            return new ResponseEntity<>(Message.fail("DUPLICATED_NICKNAME","사용 불가능한 닉네임입니다."), HttpStatus.OK);
-        }
-        return new ResponseEntity<>(Message.success("사용 가능한 닉네임입니다."), HttpStatus.OK);
+        return getPresentNickname(requestDto.getNickname());
     }
 
 
@@ -173,7 +170,7 @@ public class MemberService {
         if (kakaoUser == null) {
             // 회원가입
             // username: kakao nickname
-            String nickname = kakaoUserInfo.getNickname();
+            String name = kakaoUserInfo.getName();
             // password: random UUID
             String password = UUID.randomUUID().toString();
             String encodedPassword = passwordEncoder.encode(password);
@@ -182,7 +179,7 @@ public class MemberService {
             kakaoUser = Member.builder()
                     .kakaoId(kakaoId)
                     .email(email)
-                    .nickname(nickname)
+                    .name(name)
                     .password(encodedPassword)
                     .build();
             memberRepository.save(kakaoUser);
@@ -301,9 +298,11 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public Member getPresentNickname(String nickname) {
-        Optional<Member> optionalMember = memberRepository.findByNickname(nickname);
-        return optionalMember.orElse(null);
+    public ResponseEntity<?> getPresentNickname(String nickname) {
+       if (memberRepository.existsByNickname(nickname)) {
+           return new ResponseEntity<>(Message.fail("DUPLICATED_NICKNAME","사용 불가능한 닉네임입니다."),HttpStatus.NOT_FOUND);
+       }
+        return new ResponseEntity<>(Message.success("사용 가능한 닉네임입니다."),HttpStatus.OK);
     }
 
     @Transactional

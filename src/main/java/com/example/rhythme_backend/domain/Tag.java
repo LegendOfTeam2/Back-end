@@ -27,7 +27,7 @@ public class Tag {
     @OneToMany(mappedBy = "singer_post_id")
     private List<SingerPostTag> singerPostTags;
 
-    @OneToMany(mappedBy = "memberId",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "memberId")
     private List<MemberTag> memberTags;
 
     @ManyToOne

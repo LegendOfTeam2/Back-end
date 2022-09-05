@@ -9,5 +9,5 @@ public class KakaoUserInfoDto {
 
     private Long kakaoid;
     private String email;
-    private String nickname;
+    private String name;
 }
