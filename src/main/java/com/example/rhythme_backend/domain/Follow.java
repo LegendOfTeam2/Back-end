@@ -22,15 +22,6 @@ public class Follow {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member following;    // (팔로우) 받는 유저
 
-    @ManyToOne
-    @JoinColumn(name = "member_id")
-    private Member member;
-
-
-
-    public void setMember(Member member) {
-        this.member = member;
-    }
 
     public Follow(FollowRequestDto requestDto) {
         this.follower = requestDto.getFollower();

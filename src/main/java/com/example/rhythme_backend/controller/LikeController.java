@@ -14,12 +14,12 @@ import javax.servlet.http.HttpServletRequest;
 public class LikeController {
     private final LikeService likeService;
 
-    @PostMapping("/member/singerpost/{singerpostId}/like")
+    @PostMapping("/auth/singerpost/{singerpostId}/like")
     public ResponseDto<?> SingerLike(@PathVariable Long singerpostId, HttpServletRequest request){
         return likeService.upDownSingerLike(singerpostId, request);
     }
 
-    @PostMapping("/member/makerpost/{makerpostId}/like")
+    @PostMapping("/auth/makerpost/{makerpostId}/like")
     public ResponseDto<?> MakerLike(@PathVariable Long makerpostId, HttpServletRequest request){
         return likeService.upDownMakerLike(makerpostId, request);
     }

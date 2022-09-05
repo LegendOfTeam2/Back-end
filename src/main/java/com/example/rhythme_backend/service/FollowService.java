@@ -26,7 +26,6 @@ public class FollowService {
     public ResponseDto<?> upDownFollow(Long memberId, HttpServletRequest request) {
         Member follower = validateMember(request);
         checkAccessToken(request, follower);
-
         Member following = isPresentMemberFollow(memberId);
         Optional<Follow> findFollowing = followRepository.findByFollowerAndFollowing(follower, following);
         if(findFollowing.isEmpty()) {
@@ -59,7 +58,6 @@ public class FollowService {
         );
     }
 }
-
 
 
 
