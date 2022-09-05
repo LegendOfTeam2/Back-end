@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 public class FollowController {
     private final FollowService followService;
 
-    @PostMapping("/member/follow/{memberId}")
+    @PostMapping("/auth/follow/{memberId}")
     public ResponseDto<?> follow(@PathVariable Long memberId, HttpServletRequest request) {
         return followService.upDownFollow(memberId, request);
     }
