@@ -14,7 +14,7 @@ public interface MakerLikeRepository extends JpaRepository<MakerLike, Long> {
 
     Optional<MakerLike> findByMemberAndMakerPost(Member member, MakerPost makerPost);
 
-
+    Long countAllByMakerPost(MakerPost makerPost);
     List<MakerLike> findByMakerPost(MakerPost makerPost);
     //Optional<Like> findByMemberAndPostId(Member member, Long postId);
 }
