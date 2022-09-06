@@ -24,6 +24,9 @@ public class MediaUrl extends Timestamped {
     @Column
     private Long postId;
 
+    @Column
+    private String category;
+
     @JsonIgnore
     @Column(nullable = false)
     private String position;

@@ -22,4 +22,9 @@ public class UploadController {
     public ResponseEntity<?> uploadImage(@RequestPart("imgUrl") List<MultipartFile> multipartFiles){
         return new ResponseEntity<>(Message.success(s3Service.upload(multipartFiles)), HttpStatus.OK);
     }
+
+    @PostMapping("/auth/upload/media")
+    public ResponseEntity<?> uploadMedia(@RequestPart("mediaUrl") List<MultipartFile> multipartFiles){
+        return new ResponseEntity<>(Message.success(s3Service.uploadMedia(multipartFiles)),HttpStatus.OK);
+    }
 }

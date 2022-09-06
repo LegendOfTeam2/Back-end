@@ -1,11 +1,14 @@
 package com.example.rhythme_backend.service;
 
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.SdkClientException;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
@@ -69,6 +72,42 @@ public class S3Service  {
         return imgUrlList;
     }
 
+    public List<String> uploadMedia(List<MultipartFile> multipartFile) {
+        List<String> imgUrlList = new ArrayList<>();
+
+        // forEach 구문을 통해 multipartFile로 넘어온 파일들 하나씩 fileNameList에 추가
+        for (MultipartFile file : multipartFile) {
+            String fileName = createFileName(file.getOriginalFilename());
+            ObjectMetadata objectMetadata = new ObjectMetadata();
+            objectMetadata.setContentLength(file.getSize());
+            objectMetadata.setContentType(file.getContentType());
+
+            try(InputStream inputStream = file.getInputStream()) {
+                s3Client.putObject(new PutObjectRequest(bucket+"/post/media", fileName, inputStream, objectMetadata)
+                        .withCannedAcl(CannedAccessControlList.PublicRead));
+                imgUrlList.add(s3Client.getUrl(bucket+"/post/media", fileName).toString());
+            } catch(IOException e) {
+                throw new RuntimeException("테스트 런타임 예외");
+            }
+        }
+        return imgUrlList;
+    }
+
+    public void delete(String key) {
+        try {
+            //Delete 객체 생성
+            DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(this.bucket, key);
+            //Delete
+            this.s3Client.deleteObject(deleteObjectRequest);
+            System.out.println(String.format("[%s] deletion complete", key));
+
+        } catch (AmazonServiceException e) {
+            e.printStackTrace();
+        } catch (SdkClientException e) {
+            e.printStackTrace();
+        }
+    }
+
     // 이미지파일명 중복 방지
     private String createFileName(String fileName) {
         return UUID.randomUUID().toString().concat(getFileExtension(fileName));
@@ -80,6 +119,7 @@ public class S3Service  {
 //            throw new PrivateException(Code.WRONG_INPUT_IMAGE);
 //        }
         ArrayList<String> fileValidate = new ArrayList<>();
+        fileValidate.add(".mp3");
         fileValidate.add(".mkv");
         fileValidate.add(".jpg");
         fileValidate.add(".jpeg");

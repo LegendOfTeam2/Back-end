@@ -1,7 +1,8 @@
-package com.example.rhythme_backend.domain;
+package com.example.rhythme_backend.domain.like;
 
-import com.example.rhythme_backend.domain.post.SingerPost;
-import com.example.rhythme_backend.dto.requestDto.SingerLikeRequestDto;
+import com.example.rhythme_backend.domain.Member;
+import com.example.rhythme_backend.domain.post.MakerPost;
+import com.example.rhythme_backend.dto.requestDto.like.MakerLikeRequestDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +16,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Entity
 @Table(name = "like_table")
-public class SingerLike {
+public class MakerLike {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,15 +26,17 @@ public class SingerLike {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    // 게시글
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "singerpost_id")
+    @JoinColumn(name = "makerpost_id")
     @JsonIgnore
-    private SingerPost singerPost;
+    private MakerPost makerPost;
 
 
     @Builder
-    public SingerLike(SingerLikeRequestDto requestDto) {
+    public MakerLike(MakerLikeRequestDto requestDto) {
         this.member = requestDto.getMember();
-        this.singerPost = requestDto.getSingerPost();
+        this.makerPost = requestDto.getMakerPost();
+
     }
 }
