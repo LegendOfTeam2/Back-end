@@ -188,7 +188,7 @@ public class PostService{
         return result;
     }
 
-    //imageUrl 과 mediaUrl 수정 .
+    //imageUrl 과 mediaUrl 수정.
     public void updateUrl(PostPatchRequestDto postPatchRequestDto){
         if(postPatchRequestDto.getPosition().equals("Maker")){
            MakerPost makerPost = findMakerPostByPostId(postPatchRequestDto.getPosition(), postPatchRequestDto.getPostId());

@@ -10,7 +10,6 @@ public class SignupRequestDto {
     private String email;
     private String password;
     private String imgUrl;
-    private String position;
     private String nickname;
     private List<String> hashtag;
 
