@@ -56,6 +56,7 @@ public class MakerPost extends Timestamped {
 
 
     public void updateMakerPost(PostPatchRequestDto patchRequestDto){
+        this.lyrics = patchRequestDto.getLyrics();
         this.content = patchRequestDto.getContent();
         this.title = patchRequestDto.getTitle();
     }

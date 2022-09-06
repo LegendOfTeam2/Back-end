@@ -9,10 +9,10 @@ import java.util.List;
 @Getter
 public class PostPatchRequestDto {
     private Long postId;
-    private String email;
     private String position;
     private String title;
     private String content;
+    private String lyrics;
     private String imageUrl;
     private String mediaUrl;
     private List<String> tags;

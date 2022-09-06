@@ -116,8 +116,9 @@ public class PostService{
 
             PostsCreateResponseDto responseDto = PostsCreateResponseDto.builder()
                     .postId(createdMakerPost.getId())
-                    .email(memberWhoCreated.getNickname())
+                    .nickname(memberWhoCreated.getNickname())
                     .position("Maker")
+                    .lyrics(postCreateRequestDto.getLyrics())
                     .title(createdMakerPost.getTitle())
                     .content(createdMakerPost.getContent())
                     .imageUrl(imageUrl.getImageUrl())
@@ -148,8 +149,9 @@ public class PostService{
 
             PostsCreateResponseDto responseDto = PostsCreateResponseDto.builder()
                     .postId(createdSingerPost.getId())
-                    .email(memberWhoCreated.getEmail())
+                    .nickname(memberWhoCreated.getNickname())
                     .position("Singer")
+                    .lyrics(postCreateRequestDto.getLyrics())
                     .title(createdSingerPost.getTitle())
                     .content(createdSingerPost.getContent())
                     .imageUrl(imageUrl.getImageUrl())
@@ -181,11 +183,13 @@ public class PostService{
             updateUrl(postPutRequestDto);
             MakerPost makerPost = makerPostRepository.findById(postId).orElse(new MakerPost());
             makerPost.updateMakerPost(postPutRequestDto);
+            updateMakerPostTag(makerPost,postPutRequestDto);
             result = new ResponseEntity<>(Message.success(makerPost),HttpStatus.OK);
         } else if(position.equals("Singer")){
             updateUrl(postPutRequestDto);
            SingerPost singerPost = singerPostRepository.findById(postId).orElse(new SingerPost());
            singerPost.updateSingerPost(postPutRequestDto);
+           updateSingerPostTag(singerPost,postPutRequestDto);
            result = new ResponseEntity<>(Message.success(singerPost),HttpStatus.OK);
         }
         return result;
@@ -235,7 +239,7 @@ public class PostService{
 
     //
 
-    // EMAIL로 아이디 찾은 Optional 처리 로직.
+    // Nickname으로 아이디 찾은 Optional 처리 로직.
     public Member validateByNickname(String nickname){
         Member member;
         Optional<Member> memberRepositoryByNickname = memberRepository.findByNickname(nickname);
@@ -276,14 +280,15 @@ public class PostService{
         return mediaUrl;
     }
 
-    public List<Tag> stringListToTag(List<String> tags){
-        List<Tag> tagList = new ArrayList<>();
-        Tag tag = new Tag();
-        for(int i=0; i<tags.size(); i++){
-            tag.setTag(tags.get(i));
-            tagList.add(tag);
+    public List<Tag> stringListSaveToTag(List<String> tags){
+        List<Tag> tagIds = new ArrayList<>();
+        for (String s : tags) {
+            Tag tag = new Tag();
+            tag.setTag(s);
+            tagRepository.save(tag);
+            tagIds.add(tag);
         }
-        return tagList;
+        return tagIds;
     }
     public void makerPostTagSave(List<String> tags,MakerPost makerPost){
         for(String tag : tags){
@@ -306,6 +311,15 @@ public class PostService{
             singerPostTagRepository.save(singerPostTag);
         }
 
+    }
+
+    public void updateMakerPostTag(MakerPost makerPost, PostPatchRequestDto patchRequestDto){
+           makerPostTagRepository.deleteById(makerPost.getId());
+           makerPostTagSave(patchRequestDto.getTags(),makerPost);
+        }
+    public void updateSingerPostTag(SingerPost singerPost,PostPatchRequestDto patchRequestDto){
+        singerPostTagRepository.deleteById(singerPost.getId());
+        singerPostTagSave(patchRequestDto.getTags(),singerPost);
     }
 
 
