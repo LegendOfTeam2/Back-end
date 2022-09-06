@@ -9,6 +9,7 @@ import com.example.rhythme_backend.repository.posts.MakerPostRepository;
 import com.example.rhythme_backend.repository.posts.SingerPostRepository;
 import com.example.rhythme_backend.util.Message;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ public class MainPageService {
     private final SingerPostRepository singerPostRepository;
 
     public ResponseEntity<?> bestSong() {
-        Optional<MediaUrl> optionalMediaUrl = mediaUrlRepository.findById();
+        Optional<MediaUrl> optionalMediaUrl = makerPostRepository.;
         return new ResponseEntity<>(Message.success(optionalMediaUrl), HttpStatus.OK);
     }
 
