@@ -5,9 +5,5 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class BestSongResponseDto {
-
-    private Long id;
-    private String mediaUrl;
-
+public class BestMakerResponseDto {
 }

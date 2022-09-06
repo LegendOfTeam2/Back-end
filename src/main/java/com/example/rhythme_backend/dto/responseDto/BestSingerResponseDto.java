@@ -5,8 +5,5 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class ResignResponseDto {
-
-    private String email;
-
+public class BestSingerResponseDto {
 }
