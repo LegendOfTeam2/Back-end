@@ -48,8 +48,8 @@ public class SingerPost extends Timestamped {
     @OneToMany(mappedBy = "tagId",fetch = FetchType.LAZY)
     private List<SingerPostTag> tags;
 
-    @Column
-    private Boolean collaborate = true;
+    @Column(nullable = false)
+    private Boolean collaborate;
 
     public void updateSingerPost(PostPatchRequestDto patchRequestDto){
         this.lyrics = patchRequestDto.getLyrics();

@@ -50,8 +50,8 @@ public class MakerPost extends Timestamped {
     @OneToOne(fetch = FetchType.EAGER)
     private MediaUrl mediaUrl;
 
-    @Column
-    private Boolean collaborate = true;
+    @Column(nullable = false)
+    private Boolean collaborate;
 
     @OneToMany(mappedBy ="tagId", fetch = FetchType.LAZY)
     private List<MakerPostTag> tags;
