@@ -48,8 +48,16 @@ public class SingerPost extends Timestamped {
     @OneToMany(mappedBy = "tagId",fetch = FetchType.LAZY)
     private List<SingerPostTag> tags;
 
+    @Column
+    private Long likes;
+
     public void updateSingerPost(PostPatchRequestDto patchRequestDto){
         this.content = patchRequestDto.getContent();
         this.title = patchRequestDto.getTitle();
     }
+
+    public void singerUpdateLikes(Long likes) {
+        this.likes = likes;
+    }
+
 }

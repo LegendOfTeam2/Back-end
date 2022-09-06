@@ -54,10 +54,17 @@ public class MakerPost extends Timestamped {
     @OneToMany(mappedBy ="tagId", fetch = FetchType.LAZY)
     private List<MakerPostTag> tags;
 
+    @Column
+    private Long likes;
 
     public void updateMakerPost(PostPatchRequestDto patchRequestDto){
         this.lyrics = patchRequestDto.getLyrics();
         this.content = patchRequestDto.getContent();
         this.title = patchRequestDto.getTitle();
     }
+
+    public void makerUpdateLikes(Long likes) {
+        this.likes = likes;
+    }
+
 }

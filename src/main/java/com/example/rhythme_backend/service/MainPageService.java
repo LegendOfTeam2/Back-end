@@ -20,12 +20,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MainPageService {
 
-    private final MediaUrlRepository mediaUrlRepository;
     private final MakerPostRepository makerPostRepository;
     private final SingerPostRepository singerPostRepository;
 
     public ResponseEntity<?> bestSong() {
-        Optional<MediaUrl> optionalMediaUrl = makerPostRepository.;
+        Optional<MakerPost> optionalMediaUrl = makerPostRepository.;
         return new ResponseEntity<>(Message.success(optionalMediaUrl), HttpStatus.OK);
     }
 

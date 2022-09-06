@@ -49,9 +49,13 @@ public class LikeService {
             SingerLikeRequestDto singerLikeRequestDto = new SingerLikeRequestDto(member, singerPost);
             SingerLike singerLike = new SingerLike(singerLikeRequestDto);
             singerLikeRepository.save(singerLike);
+            Long likes = singerLikeRepository.countAllBySingerPostId(singerPostId);
+            singerPost.singerUpdateLikes(likes);
             return ResponseDto.success(true);
         } else {
             singerLikeRepository.deleteById(findSingerLike.getId());
+            Long likes = singerLikeRepository.countAllBySingerPostId(singerPostId);
+            singerPost.singerUpdateLikes(likes);
             return ResponseDto.success(false);
         }
     }
@@ -69,9 +73,13 @@ public class LikeService {
             MakerLikeRequestDto makerLikeRequestDto = new MakerLikeRequestDto(member, makerPost);
             MakerLike makerLike = new MakerLike(makerLikeRequestDto);
             makerLikeRepository.save(makerLike);
+            Long likes = makerLikeRepository.countAllByMakerPostId(makerPostId);
+            makerPost.makerUpdateLikes(likes);
             return ResponseDto.success(true);
         } else {
             singerLikeRepository.deleteById(findMakerLike.getId());
+            Long likes = makerLikeRepository.countAllByMakerPostId(makerPostId);
+            makerPost.makerUpdateLikes(likes);
             return ResponseDto.success(false);
         }
     }
