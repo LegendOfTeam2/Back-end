@@ -119,6 +119,7 @@ public class S3Service  {
 //            throw new PrivateException(Code.WRONG_INPUT_IMAGE);
 //        }
         ArrayList<String> fileValidate = new ArrayList<>();
+        fileValidate.add(".mp3");
         fileValidate.add(".mkv");
         fileValidate.add(".jpg");
         fileValidate.add(".jpeg");

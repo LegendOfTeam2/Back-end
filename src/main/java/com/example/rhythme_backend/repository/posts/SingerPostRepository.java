@@ -1,4 +1,4 @@
-package com.example.rhythme_backend.util.exception.posts;
+package com.example.rhythme_backend.repository.posts;
 
 
 import com.example.rhythme_backend.domain.post.SingerPost;

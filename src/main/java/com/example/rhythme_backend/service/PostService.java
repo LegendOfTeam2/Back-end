@@ -20,10 +20,10 @@ import com.example.rhythme_backend.repository.TagRepository;
 import com.example.rhythme_backend.repository.media.ImageUrlRepository;
 import com.example.rhythme_backend.repository.media.MediaUrlRepository;
 import com.example.rhythme_backend.util.Message;
-import com.example.rhythme_backend.util.exception.posts.MakerPostRepository;
-import com.example.rhythme_backend.util.exception.posts.MakerPostTagRepository;
-import com.example.rhythme_backend.util.exception.posts.SingerPostRepository;
-import com.example.rhythme_backend.util.exception.posts.SingerPostTagRepository;
+import com.example.rhythme_backend.repository.posts.MakerPostRepository;
+import com.example.rhythme_backend.repository.posts.MakerPostTagRepository;
+import com.example.rhythme_backend.repository.posts.SingerPostRepository;
+import com.example.rhythme_backend.repository.posts.SingerPostTagRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -133,6 +133,8 @@ public class PostService{
                     .imageUrl(imageUrl.getImageUrl())
                     .mediaUrl(mediaUrl.getMediaUrl())
                     .tags(postCreateRequestDto.getTags())
+                    .createdAt(createdMakerPost.getCreatedAt())
+                    .modifiedAt(createdMakerPost.getModifiedAt())
                     .build();
 
 
@@ -167,6 +169,8 @@ public class PostService{
                     .imageUrl(imageUrl.getImageUrl())
                     .mediaUrl(mediaUrl.getMediaUrl())
                     .tags(postCreateRequestDto.getTags())
+                    .createdAt(createdSingerPost.getCreatedAt())
+                    .modifiedAt(createdSingerPost.getModifiedAt())
                     .build();
 
             result = new ResponseEntity<>(Message.success(responseDto),HttpStatus.OK);
@@ -204,6 +208,8 @@ public class PostService{
                             .imageUrl(postPatchRequestDto.getImageUrl())
                             .mediaUrl(postPatchRequestDto.getMediaUrl())
                             .tags(postPatchRequestDto.getTags())
+                            .createdAt(makerPost.getCreatedAt())
+                            .modifiedAt(makerPost.getModifiedAt())
                             .build()),HttpStatus.OK);
         } else if(position.equals("Singer")){
             updateUrl(postPatchRequestDto);
@@ -221,6 +227,8 @@ public class PostService{
                            .imageUrl(postPatchRequestDto.getImageUrl())
                            .mediaUrl(postPatchRequestDto.getMediaUrl())
                            .tags(postPatchRequestDto.getTags())
+                           .createdAt(singerPost.getCreatedAt())
+                           .modifiedAt(singerPost.getModifiedAt())
                            .build()),HttpStatus.OK);
         }
         return result;
@@ -257,15 +265,23 @@ public class PostService{
         if(position.equals("Maker")) {
             MakerPost makerPost = makerPostRepository.findById(postId).orElseGet(MakerPost::new);
             s3Service.delete(makerPost.getImageUrl().getImageUrl());
-            makerPostTagRepository.deleteAllByMakerPostId(postId);
+            List<MakerPostTag> makerPostTags = makerPostTagRepository.findAllByMakerPostId(makerPost);
+            makerPostTagRepository.deleteByMakerPostId(makerPost);
             makerPostRepository.delete(makerPost);
+            for (int i = 0; i < makerPostTags.size(); i++) {
+                tagRepository.deleteById(makerPostTags.get(i).getTagId().getId());
+            }
             result = new ResponseEntity<>(Message.success("Maker 게시글이 삭제되었습니다"), HttpStatus.OK);
         }
         else if (position.equals("Singer")) {
             SingerPost singerPost = singerPostRepository.findById(postId).orElseGet(SingerPost::new);
             s3Service.delete(singerPost.getImageUrl().getImageUrl());
-            singerPostTagRepository.deleteAllBySingerPostId(postId);
+            List<SingerPostTag> singerPostTags = singerPostTagRepository.findAllBySingerPostId(singerPost);
+            singerPostTagRepository.deleteBySingerPostId(singerPost);
             singerPostRepository.delete(singerPost);
+            for (int i = 0; i < singerPostTags.size(); i++) {
+                tagRepository.deleteById(singerPostTags.get(i).getTagId().getId());
+            }
             result = new ResponseEntity<>(Message.success("Singer 게시글이 삭제되었습니다."),HttpStatus.OK);
         }
         return result;
@@ -349,14 +365,32 @@ public class PostService{
 
     }
 
-    public void updateMakerPostTag(MakerPost makerPost, PostPatchRequestDto patchRequestDto){
-           makerPostTagRepository.deleteAllByMakerPostId(makerPost.getId());
-           makerPostTagSave(patchRequestDto.getTags(),makerPost);
+
+    public void updateMakerPostTag(MakerPost makerPost, PostPatchRequestDto patchRequestDto) {
+        List<MakerPostTag> makerPostTags = makerPostTagRepository.findAllByMakerPostId(makerPost);
+        for (int i = 0; i < makerPostTags.size(); i++) {
+            tagRepository.deleteById(makerPostTags.get(i).getTagId().getId());
         }
-    public void updateSingerPostTag(SingerPost singerPost,PostPatchRequestDto patchRequestDto){
-        singerPostTagRepository.deleteAllBySingerPostId(singerPost.getId());
-        singerPostTagSave(patchRequestDto.getTags(),singerPost);
+        makerPostTagRepository.deleteByMakerPostId(makerPost);
+        makerPostTagSave(patchRequestDto.getTags(), makerPost);
+    }
+
+    public void updateSingerPostTag(SingerPost singerPost, PostPatchRequestDto patchRequestDto) {
+        List<SingerPostTag> singerPostTags = singerPostTagRepository.findAllBySingerPostId(singerPost);
+        for(int i =0; i< singerPostTags.size(); i++){
+            tagRepository.deleteById(singerPostTags.get(i).getTagId().getId());
+        }
+        singerPostTagRepository.deleteBySingerPostId(singerPost);
+        singerPostTagSave(patchRequestDto.getTags(), singerPost);
     }
 
 
+    public void imageUrlDelete(){
+//        imageUrlRepository.deleteByPostId();
+    }
+
+
+    public void mediaUrlDelete(){
+
+    }
 }
