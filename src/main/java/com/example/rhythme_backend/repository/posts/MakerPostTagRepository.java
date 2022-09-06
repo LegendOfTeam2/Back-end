@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface MakerPostTagRepository extends JpaRepository<MakerPostTag,Long> {
     List<MakerPostTag> findAllById(Long id);
+
+    List<MakerPostTag> deleteAllByMakerPostId(Long id);
 }

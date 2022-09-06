@@ -45,7 +45,7 @@ public class SingerPost extends Timestamped {
     @OneToOne(fetch = FetchType.EAGER)
     private MediaUrl mediaUrl;
 
-    @OneToMany(mappedBy = "tag_id",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "tagId",fetch = FetchType.LAZY)
     private List<SingerPostTag> tags;
 
     public void updateSingerPost(PostPatchRequestDto patchRequestDto){

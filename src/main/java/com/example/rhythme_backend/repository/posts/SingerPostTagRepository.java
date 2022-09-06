@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface SingerPostTagRepository extends JpaRepository<SingerPostTag,Long> {
     List<SingerPostTag> findAllById(Long id);
+    List<SingerPostTag> deleteAllBySingerPostId(Long id);
 }

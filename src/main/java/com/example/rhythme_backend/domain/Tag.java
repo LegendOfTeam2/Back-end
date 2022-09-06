@@ -24,10 +24,10 @@ public class Tag {
     @Column(nullable = false)
     private String tag;
 
-    @OneToMany(mappedBy = "maker_post_id")
+    @OneToMany(mappedBy = "makerPostId")
     private List<MakerPostTag> makerPostTags;
 
-    @OneToMany(mappedBy = "singer_post_id")
+    @OneToMany(mappedBy = "singerPostId")
     private List<SingerPostTag> singerPostTags;
 
 }

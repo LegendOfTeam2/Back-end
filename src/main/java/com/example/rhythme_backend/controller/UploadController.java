@@ -25,6 +25,6 @@ public class UploadController {
 
     @PostMapping("/auth/upload/media")
     public ResponseEntity<?> uploadMedia(@RequestPart("mediaUrl") List<MultipartFile> multipartFiles){
-        return new ResponseEntity<>(Message.success(s3Service.upload(multipartFiles)),HttpStatus.OK);
+        return new ResponseEntity<>(Message.success(s3Service.uploadMedia(multipartFiles)),HttpStatus.OK);
     }
 }

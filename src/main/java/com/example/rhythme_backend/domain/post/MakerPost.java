@@ -51,7 +51,7 @@ public class MakerPost extends Timestamped {
     private MediaUrl mediaUrl;
 
 
-    @OneToMany(mappedBy ="tag_id", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy ="tagId", fetch = FetchType.LAZY)
     private List<MakerPostTag> tags;
 
 
