@@ -19,8 +19,11 @@ import com.example.rhythme_backend.repository.MemberRepository;
 import com.example.rhythme_backend.repository.TagRepository;
 import com.example.rhythme_backend.repository.media.ImageUrlRepository;
 import com.example.rhythme_backend.repository.media.MediaUrlRepository;
-import com.example.rhythme_backend.repository.posts.*;
 import com.example.rhythme_backend.util.Message;
+import com.example.rhythme_backend.util.exception.posts.MakerPostRepository;
+import com.example.rhythme_backend.util.exception.posts.MakerPostTagRepository;
+import com.example.rhythme_backend.util.exception.posts.SingerPostRepository;
+import com.example.rhythme_backend.util.exception.posts.SingerPostTagRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -109,6 +112,7 @@ public class PostService{
                     .member(memberWhoCreated)
                     .title(postCreateRequestDto.getTitle())
                     .content(postCreateRequestDto.getContent())
+                    .lyrics(postCreateRequestDto.getLyrics())
                     .imageUrl(imageUrl)
                     .mediaUrl(mediaUrl)
                     .build();
@@ -142,6 +146,7 @@ public class PostService{
                     .member(memberWhoCreated)
                     .title(postCreateRequestDto.getTitle())
                     .content(postCreateRequestDto.getContent())
+                    .lyrics(postCreateRequestDto.getLyrics())
                     .imageUrl(imageUrl)
                     .mediaUrl(mediaUrl)
                     .build();
@@ -221,7 +226,7 @@ public class PostService{
         return result;
     }
 
-    //imageUrl 과 mediaUrl 수정 .
+    //imageUrl 과 mediaUrl 수정.
     public void updateUrl(PostPatchRequestDto postPatchRequestDto){
         if(postPatchRequestDto.getPosition().equals("Maker")){
            MakerPost makerPost = findMakerPostByPostId(postPatchRequestDto.getPostId());
@@ -336,6 +341,7 @@ public class PostService{
             Tag tag1 = tagRepository.save(
                     Tag.builder()
                             .tag(tag)
+                            .memberId(singerPost.getMember())
                             .build());
             SingerPostTag singerPostTag = new SingerPostTag(singerPost,tag1);
             singerPostTagRepository.save(singerPostTag);

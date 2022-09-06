@@ -1,6 +1,5 @@
 package com.example.rhythme_backend.domain;
 
-import com.example.rhythme_backend.domain.post.SingerPostTag;
 import com.example.rhythme_backend.util.Timestamped;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
@@ -10,7 +9,6 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -46,9 +44,6 @@ public class Member extends Timestamped {
 
     @Column
     private String imgUrl;
-
-    @Column
-    private String position;
 
     @OneToMany(mappedBy = "tagId",fetch = FetchType.LAZY)
     private List<MemberTag> hashtag;

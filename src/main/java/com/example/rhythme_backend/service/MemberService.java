@@ -62,7 +62,6 @@ public class MemberService {
                 .email(requestDto.getEmail())
                 .imgUrl(requestDto.getImgUrl())
                 .nickname(requestDto.getNickname())
-                .position(requestDto.getPosition())
                 .password(passwordEncoder.encode(requestDto.getPassword()))
                 .build();
         memberRepository.save(member);
@@ -172,15 +171,17 @@ public class MemberService {
 
         if (kakaoUser == null) {
             // 회원가입
-            // username: kakao nickname
+            Random random = new Random();
+            String kakaoDefaultName = "KAKAO" + random.nextInt(1000000000);
             String name = kakaoUserInfo.getName();
-            // password: random UUID
+            String nickname = kakaoDefaultName;
             String password = UUID.randomUUID().toString();
             String encodedPassword = passwordEncoder.encode(password);
             //카카오 이메일
             String email = kakaoUserInfo.getEmail();
             kakaoUser = Member.builder()
                     .kakaoId(kakaoId)
+                    .nickname(nickname)
                     .email(email)
                     .name(name)
                     .password(encodedPassword)
@@ -228,17 +229,15 @@ public class MemberService {
 
                 if (googleLoginUser == null) {
                     // 회원가입
-                    // username/nickname
+                    Random random = new Random();
                     String name = googleUser.getName();
-                    String nickname = googleUser.getNickname();
-                    // password: random UUID
+                    String googleDefaultName = "google" + random.nextInt(1000000000);
                     String password = UUID.randomUUID().toString();
                     String encodedPassword = passwordEncoder.encode(password);
-                    //google 이메일
                     String email = googleUser.getEmail();
                     googleLoginUser = Member.builder()
                             .googleId(googleId)
-                            .nickname(nickname)
+                            .nickname(googleDefaultName)
                             .email(email)
                             .name(name)
                             .password(encodedPassword)

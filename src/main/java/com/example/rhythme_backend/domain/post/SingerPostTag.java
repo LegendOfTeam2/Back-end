@@ -21,7 +21,7 @@ public class SingerPostTag {
     private SingerPost singerPostId;
 
     @ManyToOne
-    @JoinColumn(name = "tagId")
+    @JoinColumn(name = "tag_id")
     private Tag tagId;
 
     public SingerPostTag (SingerPost singerPost,Tag tag){

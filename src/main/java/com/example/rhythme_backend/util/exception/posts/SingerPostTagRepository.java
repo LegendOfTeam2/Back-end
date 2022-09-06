@@ -1,4 +1,4 @@
-package com.example.rhythme_backend.repository.posts;
+package com.example.rhythme_backend.util.exception.posts;
 
 import com.example.rhythme_backend.domain.post.SingerPostTag;
 import org.springframework.data.jpa.repository.JpaRepository;

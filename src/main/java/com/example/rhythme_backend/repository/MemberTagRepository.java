@@ -8,7 +8,6 @@ import java.util.Optional;
 
 public interface MemberTagRepository extends JpaRepository<MemberTag,Long> {
 
-    Optional<MemberTag> findByMemberId(Member memberId);
     Optional<MemberTag> deleteAllByMemberId(Member memberId);
 
 }

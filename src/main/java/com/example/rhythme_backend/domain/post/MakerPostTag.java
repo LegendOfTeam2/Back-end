@@ -21,7 +21,7 @@ public class MakerPostTag {
     private MakerPost makerPostId;
 
     @ManyToOne
-    @JoinColumn(name = "tagId")
+    @JoinColumn(name = "tag_id")
     private Tag tagId;
 
     public MakerPostTag(MakerPost makerPost,Tag tag){
