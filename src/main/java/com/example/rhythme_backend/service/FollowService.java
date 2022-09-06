@@ -23,10 +23,10 @@ public class FollowService {
     private final MemberRepository memberRepository;
 
 
-    public ResponseDto<?> upDownFollow(Long memberId, HttpServletRequest request) {
+    public ResponseDto<?> upDownFollow(String nickname, HttpServletRequest request) {
         Member follower = validateMember(request);
         checkAccessToken(request, follower);
-        Member following = isPresentMemberFollow(memberId);
+        Member following = isPresentMemberFollow(nickname);
         Optional<Follow> findFollowing = followRepository.findByFollowerAndFollowing(follower, following);
         if(findFollowing.isEmpty()) {
             FollowRequestDto followRequestDto = new FollowRequestDto(follower, following);
@@ -51,8 +51,8 @@ public class FollowService {
                 throw new CustomException(ErrorCode.TOKEN_IS_EXPIRED);
             if (null == member) throw new CustomException(ErrorCode.MEMBER_NOT_FOUND);
         }
-    public Member isPresentMemberFollow(Long memberId) {
-        Optional<Member> optionalMember = memberRepository.findById(memberId);
+    public Member isPresentMemberFollow(String  nickname) {
+        Optional<Member> optionalMember = memberRepository.findByNickname(nickname);
         return optionalMember.orElseThrow(
                 () -> new CustomException(ErrorCode.MEMBER_NOT_FOUND)
         );

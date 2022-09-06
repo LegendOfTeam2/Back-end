@@ -38,10 +38,10 @@ public class LikeService {
     private final MakerLikeRepository makerLikeRepository;
 
     @Transactional
-    public ResponseDto<?> upDownSingerLike(Long singerPostId, HttpServletRequest request) {
+    public ResponseDto<?> upDownSingerLike(Long PostId, HttpServletRequest request) {
         Member member = validateMember(request);
         checkAccessToken(request, member);
-        SingerPost singerPost = getCurrentSingerPost(singerPostId);
+        SingerPost singerPost = getCurrentSingerPost(PostId);
         checkSingerPost(singerPost);
 
         SingerLike findSingerLike = singerLikeRepository.findByMemberAndSingerPost(member,singerPost).orElse(null);
@@ -57,10 +57,10 @@ public class LikeService {
     }
 
     @Transactional
-    public ResponseDto<?> upDownMakerLike(Long makerPostId, HttpServletRequest request) {
+    public ResponseDto<?> upDownMakerLike(Long PostId, HttpServletRequest request) {
         Member member = validateMember(request);
         checkAccessToken(request, member);
-        MakerPost makerPost = getCurrentMakerPost(makerPostId);
+        MakerPost makerPost = getCurrentMakerPost(PostId);
         checkMakerPost(makerPost);
 
         MakerLike findMakerLike = makerLikeRepository.findByMemberAndMakerPost(member,makerPost).orElse(null);

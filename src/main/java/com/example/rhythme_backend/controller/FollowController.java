@@ -14,8 +14,17 @@ import javax.servlet.http.HttpServletRequest;
 public class FollowController {
     private final FollowService followService;
 
-    @PostMapping("/auth/follow/{memberId}")
-    public ResponseDto<?> follow(@PathVariable Long memberId, HttpServletRequest request) {
-        return followService.upDownFollow(memberId, request);
+    @PostMapping("/auth/follow/{nickname}")
+    public ResponseDto<?> follow(@PathVariable String nickname, HttpServletRequest request) {
+        return followService.upDownFollow(nickname, request);
     }
+
+//    @GetMapping("/followers")
+//    public ResponseEntity<?> AllFollowers(@PathVariable String nickname, HttpServletRequest request) {
+//        return followService.getFollowers(nickname, request);
+//    }
+//    @GetMapping("/followings")
+//    public ResponseEntity<?> AllFollowings(@PathVariable String nickname, HttpServletRequest request) {
+//        return followService.getFollowings(nickname, request);
+//    }
 }

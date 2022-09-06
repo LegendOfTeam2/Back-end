@@ -15,17 +15,13 @@ public class LikeController {
     private final LikeService likeService;
 
     @PostMapping("/auth/singerpost/{singerpostId}/like")
-    public ResponseDto<?> SingerLike(@PathVariable Long singerpostId, HttpServletRequest request){
-        return likeService.upDownSingerLike(singerpostId, request);
+    public ResponseDto<?> SingerLike(@PathVariable Long postId, HttpServletRequest request){
+        return likeService.upDownSingerLike(postId, request);
     }
 
     @PostMapping("/auth/makerpost/{makerpostId}/like")
-    public ResponseDto<?> MakerLike(@PathVariable Long makerpostId, HttpServletRequest request){
-        return likeService.upDownMakerLike(makerpostId, request);
+    public ResponseDto<?> MakerLike(@PathVariable Long PostId, HttpServletRequest request){
+        return likeService.upDownMakerLike(PostId, request);
     }
-
-
-
-
 
 }
