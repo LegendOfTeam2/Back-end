@@ -71,6 +71,7 @@ public class PostService{
                             .title(makerPost.getTitle())
                             .content(makerPost.getContent())
                             .imageUrl(makerPost.getImageUrl().getImageUrl())
+                            .collaborate(makerPost.getCollaborate())
                             .build()
             );
         }
@@ -89,6 +90,7 @@ public class PostService{
                             .title(singerPost.getTitle())
                             .content(singerPost.getContent())
                             .imageUrl(singerPost.getImageUrl().getImageUrl())
+                            .collaborate(singerPost.getCollaborate())
                             .build()
             );
         }
@@ -115,6 +117,7 @@ public class PostService{
                     .lyrics(postCreateRequestDto.getLyrics())
                     .imageUrl(imageUrl)
                     .mediaUrl(mediaUrl)
+                    .collaborate(postCreateRequestDto.getCollaborate())
                     .build();
             makerPostRepository.save(createdMakerPost);
             makerPostTagSave(postCreateRequestDto.getTags(),createdMakerPost);
@@ -133,6 +136,7 @@ public class PostService{
                     .imageUrl(imageUrl.getImageUrl())
                     .mediaUrl(mediaUrl.getMediaUrl())
                     .tags(postCreateRequestDto.getTags())
+                    .collaborate(createdMakerPost.getCollaborate())
                     .createdAt(createdMakerPost.getCreatedAt())
                     .modifiedAt(createdMakerPost.getModifiedAt())
                     .build();
@@ -151,6 +155,7 @@ public class PostService{
                     .lyrics(postCreateRequestDto.getLyrics())
                     .imageUrl(imageUrl)
                     .mediaUrl(mediaUrl)
+                    .collaborate(postCreateRequestDto.getCollaborate())
                     .build();
             singerPostRepository.save(createdSingerPost);
             singerPostTagSave(postCreateRequestDto.getTags(),createdSingerPost);
@@ -169,6 +174,7 @@ public class PostService{
                     .imageUrl(imageUrl.getImageUrl())
                     .mediaUrl(mediaUrl.getMediaUrl())
                     .tags(postCreateRequestDto.getTags())
+                    .collaborate(createdSingerPost.getCollaborate())
                     .createdAt(createdSingerPost.getCreatedAt())
                     .modifiedAt(createdSingerPost.getModifiedAt())
                     .build();
@@ -208,6 +214,7 @@ public class PostService{
                             .imageUrl(postPatchRequestDto.getImageUrl())
                             .mediaUrl(postPatchRequestDto.getMediaUrl())
                             .tags(postPatchRequestDto.getTags())
+                            .collaborate(postPatchRequestDto.getCollaborate())
                             .createdAt(makerPost.getCreatedAt())
                             .modifiedAt(makerPost.getModifiedAt())
                             .build()),HttpStatus.OK);
@@ -227,6 +234,7 @@ public class PostService{
                            .imageUrl(postPatchRequestDto.getImageUrl())
                            .mediaUrl(postPatchRequestDto.getMediaUrl())
                            .tags(postPatchRequestDto.getTags())
+                           .collaborate(postPatchRequestDto.getCollaborate())
                            .createdAt(singerPost.getCreatedAt())
                            .modifiedAt(singerPost.getModifiedAt())
                            .build()),HttpStatus.OK);

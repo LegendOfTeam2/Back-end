@@ -21,6 +21,7 @@ public class PostPatchResponseDto {
     private String imageUrl;
     private String mediaUrl;
     private List<String> tags;
+    private Boolean collaborate;
 
     @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss", timezone="Asia/Seoul")
     private LocalDateTime createdAt;
