@@ -1,13 +1,13 @@
 package com.example.rhythme_backend.domain;
 
-import com.example.rhythme_backend.domain.post.MakerPost;
 import com.example.rhythme_backend.domain.post.MakerPostTag;
-import com.example.rhythme_backend.domain.post.SingerPost;
 import com.example.rhythme_backend.domain.post.SingerPostTag;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -24,10 +24,17 @@ public class Tag {
     @Column(nullable = false)
     private String tag;
 
-    @OneToMany(mappedBy = "maker_post_id")
+    @OneToMany(mappedBy = "makerPostId")
     private List<MakerPostTag> makerPostTags;
 
-    @OneToMany(mappedBy = "singer_post_id")
+    @OneToMany(mappedBy = "singerPostId")
     private List<SingerPostTag> singerPostTags;
+
+    @OneToMany(mappedBy = "memberId")
+    private List<MemberTag> memberTags;
+
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member memberId;
 
 }

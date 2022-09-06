@@ -18,14 +18,14 @@ public class MakerPostTag {
 
     @ManyToOne
     @JoinColumn(name = "maker_post_id")
-    private MakerPost maker_post_id;
+    private MakerPost makerPostId;
 
     @ManyToOne
     @JoinColumn(name = "tag_id")
-    private Tag tag_id;
+    private Tag tagId;
 
     public MakerPostTag(MakerPost makerPost,Tag tag){
-        this.maker_post_id = makerPost;
-        this.tag_id = tag;
+        this.makerPostId = makerPost;
+        this.tagId = tag;
     }
 }

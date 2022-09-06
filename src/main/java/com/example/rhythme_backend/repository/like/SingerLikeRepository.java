@@ -1,8 +1,8 @@
-package com.example.rhythme_backend.repository;
+package com.example.rhythme_backend.repository.like;
 
 
 import com.example.rhythme_backend.domain.Member;
-import com.example.rhythme_backend.domain.SingerLike;
+import com.example.rhythme_backend.domain.like.SingerLike;
 import com.example.rhythme_backend.domain.post.SingerPost;
 import org.springframework.data.jpa.repository.JpaRepository;
 

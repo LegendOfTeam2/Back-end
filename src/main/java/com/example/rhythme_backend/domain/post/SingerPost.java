@@ -33,6 +33,9 @@ public class SingerPost extends Timestamped {
     @Column(nullable = false)
     private String content;
 
+    @Column
+    private String lyrics;
+
     @JoinColumn(name = "image_url")
     @OneToOne(fetch = FetchType.EAGER)
     private ImageUrl imageUrl;
@@ -42,7 +45,7 @@ public class SingerPost extends Timestamped {
     @OneToOne(fetch = FetchType.EAGER)
     private MediaUrl mediaUrl;
 
-    @OneToMany(mappedBy = "tag_id",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "tagId",fetch = FetchType.LAZY)
     private List<SingerPostTag> tags;
 
     public void updateSingerPost(PostPatchRequestDto patchRequestDto){

@@ -1,6 +1,6 @@
-package com.example.rhythme_backend.domain.post;
+package com.example.rhythme_backend.domain;
 
-import com.example.rhythme_backend.domain.Tag;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,21 +11,23 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor
-public class SingerPostTag {
+public class MemberTag {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "singer_post_id")
-    private SingerPost singerPostId;
+    @JoinColumn(name = "member_id")
+    private Member memberId;
 
     @ManyToOne
     @JoinColumn(name = "tag_id")
     private Tag tagId;
 
-    public SingerPostTag (SingerPost singerPost,Tag tag){
-        this.singerPostId = singerPost;
+    public MemberTag(Member member, Tag tag){
+        this.memberId = member;
         this.tagId = tag;
     }
+
 }

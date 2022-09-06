@@ -1,22 +1,30 @@
 package com.example.rhythme_backend.service;
 
 import com.example.rhythme_backend.domain.Member;
+import com.example.rhythme_backend.dto.requestDto.member.*;
 import com.example.rhythme_backend.util.RefreshToken;
 import com.example.rhythme_backend.dto.TokenDto;
-import com.example.rhythme_backend.dto.requestDto.*;
+
+import com.example.rhythme_backend.domain.MemberTag;
+import com.example.rhythme_backend.domain.Tag;
+
 import com.example.rhythme_backend.dto.responseDto.ResignResponseDto;
 import com.example.rhythme_backend.exception.CustomException;
 import com.example.rhythme_backend.exception.ErrorCode;
-import com.example.rhythme_backend.service.googleLogin.Constant;
-import com.example.rhythme_backend.service.googleLogin.GoogleOauth;
 import com.example.rhythme_backend.jwt.TokenProvider;
 import com.example.rhythme_backend.repository.MemberRepository;
+import com.example.rhythme_backend.repository.MemberTagRepository;
 import com.example.rhythme_backend.repository.RefreshTokenRepository;
+import com.example.rhythme_backend.repository.TagRepository;
+import com.example.rhythme_backend.service.googleLogin.Constant;
+import com.example.rhythme_backend.service.googleLogin.GoogleOauth;
 import com.example.rhythme_backend.service.kakaoLogin.KakaoOauth;
 import com.example.rhythme_backend.util.Message;
+import com.example.rhythme_backend.util.RefreshToken;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,10 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Date;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -42,19 +47,25 @@ public class MemberService {
     private final GoogleOauth googleOauth;
     private final HttpServletResponse response;
     private final KakaoOauth kakaoOauth;
+    private final TagRepository tagRepository;
+    private final MemberTagRepository memberTagRepository;
 
     @Transactional
     public ResponseEntity<?> signupMember(SignupRequestDto requestDto) {
+        //"Optional.empty"
 
         if (null != getPresentEmail(requestDto.getEmail())) {
-            throw new CustomException(ErrorCode.DUPLICATED_EMAIL);
+            return new ResponseEntity<>(Message.fail("DUPLICATED_EMAIL","중복된 이메일입니다."),HttpStatus.BAD_REQUEST);
         }
 
         Member member = Member.builder()
                 .email(requestDto.getEmail())
+                .imgUrl(requestDto.getImgUrl())
+                .nickname(requestDto.getNickname())
                 .password(passwordEncoder.encode(requestDto.getPassword()))
                 .build();
         memberRepository.save(member);
+        memberTagSave(requestDto.getHashtag(),member);
 
         return new ResponseEntity<>(Message.success("회원가입에 성공했습니다."), HttpStatus.OK);
     }
@@ -64,7 +75,7 @@ public class MemberService {
     public ResponseEntity<?> emailCheck(EmailCheckRequestDto requestDto) {
 
         if (null != getPresentEmail(requestDto.getEmail())) {
-            throw new CustomException(ErrorCode.DUPLICATED_EMAIL);
+            return new ResponseEntity<>(Message.fail("DUPLICATED_EMAIL","사용 불가능한 이메일입니다."), HttpStatus.OK);
         }
         return new ResponseEntity<>(Message.success("사용 가능한 이메일입니다."), HttpStatus.OK);
     }
@@ -72,11 +83,7 @@ public class MemberService {
 
     @Transactional
     public ResponseEntity<?> nicknameCheck(NicknameCheckRequestDto requestDto) {
-
-        if (null != getPresentNickname(requestDto.getNickname())) {
-            throw new CustomException(ErrorCode.DUPLICATED_NICKNAME);
-        }
-        return new ResponseEntity<>(Message.success("사용 가능한 닉네임입니다."), HttpStatus.OK);
+        return getPresentNickname(requestDto.getNickname());
     }
 
 
@@ -84,11 +91,11 @@ public class MemberService {
     public ResponseEntity<?> loginMember(LoginRequestDto requestDto, HttpServletResponse response) {
         Member member = getPresentEmail(requestDto.getEmail());
         if (null == member) {
-            return new ResponseEntity<>(Message.fail("EMAIL_DUPLICATED","이메일을 입력하세요."),HttpStatus.ALREADY_REPORTED);
+            return new ResponseEntity<>(Message.fail("EMAIL_NOT_FOUND","존재하지 않는 이메일입니다."),HttpStatus.NOT_FOUND);
         }
 
         if (!member.validatePassword(passwordEncoder, requestDto.getPassword())) {
-            throw new CustomException(ErrorCode.INVALID_MEMBER_INFO);
+            return new ResponseEntity<>(Message.fail("PASSWORD_NOT_FOUND","비밀번호를 다시 입력해주세요."),HttpStatus.NOT_FOUND);
         }
 
         TokenDto tokenDto = tokenProvider.generateTokenDto(member);
@@ -114,6 +121,8 @@ public class MemberService {
         }
 
         RefreshToken deleteToken = getDeleteToken(member);
+        memberTagRepository.deleteAllByMemberId(member);
+        tagRepository.deleteAllByMemberId(member);
         String deleteEmail = requestDto.getEmail();
         Member deleteMember = getPresentEmail(deleteEmail);
         Long deleteMemberId = deleteMember.getId();
@@ -132,6 +141,22 @@ public class MemberService {
         ),HttpStatus.OK);
     }
 
+    public ResponseEntity<?> logoutMember(LogoutRequestDto requestDto, HttpServletRequest request) {
+        if (!tokenProvider.validateToken(request.getHeader("Refresh-Token"))) {
+            return new ResponseEntity<>(Message.fail("INVALID_TOKEN", "Token이 유효하지 않습니다."),HttpStatus.UNAUTHORIZED);
+        }
+        Member member = tokenProvider.getMemberFromAuthentication();
+        if (null == member) {
+            return new ResponseEntity<>(Message.fail("MEMBER_NOT_FOUND","사용자를 찾을 수 없습니다."),HttpStatus.NOT_FOUND);
+        }
+        String logoutEmail = requestDto.getEmail();
+        Member logoutMember = getPresentEmail(logoutEmail);
+        Long logoutMemberId = logoutMember.getId();
+        Member logout = getDeleteMember(logoutMemberId);
+        tokenProvider.deleteRefreshToken(logout);
+        return new ResponseEntity<>(Message.success("로그아웃 되었습니다."),HttpStatus.OK);
+    }
+
 
     @Transactional
     public TokenDto kakaoLogin(String code) throws JsonProcessingException {
@@ -146,17 +171,19 @@ public class MemberService {
 
         if (kakaoUser == null) {
             // 회원가입
-            // username: kakao nickname
-            String nickname = kakaoUserInfo.getNickname();
-            // password: random UUID
+            Random random = new Random();
+            String kakaoDefaultName = "KAKAO" + random.nextInt(1000000000);
+            String name = kakaoUserInfo.getName();
+            String nickname = kakaoDefaultName;
             String password = UUID.randomUUID().toString();
             String encodedPassword = passwordEncoder.encode(password);
             //카카오 이메일
             String email = kakaoUserInfo.getEmail();
             kakaoUser = Member.builder()
                     .kakaoId(kakaoId)
-                    .email(email)
                     .nickname(nickname)
+                    .email(email)
+                    .name(name)
                     .password(encodedPassword)
                     .build();
             memberRepository.save(kakaoUser);
@@ -180,7 +207,6 @@ public class MemberService {
                 //각 소셜 로그인을 요청하면 소셜로그인 페이지로 리다이렉트 해주는 프로세스이다.
                 redirectURL = googleOauth.getOauthRedirectURL();
             }break;
-
             default: {
                 throw new IllegalArgumentException("알 수 없는 소셜 로그인 형식입니다.");
             }
@@ -203,17 +229,15 @@ public class MemberService {
 
                 if (googleLoginUser == null) {
                     // 회원가입
-                    // username/nickname
+                    Random random = new Random();
                     String name = googleUser.getName();
-                    String nickname = googleUser.getNickname();
-                    // password: random UUID
+                    String googleDefaultName = "google" + random.nextInt(1000000000);
                     String password = UUID.randomUUID().toString();
                     String encodedPassword = passwordEncoder.encode(password);
-                    //google 이메일
                     String email = googleUser.getEmail();
                     googleLoginUser = Member.builder()
                             .googleId(googleId)
-                            .nickname(nickname)
+                            .nickname(googleDefaultName)
                             .email(email)
                             .name(name)
                             .password(encodedPassword)
@@ -230,6 +254,18 @@ public class MemberService {
                 return googleTokenDto;
     }
 
+
+    public void memberTagSave(List<String> hashtag,Member member){
+        for(String tag : hashtag){
+            Tag memberHashtag = tagRepository.save(
+                    Tag.builder()
+                            .memberId(member)
+                            .tag(tag)
+                            .build());
+            MemberTag memberTag = new MemberTag(member,memberHashtag);
+            memberTagRepository.save(memberTag);
+        }
+    }
 
     public ResponseEntity<?> refreshToken(HttpServletRequest request, HttpServletResponse response) {
 
@@ -264,9 +300,11 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public Member getPresentNickname(String nickname) {
-        Optional<Member> optionalMember = memberRepository.findByNickname(nickname);
-        return optionalMember.orElse(null);
+    public ResponseEntity<?> getPresentNickname(String nickname) {
+       if (memberRepository.existsByNickname(nickname)) {
+           return new ResponseEntity<>(Message.fail("DUPLICATED_NICKNAME","사용 불가능한 닉네임입니다."),HttpStatus.NOT_FOUND);
+       }
+        return new ResponseEntity<>(Message.success("사용 가능한 닉네임입니다."),HttpStatus.OK);
     }
 
     @Transactional
@@ -286,6 +324,7 @@ public class MemberService {
         Optional<RefreshToken> optionalMember = refreshTokenRepository.findByMember(member);
         return optionalMember.orElse(null);
     }
+
 
     public void tokenToHeaders(TokenDto tokenDto, HttpServletResponse response) {
         response.addHeader("Authorization", "Bearer " + tokenDto.getAccessToken());

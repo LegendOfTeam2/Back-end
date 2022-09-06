@@ -2,9 +2,9 @@ name: rhythmeuser
 
 on:
   push:
-    branches: [ main ]
+    branches: [ dev ]
   pull_request:
-    branches: [ main ]
+    branches: [ dev ]
 
 env:
   S3_BUCKET_NAME: rhythmebucket

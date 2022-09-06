@@ -40,22 +40,10 @@ public class SecurityConfiguration {
         return new BCryptPasswordEncoder();
     }
 
-    // 테스트용 H2 콘솔 관련 설정 추가
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        // h2-console 사용에 대한 허용 (CSRF, FrameOptions 무시)
-        return (web) -> web.ignoring()
-                .antMatchers(
-                        "/h2-console/**"
-                        ,"/favicon.ico"
-                        ,"/error"
-                );
-    }
-
     @Bean
     @Order(SecurityProperties.BASIC_AUTH_ORDER)
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.cors();
+        http.cors().disable();
 
         http.csrf().disable()
 
@@ -73,7 +61,9 @@ public class SecurityConfiguration {
                 .and()
                 .authorizeRequests()
 
-                .antMatchers("/**").permitAll()
+                .antMatchers("/member/**").permitAll()
+                .antMatchers("/api/**").permitAll()
+                .antMatchers("/upload").permitAll()
                 .anyRequest().authenticated()
 
                 .and()

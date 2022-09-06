@@ -1,4 +1,4 @@
-package com.example.rhythme_backend.dto.responseDto;
+package com.example.rhythme_backend.dto.responseDto.like;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MakerLikeResponseDto {
-    private Long makerPostId;
+public class SingerLikeResponseDto {
+    private Long singerPostId;
     private String nickname;
 }
