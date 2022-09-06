@@ -50,6 +50,8 @@ public class MakerPost extends Timestamped {
     @OneToOne(fetch = FetchType.EAGER)
     private MediaUrl mediaUrl;
 
+    @Column
+    private Boolean collaborate = true;
 
     @OneToMany(mappedBy ="tagId", fetch = FetchType.LAZY)
     private List<MakerPostTag> tags;
@@ -59,5 +61,6 @@ public class MakerPost extends Timestamped {
         this.lyrics = patchRequestDto.getLyrics();
         this.content = patchRequestDto.getContent();
         this.title = patchRequestDto.getTitle();
+        this.collaborate = patchRequestDto.getCollabor();
     }
 }
