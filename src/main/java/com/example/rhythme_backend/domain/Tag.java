@@ -1,13 +1,10 @@
 package com.example.rhythme_backend.domain;
 
-import com.example.rhythme_backend.domain.post.MakerPost;
 import com.example.rhythme_backend.domain.post.MakerPostTag;
-import com.example.rhythme_backend.domain.post.SingerPost;
 import com.example.rhythme_backend.domain.post.SingerPostTag;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -29,5 +26,12 @@ public class Tag {
 
     @OneToMany(mappedBy = "singerPostId")
     private List<SingerPostTag> singerPostTags;
+
+    @OneToMany(mappedBy = "memberId")
+    private List<MemberTag> memberTags;
+
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member memberId;
 
 }
