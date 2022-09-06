@@ -61,6 +61,6 @@ public class MakerPost extends Timestamped {
         this.lyrics = patchRequestDto.getLyrics();
         this.content = patchRequestDto.getContent();
         this.title = patchRequestDto.getTitle();
-        this.collaborate = patchRequestDto.getCollabor();
+        this.collaborate = patchRequestDto.getCollaborate();
     }
 }
