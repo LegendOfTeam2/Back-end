@@ -38,10 +38,10 @@ public class LikeService {
     private final MakerLikeRepository makerLikeRepository;
 
     @Transactional
-    public ResponseDto<?> upDownSingerLike(Long singerPostId, HttpServletRequest request) {
+    public ResponseDto<?> upDownSingerLike(Long postId, HttpServletRequest request) {
         Member member = validateMember(request);
         checkAccessToken(request, member);
-        SingerPost singerPost = getCurrentSingerPost(singerPostId);
+        SingerPost singerPost = getCurrentSingerPost(postId);
         checkSingerPost(singerPost);
 
         SingerLike findSingerLike = singerLikeRepository.findByMemberAndSingerPost(member,singerPost).orElse(null);
@@ -49,22 +49,22 @@ public class LikeService {
             SingerLikeRequestDto singerLikeRequestDto = new SingerLikeRequestDto(member, singerPost);
             SingerLike singerLike = new SingerLike(singerLikeRequestDto);
             singerLikeRepository.save(singerLike);
-            Long likes = singerLikeRepository.countAllBySingerPostId(singerPostId);
+            Long likes = singerLikeRepository.countAllBySingerPostId(postId);
             singerPost.singerUpdateLikes(likes);
             return ResponseDto.success(true);
         } else {
             singerLikeRepository.deleteById(findSingerLike.getId());
-            Long likes = singerLikeRepository.countAllBySingerPostId(singerPostId);
+            Long likes = singerLikeRepository.countAllBySingerPostId(postId);
             singerPost.singerUpdateLikes(likes);
             return ResponseDto.success(false);
         }
     }
 
     @Transactional
-    public ResponseDto<?> upDownMakerLike(Long makerPostId, HttpServletRequest request) {
+    public ResponseDto<?> upDownMakerLike(Long postId, HttpServletRequest request) {
         Member member = validateMember(request);
         checkAccessToken(request, member);
-        MakerPost makerPost = getCurrentMakerPost(makerPostId);
+        MakerPost makerPost = getCurrentMakerPost(postId);
         checkMakerPost(makerPost);
 
         MakerLike findMakerLike = makerLikeRepository.findByMemberAndMakerPost(member,makerPost).orElse(null);
@@ -73,12 +73,12 @@ public class LikeService {
             MakerLikeRequestDto makerLikeRequestDto = new MakerLikeRequestDto(member, makerPost);
             MakerLike makerLike = new MakerLike(makerLikeRequestDto);
             makerLikeRepository.save(makerLike);
-            Long likes = makerLikeRepository.countAllByMakerPostId(makerPostId);
+            Long likes = makerLikeRepository.countAllByMakerPostId(postId);
             makerPost.makerUpdateLikes(likes);
             return ResponseDto.success(true);
         } else {
             singerLikeRepository.deleteById(findMakerLike.getId());
-            Long likes = makerLikeRepository.countAllByMakerPostId(makerPostId);
+            Long likes = makerLikeRepository.countAllByMakerPostId(postId);
             makerPost.makerUpdateLikes(likes);
             return ResponseDto.success(false);
         }
