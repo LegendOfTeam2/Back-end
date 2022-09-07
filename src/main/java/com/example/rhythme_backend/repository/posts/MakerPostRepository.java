@@ -9,6 +9,10 @@ public interface MakerPostRepository extends JpaRepository<MakerPost,Long> {
     @Override
     Optional<MakerPost> findById(Long id);
 
-    List<MakerPost> countAllByOrderByCreatedAt();
+    List<MakerPost> findAllByOrderByCreatedAt();
+
+    List<MakerPost> findTopByOrderByLikesDesc();
+
+    List<MakerPost> findAllByOrderByLikesDesc();
 
 }

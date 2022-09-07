@@ -1,10 +1,8 @@
 package com.example.rhythme_backend.service;
 
-import com.example.rhythme_backend.domain.media.MediaUrl;
 import com.example.rhythme_backend.domain.post.MakerPost;
 import com.example.rhythme_backend.domain.post.SingerPost;
 import com.example.rhythme_backend.dto.responseDto.*;
-import com.example.rhythme_backend.repository.media.MediaUrlRepository;
 import com.example.rhythme_backend.repository.posts.MakerPostRepository;
 import com.example.rhythme_backend.repository.posts.SingerPostRepository;
 import com.example.rhythme_backend.util.Message;
@@ -24,12 +22,19 @@ public class MainPageService {
     private final SingerPostRepository singerPostRepository;
 
     public ResponseEntity<?> bestSong() {
-        Optional<MakerPost> optionalMediaUrl = makerPostRepository.;
-        return new ResponseEntity<>(Message.success(optionalMediaUrl), HttpStatus.OK);
+        List<MakerPost> makerPostList = makerPostRepository.findTopByOrderByLikesDesc();
+        List<BestSongResponseDto> bestSongResponseDtoList = new ArrayList<>();
+        for (MakerPost makerPost : makerPostList) {
+            bestSongResponseDtoList.add(BestSongResponseDto.builder()
+                            .likes(makerPost.getLikes())
+                            .mediaUrl(makerPost.getMediaUrl())
+                            .build());
+        }
+        return new ResponseEntity<>(Message.success(bestSongResponseDtoList), HttpStatus.OK);
     }
 
     public ResponseEntity<?> recentMaker() {
-        List<MakerPost> makerPostList = makerPostRepository.countAllByOrderByCreatedAt();
+        List<MakerPost> makerPostList = makerPostRepository.findAllByOrderByCreatedAt();
         List<RecentMakerResponseDto> recentMakerResponseDtoList = new ArrayList<>();
         for (MakerPost makerPost : makerPostList) {
             recentMakerResponseDtoList.add(RecentMakerResponseDto.builder()
@@ -40,7 +45,7 @@ public class MainPageService {
     }
 
     public ResponseEntity<?> recentSinger() {
-        List<SingerPost> singerPostList = singerPostRepository.countAllByOrderByCreatedAt();
+        List<SingerPost> singerPostList = singerPostRepository.findAllByOrderByCreatedAt();
         List<RecentSingerResponseDto> recentSingerResponseDtoList = new ArrayList<>();
         for (SingerPost singerPost : singerPostList) {
             recentSingerResponseDtoList.add(RecentSingerResponseDto.builder()
@@ -51,21 +56,25 @@ public class MainPageService {
     }
 
     public ResponseEntity<?> bestMaker() {
-        List<MakerPost> makerPostList = makerPostRepository.findById();
+        List<MakerPost> makerPostList = makerPostRepository.findAllByOrderByLikesDesc();
         List<BestMakerResponseDto> bestMakerResponseDtoList = new ArrayList<>();
         for (MakerPost makerPost : makerPostList) {
             bestMakerResponseDtoList.add(BestMakerResponseDto.builder()
-                    .build());
+                            .likes(makerPost.getLikes())
+                            .mediaUrl(makerPost.getMediaUrl())
+                            .build());
         }
         return new ResponseEntity<>(Message.success(bestMakerResponseDtoList),HttpStatus.OK);
     }
 
     public ResponseEntity<?> bestSinger() {
-        List<SingerPost> singerPostList = singerPostRepository.findById();
+        List<SingerPost> singerPostList = singerPostRepository.findAllByOrderByLikesDesc();
         List<BestSingerResponseDto> bestSingerResponseDtoList = new ArrayList<>();
         for (SingerPost singerPost : singerPostList) {
             bestSingerResponseDtoList.add(BestSingerResponseDto.builder()
-                    .build());
+                            .likes(singerPost.getLikes())
+                            .mediaUrl(singerPost.getMediaUrl())
+                            .build());
         }
         return new ResponseEntity<>(Message.success(bestSingerResponseDtoList),HttpStatus.OK);
     }

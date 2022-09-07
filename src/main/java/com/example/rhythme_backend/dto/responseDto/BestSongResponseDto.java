@@ -6,9 +6,8 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class BestSingerResponseDto {
+public class BestSongResponseDto {
 
     private MediaUrl mediaUrl;
     private Long likes;
-
 }

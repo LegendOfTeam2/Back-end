@@ -144,8 +144,8 @@ public class MemberService {
         if (null == member) {
             return new ResponseEntity<>(Message.fail("MEMBER_NOT_FOUND","사용자를 찾을 수 없습니다."),HttpStatus.NOT_FOUND);
         }
-        String logoutEmail = requestDto.getEmail();
-        Member logoutMember = getPresentEmail(logoutEmail);
+        String logoutNickname = requestDto.getNickname();
+        Member logoutMember = presentNickname(logoutNickname);
         Long logoutMemberId = logoutMember.getId();
         Member logout = getDeleteMember(logoutMemberId);
         tokenProvider.deleteRefreshToken(logout);
@@ -294,6 +294,13 @@ public class MemberService {
         return optionalMember.orElse(null);
     }
 
+    //수정해야 함 (통합)
+    @Transactional(readOnly = true)
+    public Member presentNickname(String nickname) {
+        Optional<Member> optionalMember = memberRepository.findByNickname(nickname);
+        return optionalMember.orElse(null);
+    }
+
     @Transactional(readOnly = true)
     public ResponseEntity<?> getPresentNickname(String nickname) {
        if (memberRepository.existsByNickname(nickname)) {
@@ -301,7 +308,7 @@ public class MemberService {
        }
         return new ResponseEntity<>(Message.success("사용 가능한 닉네임입니다."),HttpStatus.OK);
     }
-
+    //////------------
     @Transactional
     public Member validateMember(HttpServletRequest request) {
         if (!tokenProvider.validateToken(request.getHeader("Refresh-Token"))) {

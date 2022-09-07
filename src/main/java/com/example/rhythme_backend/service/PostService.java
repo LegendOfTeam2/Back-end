@@ -145,7 +145,6 @@ public class PostService{
 
             result = new ResponseEntity<>(Message.success(responseDto),HttpStatus.OK);
 
-
             return result;
 
         }else if(postCreateRequestDto.getPosition().equals("Singer")){

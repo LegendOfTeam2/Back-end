@@ -63,6 +63,7 @@ public class SecurityConfiguration {
                 .antMatchers("/member/**").permitAll()
                 .antMatchers("/api/**").permitAll()
                 .antMatchers("/upload").permitAll()
+                .antMatchers("/**").permitAll()
                 .anyRequest().authenticated()
 
                 .and()
