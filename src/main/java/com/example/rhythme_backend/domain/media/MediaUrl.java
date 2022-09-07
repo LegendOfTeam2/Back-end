@@ -28,7 +28,7 @@ public class MediaUrl extends Timestamped {
     private String category;
 
     @JsonIgnore
-    @Column(nullable = false)
+    @Column
     private String position;
 
     @Column(nullable = false)

@@ -18,4 +18,5 @@ public class SingerPostGetResponseDto {
     private String mediaUrl;
     private List<Tag> tags;
     private Long singerlikeCnt;
+    private Boolean collaborate;
 }

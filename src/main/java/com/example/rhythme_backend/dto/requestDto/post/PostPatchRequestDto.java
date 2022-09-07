@@ -17,5 +17,6 @@ public class PostPatchRequestDto {
     private String imageUrl;
     private String mediaUrl;
     private List<String> tags;
+    private Boolean collaborate;
 }
 

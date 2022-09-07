@@ -51,9 +51,14 @@ public class SingerPost extends Timestamped {
     @Column
     private Long likes;
 
+    @Column(nullable = false)
+    private Boolean collaborate;
+
     public void updateSingerPost(PostPatchRequestDto patchRequestDto){
+        this.lyrics = patchRequestDto.getLyrics();
         this.content = patchRequestDto.getContent();
         this.title = patchRequestDto.getTitle();
+        this.collaborate = patchRequestDto.getCollaborate();
     }
 
     public void singerUpdateLikes(Long likes) {
