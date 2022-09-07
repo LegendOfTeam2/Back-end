@@ -12,9 +12,34 @@ public class MainPageController {
 
     private final MainPageService mainPageService;
 
-//    @GetMapping("/api/mainpage")
-//    public ResponseEntity<?> getBestSong() {
-//        return mainPageService.bestSong();
+    @GetMapping("/api/bestsong")
+    public ResponseEntity<?> getBestSong() {
+        return mainPageService.bestSong();
+    }
+
+    @GetMapping("/api/recentmaker")
+    public ResponseEntity<?> getRecentMaker() {
+        return mainPageService.recentMaker();
+    }
+
+    @GetMapping("/api/recentsinger")
+    public ResponseEntity<?> getRecentSinger() {
+        return mainPageService.recentSinger();
+    }
+
+    @GetMapping("/api/bestmaker")
+    public ResponseEntity<?> getBestMaker() {
+        return mainPageService.bestMaker();
+    }
+
+    @GetMapping("/api/bestsinger")
+    public ResponseEntity<?> getBestSinger() {
+        return mainPageService.bestSinger();
+    }
+
+//    @GetMapping("/api/powerartist")
+//    public ResponseEntity<?> getPowerArtist() {
+//        return mainPageService.MostLikeArtist();
 //    }
 
 }

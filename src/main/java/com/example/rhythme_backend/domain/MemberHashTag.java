@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor
-public class MemberTag {
+public class MemberHashTag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,10 +22,10 @@ public class MemberTag {
     private Member memberId;
 
     @ManyToOne
-    @JoinColumn(name = "tag_id")
-    private Tag tagId;
+    @JoinColumn(name = "hashtag_id")
+    private HashTag tagId;
 
-    public MemberTag(Member member, Tag tag){
+    public MemberHashTag(Member member, HashTag tag){
         this.memberId = member;
         this.tagId = tag;
     }

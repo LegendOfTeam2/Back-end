@@ -46,7 +46,7 @@ public class Member extends Timestamped {
     private String imgUrl;
 
     @OneToMany(mappedBy = "tagId",fetch = FetchType.LAZY)
-    private List<MemberTag> hashtag;
+    private List<MemberHashTag> hashtag;
 
     public boolean validatePassword(PasswordEncoder passwordEncoder, String password) {
         return passwordEncoder.matches(password, this.password);

@@ -31,7 +31,7 @@ public class Tag {
     private List<SingerPostTag> singerPostTags;
 
     @OneToMany(mappedBy = "memberId")
-    private List<MemberTag> memberTags;
+    private List<MemberHashTag> memberTags;
 
     @ManyToOne
     @JoinColumn(name = "member_id")

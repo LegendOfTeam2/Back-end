@@ -8,7 +8,7 @@ import java.util.List;
 
 @Builder
 @Getter
-public class PostGetResponseDto {
+public class SingerPostGetResponseDto {
     private Long postId;
     private String email;
     private String position;
@@ -17,5 +17,6 @@ public class PostGetResponseDto {
     private String imageUrl;
     private String mediaUrl;
     private List<Tag> tags;
+    private Long singerlikeCnt;
     private Boolean collaborate;
 }

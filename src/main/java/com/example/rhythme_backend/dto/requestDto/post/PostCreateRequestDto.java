@@ -15,4 +15,5 @@ public class PostCreateRequestDto {
     private String imageUrl;
     private String mediaUrl;
     private List<String> tags;
+    private Boolean collaborate;
 }

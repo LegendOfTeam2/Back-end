@@ -12,11 +12,14 @@ import com.example.rhythme_backend.domain.post.SingerPostTag;
 import com.example.rhythme_backend.dto.requestDto.post.PostCreateRequestDto;
 import com.example.rhythme_backend.dto.requestDto.post.PostDeleteRequestDto;
 import com.example.rhythme_backend.dto.requestDto.post.PostPatchRequestDto;
-import com.example.rhythme_backend.dto.responseDto.post.PostGetResponseDto;
 import com.example.rhythme_backend.dto.responseDto.post.PostPatchResponseDto;
+import com.example.rhythme_backend.dto.responseDto.post.MakerPostGetResponseDto;
 import com.example.rhythme_backend.dto.responseDto.post.PostsCreateResponseDto;
+import com.example.rhythme_backend.dto.responseDto.post.SingerPostGetResponseDto;
 import com.example.rhythme_backend.repository.MemberRepository;
 import com.example.rhythme_backend.repository.TagRepository;
+import com.example.rhythme_backend.repository.like.MakerLikeRepository;
+import com.example.rhythme_backend.repository.like.SingerLikeRepository;
 import com.example.rhythme_backend.repository.media.ImageUrlRepository;
 import com.example.rhythme_backend.repository.media.MediaUrlRepository;
 import com.example.rhythme_backend.util.Message;
@@ -51,48 +54,52 @@ public class PostService{
     private final MakerPostTagRepository makerPostTagRepository;
 
     private final SingerPostTagRepository singerPostTagRepository;
-
+    private final MakerLikeRepository makerLikeRepository;
     //AWS S3
     private final S3Service s3Service;
-
+    private final SingerLikeRepository singerLikeRepository;
 
 
     //============ 카테고리별 게시판 전체 조회 로직.
     @Transactional(readOnly = true)
     public ResponseEntity<?> getAllMakerPost(){
         List<MakerPost> makerPostList = makerPostRepository.findAll();
-        List<PostGetResponseDto> postGetResponseDtoList = new ArrayList<>();
+        List<MakerPostGetResponseDto> makerpostGetResponseDtoList = new ArrayList<>();
         for(MakerPost makerPost : makerPostList){
-            postGetResponseDtoList.add(
-                    PostGetResponseDto.builder()
+            makerpostGetResponseDtoList.add(
+                    MakerPostGetResponseDto.builder()
                             .postId(makerPost.getId())
                             .email(makerPost.getMember().getEmail())
                             .position("Maker")
                             .title(makerPost.getTitle())
                             .content(makerPost.getContent())
                             .imageUrl(makerPost.getImageUrl().getImageUrl())
+                            .makerlikeCnt(makerLikeRepository.countAllByMakerPost(makerPost))
+                            .collaborate(makerPost.getCollaborate())
                             .build()
             );
         }
-        return new ResponseEntity<>(Message.success(postGetResponseDtoList),HttpStatus.OK);
+        return new ResponseEntity<>(Message.success(makerpostGetResponseDtoList),HttpStatus.OK);
     }
 
     public ResponseEntity<?> getAllSingerPost() {
         List<SingerPost> singerPostList = singerPostRepository.findAll();
-        List<PostGetResponseDto> postGetResponseDtoList = new ArrayList<>();
+        List<SingerPostGetResponseDto> singerpostGetResponseDtoList = new ArrayList<>();
         for (SingerPost singerPost : singerPostList) {
-            postGetResponseDtoList.add(
-                    PostGetResponseDto.builder()
+            singerpostGetResponseDtoList.add(
+                    SingerPostGetResponseDto.builder()
                             .postId(singerPost.getId())
                             .email(singerPost.getMember().getEmail())
                             .position("Singer")
                             .title(singerPost.getTitle())
                             .content(singerPost.getContent())
                             .imageUrl(singerPost.getImageUrl().getImageUrl())
+                            .singerlikeCnt(singerLikeRepository.countAllBySingerPost(singerPost))
+                            .collaborate(singerPost.getCollaborate())
                             .build()
             );
         }
-            return new ResponseEntity<>(Message.success(postGetResponseDtoList), HttpStatus.OK);
+            return new ResponseEntity<>(Message.success(singerpostGetResponseDtoList), HttpStatus.OK);
         }
 
 
@@ -115,6 +122,7 @@ public class PostService{
                     .lyrics(postCreateRequestDto.getLyrics())
                     .imageUrl(imageUrl)
                     .mediaUrl(mediaUrl)
+                    .collaborate(postCreateRequestDto.getCollaborate())
                     .build();
             makerPostRepository.save(createdMakerPost);
             makerPostTagSave(postCreateRequestDto.getTags(),createdMakerPost);
@@ -133,13 +141,13 @@ public class PostService{
                     .imageUrl(imageUrl.getImageUrl())
                     .mediaUrl(mediaUrl.getMediaUrl())
                     .tags(postCreateRequestDto.getTags())
+                    .collaborate(createdMakerPost.getCollaborate())
                     .createdAt(createdMakerPost.getCreatedAt())
                     .modifiedAt(createdMakerPost.getModifiedAt())
                     .build();
 
 
             result = new ResponseEntity<>(Message.success(responseDto),HttpStatus.OK);
-
 
             return result;
 
@@ -151,6 +159,7 @@ public class PostService{
                     .lyrics(postCreateRequestDto.getLyrics())
                     .imageUrl(imageUrl)
                     .mediaUrl(mediaUrl)
+                    .collaborate(postCreateRequestDto.getCollaborate())
                     .build();
             singerPostRepository.save(createdSingerPost);
             singerPostTagSave(postCreateRequestDto.getTags(),createdSingerPost);
@@ -169,6 +178,7 @@ public class PostService{
                     .imageUrl(imageUrl.getImageUrl())
                     .mediaUrl(mediaUrl.getMediaUrl())
                     .tags(postCreateRequestDto.getTags())
+                    .collaborate(createdSingerPost.getCollaborate())
                     .createdAt(createdSingerPost.getCreatedAt())
                     .modifiedAt(createdSingerPost.getModifiedAt())
                     .build();
@@ -208,6 +218,7 @@ public class PostService{
                             .imageUrl(postPatchRequestDto.getImageUrl())
                             .mediaUrl(postPatchRequestDto.getMediaUrl())
                             .tags(postPatchRequestDto.getTags())
+                            .collaborate(postPatchRequestDto.getCollaborate())
                             .createdAt(makerPost.getCreatedAt())
                             .modifiedAt(makerPost.getModifiedAt())
                             .build()),HttpStatus.OK);
@@ -227,6 +238,7 @@ public class PostService{
                            .imageUrl(postPatchRequestDto.getImageUrl())
                            .mediaUrl(postPatchRequestDto.getMediaUrl())
                            .tags(postPatchRequestDto.getTags())
+                           .collaborate(postPatchRequestDto.getCollaborate())
                            .createdAt(singerPost.getCreatedAt())
                            .modifiedAt(singerPost.getModifiedAt())
                            .build()),HttpStatus.OK);
