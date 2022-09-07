@@ -50,7 +50,7 @@ public class PostController {
     // 메이커게시물 페이징 및 검색
     @GetMapping("/makerpost")
     public ResponseEntity<?> pagemakerpost(Model model,
-                       @PageableDefault(page = 0, size = 3, sort = "id", direction = Sort.Direction.DESC) Pageable page,
+                       @PageableDefault(page = 0, size = 6, sort = "id", direction = Sort.Direction.DESC) Pageable page,
                        @RequestParam(required = false, defaultValue = "") String searchText) {
 
         return postService.searchmakerposts(model,page,searchText);

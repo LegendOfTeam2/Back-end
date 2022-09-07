@@ -62,8 +62,7 @@ public class PostService{
     private final S3Service s3Service;
     private final SingerLikeRepository singerLikeRepository;
 
-<<<<<<< HEAD
-    //============ 게시물 검색 기능
+    //============ 메이커게시물만  검색&페이징 기능
     public ResponseEntity<?> searchmakerposts(Model model , Pageable page, String searchText) {
         Page<MakerPost> makerpostEntity = makerPostRepository.findByTitleOrContent(searchText, page);
         int startPage = Math.max(1, makerpostEntity.getPageable().getPageNumber() - 4);
@@ -74,8 +73,6 @@ public class PostService{
         model.addAttribute("nowPage", nowPage);
         return new ResponseEntity<>(Message.success(makerpostEntity),HttpStatus.OK);
     }
-=======
->>>>>>> e9e0947e38474b883a2d617f1dd6e93b3febdbc7
 
     //============ 카테고리별 게시판 전체 조회 로직.
     @Transactional(readOnly = true)

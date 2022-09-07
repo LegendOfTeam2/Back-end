@@ -56,10 +56,7 @@ public class MemberService {
 
         Member member = Member.builder()
                 .email(requestDto.getEmail())
-<<<<<<< HEAD
-=======
                 .imgUrl(requestDto.getImgUrl())
->>>>>>> e9e0947e38474b883a2d617f1dd6e93b3febdbc7
                 .nickname(requestDto.getNickname())
                 .password(passwordEncoder.encode(requestDto.getPassword()))
                 .build();
