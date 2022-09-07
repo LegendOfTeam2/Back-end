@@ -74,6 +74,22 @@ public class PostService{
         return new ResponseEntity<>(Message.success(makerpostEntity),HttpStatus.OK);
     }
 
+    public ResponseEntity<?> makerposts(Model model , Pageable page) {
+        Page<MakerPost> makerpostEntity = makerPostRepository.findAll(page);
+        int startPage = Math.max(1, makerpostEntity.getPageable().getPageNumber() - 4);
+        int endPage = Math.min(makerpostEntity.getTotalPages(), makerpostEntity.getPageable().getPageNumber() + 4);
+        int nowPage = makerpostEntity.getPageable().getPageNumber() + 1;
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+        model.addAttribute("nowPage", nowPage);
+        return new ResponseEntity<>(Message.success(makerpostEntity),HttpStatus.OK);
+    }
+
+
+
+
+
+
     //============ 카테고리별 게시판 전체 조회 로직.
     @Transactional(readOnly = true)
     public ResponseEntity<?> getAllMakerPost(){
