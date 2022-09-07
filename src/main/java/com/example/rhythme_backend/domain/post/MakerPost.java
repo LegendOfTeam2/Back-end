@@ -38,6 +38,8 @@ public class MakerPost extends Timestamped {
     @Column(nullable = false)
     private String content;
 
+    @Column
+    private String lyrics;
 
     @JoinColumn(name = "image_url")
     @OneToOne(fetch = FetchType.EAGER)
@@ -48,13 +50,24 @@ public class MakerPost extends Timestamped {
     @OneToOne(fetch = FetchType.EAGER)
     private MediaUrl mediaUrl;
 
+    @Column(nullable = false)
+    private Boolean collaborate;
 
-    @OneToMany(mappedBy ="tag_id", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy ="tagId", fetch = FetchType.LAZY)
     private List<MakerPostTag> tags;
 
+    @Column
+    private Long likes;
 
     public void updateMakerPost(PostPatchRequestDto patchRequestDto){
+        this.lyrics = patchRequestDto.getLyrics();
         this.content = patchRequestDto.getContent();
         this.title = patchRequestDto.getTitle();
+        this.collaborate = patchRequestDto.getCollaborate();
     }
+
+    public void makerUpdateLikes(Long likes) {
+        this.likes = likes;
+    }
+
 }

@@ -29,8 +29,8 @@ public class TokenProvider {
 
     private static final String AUTHORITIES_KEY = "auth";
     private static final String BEARER_PREFIX = "Bearer ";
-    public static final long ACCESS_TOKEN_EXPIRE_TIME = 10800000;
-    private static final long REFRESH_TOKEN_EXPIRE_TIME = 604800000;
+    public static final long ACCESS_TOKEN_EXPIRE_TIME = 1800000; // 원래 세팅: 30분(1800000) ,테스트 : 10000, 기준: (1000 -> 1s)
+    private static final long REFRESH_TOKEN_EXPIRE_TIME = 604800000; // 1주일
     private final Key key;
     private final RefreshTokenRepository refreshTokenRepository;
 

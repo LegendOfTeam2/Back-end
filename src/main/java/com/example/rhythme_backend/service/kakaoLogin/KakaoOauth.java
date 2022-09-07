@@ -1,6 +1,6 @@
 package com.example.rhythme_backend.service.kakaoLogin;
 
-import com.example.rhythme_backend.dto.requestDto.KakaoUserInfoDto;
+import com.example.rhythme_backend.dto.requestDto.member.KakaoUserInfoDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+
 @Component
 public class KakaoOauth {
 
@@ -32,21 +33,20 @@ public class KakaoOauth {
                 kakaoUserInfoRequest,
                 String.class
         );
-
         String responseBody = response.getBody();
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(responseBody);
         Long id = jsonNode.get("id").asLong();
-        String nickname = jsonNode.get("properties")
+        String name = jsonNode.get("properties")
                 .get("nickname").asText();
         String email = jsonNode.get("kakao_account")
                 .get("email").asText();
 
-        System.out.println("카카오 사용자 정보: " + id + ", " + nickname + ", " + email);
+        System.out.println("카카오 사용자 정보: " + id + ", " + name + ", " + email);
         return KakaoUserInfoDto.builder()
                 .kakaoid(id)
                 .email(email)
-                .nickname(nickname)
+                .name(name)
                 .build();
     }
 

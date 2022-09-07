@@ -1,4 +1,4 @@
-package com.example.rhythme_backend.dto.requestDto;
+package com.example.rhythme_backend.dto.requestDto.like;
 
 
 import com.example.rhythme_backend.domain.Member;

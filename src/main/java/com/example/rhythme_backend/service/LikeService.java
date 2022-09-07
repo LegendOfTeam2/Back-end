@@ -1,17 +1,17 @@
 package com.example.rhythme_backend.service;
 
-import com.example.rhythme_backend.domain.MakerLike;
+import com.example.rhythme_backend.domain.like.MakerLike;
 import com.example.rhythme_backend.domain.Member;
-import com.example.rhythme_backend.domain.SingerLike;
+import com.example.rhythme_backend.domain.like.SingerLike;
 import com.example.rhythme_backend.domain.post.MakerPost;
 import com.example.rhythme_backend.domain.post.SingerPost;
-import com.example.rhythme_backend.dto.requestDto.MakerLikeRequestDto;
-import com.example.rhythme_backend.dto.requestDto.SingerLikeRequestDto;
+import com.example.rhythme_backend.dto.requestDto.like.MakerLikeRequestDto;
+import com.example.rhythme_backend.dto.requestDto.like.SingerLikeRequestDto;
 import com.example.rhythme_backend.exception.CustomException;
 import com.example.rhythme_backend.exception.ErrorCode;
 import com.example.rhythme_backend.jwt.TokenProvider;
-import com.example.rhythme_backend.repository.MakerLikeRepository;
-import com.example.rhythme_backend.repository.SingerLikeRepository;
+import com.example.rhythme_backend.repository.like.MakerLikeRepository;
+import com.example.rhythme_backend.repository.like.SingerLikeRepository;
 import com.example.rhythme_backend.repository.posts.MakerPostRepository;
 import com.example.rhythme_backend.repository.posts.SingerPostRepository;
 import com.example.rhythme_backend.util.ResponseDto;
@@ -49,9 +49,13 @@ public class LikeService {
             SingerLikeRequestDto singerLikeRequestDto = new SingerLikeRequestDto(member, singerPost);
             SingerLike singerLike = new SingerLike(singerLikeRequestDto);
             singerLikeRepository.save(singerLike);
+            Long likes = singerLikeRepository.countAllBySingerPostId(singerPostId);
+            singerPost.singerUpdateLikes(likes);
             return ResponseDto.success(true);
         } else {
             singerLikeRepository.deleteById(findSingerLike.getId());
+            Long likes = singerLikeRepository.countAllBySingerPostId(singerPostId);
+            singerPost.singerUpdateLikes(likes);
             return ResponseDto.success(false);
         }
     }
@@ -69,9 +73,13 @@ public class LikeService {
             MakerLikeRequestDto makerLikeRequestDto = new MakerLikeRequestDto(member, makerPost);
             MakerLike makerLike = new MakerLike(makerLikeRequestDto);
             makerLikeRepository.save(makerLike);
+            Long likes = makerLikeRepository.countAllByMakerPostId(makerPostId);
+            makerPost.makerUpdateLikes(likes);
             return ResponseDto.success(true);
         } else {
             singerLikeRepository.deleteById(findMakerLike.getId());
+            Long likes = makerLikeRepository.countAllByMakerPostId(makerPostId);
+            makerPost.makerUpdateLikes(likes);
             return ResponseDto.success(false);
         }
     }

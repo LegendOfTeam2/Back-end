@@ -1,4 +1,4 @@
-package com.example.rhythme_backend.dto.requestDto;
+package com.example.rhythme_backend.dto.requestDto.member;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -9,5 +9,5 @@ public class KakaoUserInfoDto {
 
     private Long kakaoid;
     private String email;
-    private String nickname;
+    private String name;
 }

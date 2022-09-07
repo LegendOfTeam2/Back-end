@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
+import java.util.List;
 
 
 @Entity
@@ -40,6 +41,12 @@ public class Member extends Timestamped {
 
     @Column(unique = true)
     private String googleId;
+
+    @Column
+    private String imgUrl;
+
+    @OneToMany(mappedBy = "tagId",fetch = FetchType.LAZY)
+    private List<MemberHashTag> hashtag;
 
     public boolean validatePassword(PasswordEncoder passwordEncoder, String password) {
         return passwordEncoder.matches(password, this.password);

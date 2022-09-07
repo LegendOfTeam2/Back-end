@@ -18,14 +18,14 @@ public class SingerPostTag {
 
     @ManyToOne
     @JoinColumn(name = "singer_post_id")
-    private SingerPost singer_post_id;
+    private SingerPost singerPostId;
 
     @ManyToOne
     @JoinColumn(name = "tag_id")
-    private Tag tag_id;
+    private Tag tagId;
 
     public SingerPostTag (SingerPost singerPost,Tag tag){
-        this.singer_post_id = singerPost;
-        this.tag_id = tag;
+        this.singerPostId = singerPost;
+        this.tagId = tag;
     }
 }

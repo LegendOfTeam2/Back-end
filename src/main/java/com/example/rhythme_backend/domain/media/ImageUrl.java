@@ -26,7 +26,11 @@ public class ImageUrl extends Timestamped {
     private Long postId;
 
     @JsonIgnore
-    @Column(nullable = false)
+    @Column
+    private String category;
+
+    @JsonIgnore
+    @Column
     private String position;
 
     @Column(nullable = false)

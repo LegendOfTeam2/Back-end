@@ -17,4 +17,5 @@ public class PostGetResponseDto {
     private String imageUrl;
     private String mediaUrl;
     private List<Tag> tags;
+    private Boolean collaborate;
 }

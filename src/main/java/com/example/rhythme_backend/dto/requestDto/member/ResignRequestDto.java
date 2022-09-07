@@ -1,6 +1,5 @@
-package com.example.rhythme_backend.dto.requestDto;
+package com.example.rhythme_backend.dto.requestDto.member;
 
-import lombok.Builder;
 import lombok.Getter;
 
 @Getter

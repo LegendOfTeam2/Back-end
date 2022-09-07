@@ -18,4 +18,5 @@ public class MakerPostGetResponseDto {
     private String mediaUrl;
     private List<Tag> tags;
     private Long makerlikeCnt;
+    private Boolean collaborate;
 }
