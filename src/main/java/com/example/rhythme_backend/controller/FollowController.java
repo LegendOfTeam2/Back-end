@@ -19,12 +19,13 @@ public class FollowController {
         return followService.upDownFollow(nickname, request);
     }
 
-//    @GetMapping("/followers")
-//    public ResponseEntity<?> AllFollowers(@PathVariable String nickname, HttpServletRequest request) {
-//        return followService.getFollowers(nickname, request);
+//    @GetMapping("/auth/followers/{nickname}")
+//    public ResponseEntity<?> AllFollowerlist(@PathVariable String nickname, HttpServletRequest request) {
+//        return followService.getMemberByAllFollower(nickname, request);
 //    }
-//    @GetMapping("/followings")
-//    public ResponseEntity<?> AllFollowings(@PathVariable String nickname, HttpServletRequest request) {
-//        return followService.getFollowings(nickname, request);
+
+//    @GetMapping("/auth/followings/{nickname}")
+//    public ResponseEntity<?> AllFollowinglist(@PathVariable String nickname, HttpServletRequest request) {
+//        return followService.getMemberByFollowings(nickname, request);
 //    }
 }
