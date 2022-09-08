@@ -1,5 +1,6 @@
 package com.example.rhythme_backend.controller;
 
+import com.example.rhythme_backend.dto.requestDto.PageRequest;
 import com.example.rhythme_backend.dto.requestDto.post.PostCreateRequestDto;
 import com.example.rhythme_backend.dto.requestDto.post.PostDeleteRequestDto;
 import com.example.rhythme_backend.dto.requestDto.post.PostPatchRequestDto;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 public class PostController {
 
     private final PostService postService;
+    private final PageRequest pageRequest;
 
     // 카테고리별 게시판 전체 조회
     @GetMapping("/auth/makerpost")
@@ -52,13 +54,18 @@ public class PostController {
     public ResponseEntity<?> pagemakerpost(Model model,
                        @PageableDefault(page = 0, size = 6, sort = "id", direction = Sort.Direction.DESC) Pageable page,
                        @RequestParam(required = false, defaultValue = "") String searchText) {
-
         return postService.searchmakerposts(model,page,searchText);
     }
     @GetMapping("/mypage/makerpost")
     public ResponseEntity<?> makerpostss(Model model,
                                            @PageableDefault(page = 0, size = 6, sort = "id", direction = Sort.Direction.DESC)
-                                           Pageable page) {
+                                           Pageable page ) {
         return postService.makerposts(model,page);
+    }
+
+    @GetMapping("/mypage/maker/{pageNum}")
+    public ResponseEntity<?> makerpost(@PathVariable int pageNum ) {
+        Pageable pageable = pageRequest.of(pageNum,6);
+        return postService.findAllBymakerPost(pageable);
     }
 }

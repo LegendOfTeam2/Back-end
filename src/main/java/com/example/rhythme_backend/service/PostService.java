@@ -12,8 +12,8 @@ import com.example.rhythme_backend.domain.post.SingerPostTag;
 import com.example.rhythme_backend.dto.requestDto.post.PostCreateRequestDto;
 import com.example.rhythme_backend.dto.requestDto.post.PostDeleteRequestDto;
 import com.example.rhythme_backend.dto.requestDto.post.PostPatchRequestDto;
-import com.example.rhythme_backend.dto.responseDto.post.PostPatchResponseDto;
 import com.example.rhythme_backend.dto.responseDto.post.MakerPostGetResponseDto;
+import com.example.rhythme_backend.dto.responseDto.post.PostPatchResponseDto;
 import com.example.rhythme_backend.dto.responseDto.post.PostsCreateResponseDto;
 import com.example.rhythme_backend.dto.responseDto.post.SingerPostGetResponseDto;
 import com.example.rhythme_backend.repository.MemberRepository;
@@ -22,14 +22,12 @@ import com.example.rhythme_backend.repository.like.MakerLikeRepository;
 import com.example.rhythme_backend.repository.like.SingerLikeRepository;
 import com.example.rhythme_backend.repository.media.ImageUrlRepository;
 import com.example.rhythme_backend.repository.media.MediaUrlRepository;
+import com.example.rhythme_backend.repository.posts.*;
 import com.example.rhythme_backend.util.Message;
-import com.example.rhythme_backend.repository.posts.MakerPostRepository;
-import com.example.rhythme_backend.repository.posts.MakerPostTagRepository;
-import com.example.rhythme_backend.repository.posts.SingerPostRepository;
-import com.example.rhythme_backend.repository.posts.SingerPostTagRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -61,6 +59,7 @@ public class PostService{
     //AWS S3
     private final S3Service s3Service;
     private final SingerLikeRepository singerLikeRepository;
+    private final MakerPostRepositorySupport makerPostRepositorySupport;
 
     //============ 메이커게시물만  검색&페이징 기능
     public ResponseEntity<?> searchmakerposts(Model model , Pageable page, String searchText) {
@@ -85,8 +84,11 @@ public class PostService{
         return new ResponseEntity<>(Message.success(makerpostEntity),HttpStatus.OK);
     }
 
-
-
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> findAllBymakerPost(Pageable pageable) {
+            PageImpl<MakerPostGetResponseDto> makerPostGetResponseDtoPage = makerPostRepositorySupport.findAll(pageable);
+            return new ResponseEntity<>(Message.success(makerPostGetResponseDtoPage),HttpStatus.OK);
+        }
 
 
 
@@ -99,7 +101,7 @@ public class PostService{
             makerpostGetResponseDtoList.add(
                     MakerPostGetResponseDto.builder()
                             .postId(makerPost.getId())
-                            .email(makerPost.getMember().getEmail())
+                            .nickname(makerPost.getMember().getNickname())
                             .position("Maker")
                             .title(makerPost.getTitle())
                             .content(makerPost.getContent())
@@ -144,7 +146,6 @@ public class PostService{
         MediaUrl mediaUrl = mediaUrlSave(postCreateRequestDto);
 
         if(postCreateRequestDto.getPosition().equals("Maker")){
-//
             MakerPost createdMakerPost = MakerPost.builder()
                     .member(memberWhoCreated)
                     .title(postCreateRequestDto.getTitle())
