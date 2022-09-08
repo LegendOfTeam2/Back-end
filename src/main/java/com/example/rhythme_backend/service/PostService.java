@@ -22,7 +22,7 @@ import com.example.rhythme_backend.repository.like.MakerLikeRepository;
 import com.example.rhythme_backend.repository.like.SingerLikeRepository;
 import com.example.rhythme_backend.repository.media.ImageUrlRepository;
 import com.example.rhythme_backend.repository.media.MediaUrlRepository;
-import com.example.rhythme_backend.util.Message;
+import com.example.rhythme_backend.domain.Message;
 import com.example.rhythme_backend.repository.posts.MakerPostRepository;
 import com.example.rhythme_backend.repository.posts.MakerPostTagRepository;
 import com.example.rhythme_backend.repository.posts.SingerPostRepository;

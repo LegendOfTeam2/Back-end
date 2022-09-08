@@ -4,7 +4,7 @@ import com.example.rhythme_backend.dto.TokenDto;
 import com.example.rhythme_backend.dto.requestDto.member.*;
 import com.example.rhythme_backend.service.googleLogin.Constant;
 import com.example.rhythme_backend.service.MemberService;
-import com.example.rhythme_backend.util.Message;
+import com.example.rhythme_backend.domain.Message;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

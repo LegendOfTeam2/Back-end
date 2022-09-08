@@ -5,14 +5,13 @@ import com.example.rhythme_backend.domain.post.SingerPost;
 import com.example.rhythme_backend.dto.responseDto.*;
 import com.example.rhythme_backend.repository.posts.MakerPostRepository;
 import com.example.rhythme_backend.repository.posts.SingerPostRepository;
-import com.example.rhythme_backend.util.Message;
+import com.example.rhythme_backend.domain.Message;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
