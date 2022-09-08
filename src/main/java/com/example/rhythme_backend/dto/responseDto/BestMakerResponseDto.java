@@ -1,5 +1,6 @@
 package com.example.rhythme_backend.dto.responseDto;
 
+import com.example.rhythme_backend.domain.media.ImageUrl;
 import com.example.rhythme_backend.domain.media.MediaUrl;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,6 +10,12 @@ import lombok.Getter;
 public class BestMakerResponseDto {
 
     private MediaUrl mediaUrl;
+    private ImageUrl imageUrl;
+    private String nickname;
+    private String position;
+    private String title;
     private Long likes;
+    private Boolean collaborate;
+    private String content;
 
 }

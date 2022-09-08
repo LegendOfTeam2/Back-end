@@ -3,6 +3,8 @@ package com.example.rhythme_backend.service;
 import com.example.rhythme_backend.domain.HashTag;
 import com.example.rhythme_backend.domain.Member;
 import com.example.rhythme_backend.domain.MemberHashTag;
+import com.example.rhythme_backend.domain.post.MakerPost;
+import com.example.rhythme_backend.domain.post.SingerPost;
 import com.example.rhythme_backend.dto.TokenDto;
 import com.example.rhythme_backend.dto.requestDto.member.*;
 import com.example.rhythme_backend.dto.responseDto.ResignResponseDto;
@@ -10,6 +12,12 @@ import com.example.rhythme_backend.exception.CustomException;
 import com.example.rhythme_backend.exception.ErrorCode;
 import com.example.rhythme_backend.jwt.TokenProvider;
 import com.example.rhythme_backend.repository.*;
+import com.example.rhythme_backend.repository.like.MakerLikeRepository;
+import com.example.rhythme_backend.repository.like.SingerLikeRepository;
+import com.example.rhythme_backend.repository.posts.MakerPostRepository;
+import com.example.rhythme_backend.repository.posts.MakerPostTagRepository;
+import com.example.rhythme_backend.repository.posts.SingerPostRepository;
+import com.example.rhythme_backend.repository.posts.SingerPostTagRepository;
 import com.example.rhythme_backend.service.googleLogin.Constant;
 import com.example.rhythme_backend.service.googleLogin.GoogleOauth;
 import com.example.rhythme_backend.service.kakaoLogin.KakaoOauth;
@@ -41,10 +49,16 @@ public class MemberService {
     private final GoogleOauth googleOauth;
     private final HttpServletResponse response;
     private final KakaoOauth kakaoOauth;
-    private final TagRepository tagRepository;
-    private final MemberTagRepository memberTagRepository;
-
+    private final MemberHashTagRepository memberHashTagRepository;
     private final HashTagRepository hashTagRepository;
+//    private final FollowRepository followRepository;
+//    private final MakerLikeRepository makerLikeRepository;
+//    private final SingerLikeRepository singerLikeRepository;
+//    private final MakerPostTagRepository makerPostTagRepository;
+//    private final SingerPostTagRepository singerPostTagRepository;
+//    private final TagRepository tagRepository;
+//    private final MakerPostRepository makerPostRepository;
+//    private final SingerPostRepository singerPostRepository;
 
     @Transactional
     public ResponseEntity<?> signupMember(SignupRequestDto requestDto) {
@@ -54,10 +68,13 @@ public class MemberService {
             return new ResponseEntity<>(Message.fail("DUPLICATED_EMAIL","중복된 이메일입니다."),HttpStatus.BAD_REQUEST);
         }
 
+        String defaultIntro = "리드미에 여러분을 소개해주세요!";
         Member member = Member.builder()
+                .deleteCheck(false)
                 .email(requestDto.getEmail())
                 .imgUrl(requestDto.getImgUrl())
                 .nickname(requestDto.getNickname())
+                .introduce(defaultIntro)
                 .password(passwordEncoder.encode(requestDto.getPassword()))
                 .build();
         memberRepository.save(member);
@@ -117,18 +134,62 @@ public class MemberService {
         }
 
         RefreshToken deleteToken = getDeleteToken(member);
-        memberTagRepository.deleteAllByMemberId(member);
-        hashTagRepository.deleteAllByMemberId(member);
         String deleteEmail = requestDto.getEmail();
         Member deleteMember = getPresentEmail(deleteEmail);
         Long deleteMemberId = deleteMember.getId();
         Member resignMember = getDeleteMember(deleteMemberId);
-
-        if (null == resignMember) {
-            return new ResponseEntity<>(Message.fail("MEMBER_NOT_FOUND", "해당 멤버가 없습니다."), HttpStatus.NOT_FOUND);
+        //논리삭제
+        if(!resignMember.getDeleteCheck()) {
+            resignMember.updateDeleteCheck(true);
+        } else {
+            return new ResponseEntity<>(Message.fail("MEMBER_NOT_FOUND","이미 탈퇴한 사용자입니다."),HttpStatus.NOT_FOUND);
         }
+
+//        //실제 삭제
+//        if (equals(memberHashTagRepository.findById(member.getId()))) {
+//            memberHashTagRepository.deleteAllByMemberId(member);
+//        }
+//        if (equals(hashTagRepository.findById(member.getId()))) {
+//            hashTagRepository.deleteAllByMemberId(member);
+//        }
+//        if (equals(followRepository.findById(member.getId()))) {
+//            followRepository.deleteAllByMemberId(member);
+//        }
+//        if (equals(makerLikeRepository.findById(member.getId()))) {
+//            makerLikeRepository.deleteAllByMemberId(member);
+//        }
+//        if (equals(singerLikeRepository.findById(member.getId()))){
+//            singerLikeRepository.deleteAllByMemberId(member);
+//        }
+//        Member makerPostDelete = memberRepository.findById(member.getId()).orElseGet(Member::new);
+//        MakerPost makerPost = makerPostRepository.findById(makerPostDelete.getId()).orElseGet(MakerPost::new);
+//        if (equals(makerPostRepository.findById(makerPostDelete.getId()))) {
+//            makerPostTagRepository.deleteAllByMakerPostId(makerPost);
+//            tagRepository.deleteAllByMakerPostTags(makerPost);
+//        }
+//        Member singerPostDelete = memberRepository.findById(member.getId()).orElseGet(Member::new);
+//        SingerPost singerPost = singerPostRepository.findById(singerPostDelete.getId()).orElseGet(SingerPost::new);
+//        if(equals(singerPostRepository.findById(singerPostDelete.getId()))) {
+//            singerPostTagRepository.deleteAllBySingerPostId(singerPost);
+//            tagRepository.deleteAllBySingerPostTags(singerPost);
+//        }
+//        if (equals(makerPostRepository.findById(member.getId()))) {
+//            makerPostRepository.deleteAllByMember(member);
+//        }
+//        if (equals(singerPostRepository.findById(member.getId()))) {
+//            singerPostRepository.deleteAllByMember(member);
+//        }
+
+//        String deleteEmail = requestDto.getEmail();
+//        Member deleteMember = getPresentEmail(deleteEmail);
+//        Long deleteMemberId = deleteMember.getId();
+//        Member resignMember = getDeleteMember(deleteMemberId);
+
+//        if (null == resignMember) {
+//            return new ResponseEntity<>(Message.fail("MEMBER_NOT_FOUND", "해당 멤버가 없습니다."), HttpStatus.NOT_FOUND);
+//        }
         refreshTokenRepository.delete(deleteToken);
-        memberRepository.delete(resignMember);
+//        memberRepository.delete(resignMember);
         return new ResponseEntity<>(Message.success(
                 ResignResponseDto.builder()
                         .email(deleteMember.getEmail())
@@ -166,6 +227,7 @@ public class MemberService {
 
         if (kakaoUser == null) {
             // 회원가입
+            String defaultIntro = "리드미에 여러분을 소개해주세요!";
             Random random = new Random();
             String kakaoDefaultName = "KAKAO" + random.nextInt(1000000000);
             String name = kakaoUserInfo.getName();
@@ -175,7 +237,9 @@ public class MemberService {
             //카카오 이메일
             String email = kakaoUserInfo.getEmail();
             kakaoUser = Member.builder()
+                    .deleteCheck(false)
                     .kakaoId(kakaoId)
+                    .introduce(defaultIntro)
                     .nickname(nickname)
                     .email(email)
                     .name(name)
@@ -224,6 +288,7 @@ public class MemberService {
 
                 if (googleLoginUser == null) {
                     // 회원가입
+                    String defaultIntro = "리드미에 여러분을 소개해주세요!";
                     Random random = new Random();
                     String name = googleUser.getName();
                     String googleDefaultName = "google" + random.nextInt(1000000000);
@@ -231,6 +296,8 @@ public class MemberService {
                     String encodedPassword = passwordEncoder.encode(password);
                     String email = googleUser.getEmail();
                     googleLoginUser = Member.builder()
+                            .deleteCheck(false)
+                            .introduce(defaultIntro)
                             .googleId(googleId)
                             .nickname(googleDefaultName)
                             .email(email)
@@ -258,7 +325,7 @@ public class MemberService {
                             .hashtag(tag)
                             .build());
             MemberHashTag memberTag = new MemberHashTag(member,memberHashtag);
-            memberTagRepository.save(memberTag);
+            memberHashTagRepository.save(memberTag);
         }
     }
 

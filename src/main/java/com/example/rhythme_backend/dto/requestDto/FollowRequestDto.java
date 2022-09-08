@@ -7,11 +7,11 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class FollowRequestDto {
-    private Member follower;
+    private Member member;
     private Member following;
 
-    public FollowRequestDto(Member follower, Member following) {
-        this.follower = follower;
+    public FollowRequestDto(Member member, Member following) {
+        this.member = member;
         this.following = following;
     }
 }

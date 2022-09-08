@@ -116,6 +116,7 @@ public class PostService{
         if(postCreateRequestDto.getPosition().equals("Maker")){
 //
             MakerPost createdMakerPost = MakerPost.builder()
+                    .likes(0L)
                     .member(memberWhoCreated)
                     .title(postCreateRequestDto.getTitle())
                     .content(postCreateRequestDto.getContent())
@@ -153,6 +154,7 @@ public class PostService{
 
         }else if(postCreateRequestDto.getPosition().equals("Singer")){
             SingerPost createdSingerPost = SingerPost.builder()
+                    .likes(0L)
                     .member(memberWhoCreated)
                     .title(postCreateRequestDto.getTitle())
                     .content(postCreateRequestDto.getContent())
@@ -369,7 +371,6 @@ public class PostService{
             Tag tag1 = tagRepository.save(
                     Tag.builder()
                             .tag(tag)
-                            .memberId(singerPost.getMember())
                             .build());
             SingerPostTag singerPostTag = new SingerPostTag(singerPost,tag1);
             singerPostTagRepository.save(singerPostTag);

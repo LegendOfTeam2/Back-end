@@ -27,7 +27,7 @@ public class FollowService {
         Member follower = validateMember(request);
         checkAccessToken(request, follower);
         Member following = isPresentMemberFollow(memberId);
-        Optional<Follow> findFollowing = followRepository.findByFollowerAndFollowing(follower, following);
+        Optional<Follow> findFollowing = followRepository.findByMemberAndFollowing(follower, following);
         if(findFollowing.isEmpty()) {
             FollowRequestDto followRequestDto = new FollowRequestDto(follower, following);
             Follow follow = new Follow(followRequestDto);

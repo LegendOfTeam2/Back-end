@@ -4,6 +4,7 @@ import com.example.rhythme_backend.service.MainPageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -37,9 +38,9 @@ public class MainPageController {
         return mainPageService.bestSinger();
     }
 
-//    @GetMapping("/api/powerartist")
-//    public ResponseEntity<?> getPowerArtist() {
-//        return mainPageService.MostLikeArtist();
-//    }
+    @GetMapping("/api/powerartist")
+    public ResponseEntity<?> getPowerArtist() {
+        return mainPageService.MostLikeArtist();
+    }
 
 }

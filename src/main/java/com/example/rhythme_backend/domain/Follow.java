@@ -14,9 +14,9 @@ public class Follow {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JoinColumn(name = "follower_member_id")
+    @JoinColumn(name = "member_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Member follower;   // (팔로우) 하는 유저
+    private Member member;   // (팔로우) 하는 유저
 
     @JoinColumn(name = "following_member_id")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -24,7 +24,7 @@ public class Follow {
 
 
     public Follow(FollowRequestDto requestDto) {
-        this.follower = requestDto.getFollower();
+        this.member = requestDto.getMember();
         this.following = requestDto.getFollowing();
     }
 }

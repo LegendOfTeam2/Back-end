@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
@@ -17,6 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Builder
+//@SQLDelete(sql = "UPDATE member SET delete_check = true where id = ?")
 public class Member extends Timestamped {
 
     @Id
@@ -31,7 +33,6 @@ public class Member extends Timestamped {
 
     @Column
     private String name;
-
     @Column(nullable = false)
     @JsonIgnore
     private String password;
@@ -45,11 +46,29 @@ public class Member extends Timestamped {
     @Column
     private String imgUrl;
 
+    @Column
+    private String introduce;
+    @Column
+    private Long followers;
+
     @OneToMany(mappedBy = "tagId",fetch = FetchType.LAZY)
     private List<MemberHashTag> hashtag;
+
+    @Column
+    private Boolean deleteCheck;
 
     public boolean validatePassword(PasswordEncoder passwordEncoder, String password) {
         return passwordEncoder.matches(password, this.password);
     }
+
+    public void updateFollowers(Long id, Long followers) {
+        this.followers = followers;
+        this.id = id;
+    }
+
+    public void updateDeleteCheck (Boolean deleteCheck) {
+        this.deleteCheck = deleteCheck;
+    }
+
 
 }
