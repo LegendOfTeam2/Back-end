@@ -32,9 +32,18 @@ public class FollowService {
             FollowRequestDto followRequestDto = new FollowRequestDto(follower, following);
             Follow follow = new Follow(followRequestDto);
             followRepository.save(follow);
+            //------
+            Long followers = followRepository.countAllByFollowingId(memberId);
+            System.out.println(followers);
+            follower.updateFollowers(followers);
+            //------
             return ResponseDto.success(true);
         } else {
             followRepository.deleteById(findFollowing.get().getId());
+            //------
+            Long followers = followRepository.countAllByFollowingId(memberId);
+            follower.updateFollowers(followers);
+            //------
             return ResponseDto.success(false);
         }
     }

@@ -61,9 +61,8 @@ public class Member extends Timestamped {
         return passwordEncoder.matches(password, this.password);
     }
 
-    public void updateFollowers(Long id, Long followers) {
+    public void updateFollowers(Long followers) {
         this.followers = followers;
-        this.id = id;
     }
 
     public void updateDeleteCheck (Boolean deleteCheck) {
