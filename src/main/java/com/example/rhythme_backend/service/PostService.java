@@ -399,7 +399,6 @@ public class PostService{
             Tag tag1 = tagRepository.save(
                     Tag.builder()
                             .tag(tag)
-                            .memberId(singerPost.getMember())
                             .build());
             SingerPostTag singerPostTag = new SingerPostTag(singerPost,tag1);
             singerPostTagRepository.save(singerPostTag);
