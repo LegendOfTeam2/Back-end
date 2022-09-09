@@ -29,10 +29,13 @@ import com.example.rhythme_backend.repository.posts.SingerPostRepository;
 import com.example.rhythme_backend.repository.posts.SingerPostTagRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,6 +61,33 @@ public class PostService{
     //AWS S3
     private final S3Service s3Service;
     private final SingerLikeRepository singerLikeRepository;
+
+    //============ 메이커게시물만  검색&페이징 기능
+    public ResponseEntity<?> searchmakerposts(Model model , Pageable page, String searchText) {
+        Page<MakerPost> makerpostEntity = makerPostRepository.findByTitleOrContent(searchText, page);
+        int startPage = Math.max(1, makerpostEntity.getPageable().getPageNumber() - 4);
+        int endPage = Math.min(makerpostEntity.getTotalPages(), makerpostEntity.getPageable().getPageNumber() + 4);
+        int nowPage = makerpostEntity.getPageable().getPageNumber() + 1;
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+        model.addAttribute("nowPage", nowPage);
+        return new ResponseEntity<>(Message.success(makerpostEntity),HttpStatus.OK);
+    }
+
+    public ResponseEntity<?> makerposts(Model model , Pageable page) {
+        Page<MakerPost> makerpostEntity = makerPostRepository.findAll(page);
+        int startPage = Math.max(1, makerpostEntity.getPageable().getPageNumber() - 4);
+        int endPage = Math.min(makerpostEntity.getTotalPages(), makerpostEntity.getPageable().getPageNumber() + 4);
+        int nowPage = makerpostEntity.getPageable().getPageNumber() + 1;
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+        model.addAttribute("nowPage", nowPage);
+        return new ResponseEntity<>(Message.success(makerpostEntity),HttpStatus.OK);
+    }
+
+
+
+
 
 
     //============ 카테고리별 게시판 전체 조회 로직.
@@ -369,7 +399,6 @@ public class PostService{
             Tag tag1 = tagRepository.save(
                     Tag.builder()
                             .tag(tag)
-                            .memberId(singerPost.getMember())
                             .build());
             SingerPostTag singerPostTag = new SingerPostTag(singerPost,tag1);
             singerPostTagRepository.save(singerPostTag);

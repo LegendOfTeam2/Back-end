@@ -33,8 +33,4 @@ public class Tag {
     @OneToMany(mappedBy = "memberId")
     private List<MemberHashTag> memberTags;
 
-    @ManyToOne
-    @JoinColumn(name = "member_id")
-    private Member memberId;
-
 }

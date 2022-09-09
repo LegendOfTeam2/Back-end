@@ -5,7 +5,11 @@ import com.example.rhythme_backend.dto.requestDto.post.PostDeleteRequestDto;
 import com.example.rhythme_backend.dto.requestDto.post.PostPatchRequestDto;
 import com.example.rhythme_backend.service.PostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -42,5 +46,19 @@ public class PostController {
     @DeleteMapping("/auth/post")
     public ResponseEntity<?> deletePost(@RequestBody PostDeleteRequestDto postDeleteRequestDto){
         return postService.deletePost(postDeleteRequestDto);
+    }
+    // 메이커게시물 페이징 및 검색
+    @GetMapping("/makerpost/search")
+    public ResponseEntity<?> pagemakerpost(Model model,
+                       @PageableDefault(page = 0, size = 6, sort = "id", direction = Sort.Direction.DESC) Pageable page,
+                       @RequestParam(required = false, defaultValue = "") String searchText) {
+
+        return postService.searchmakerposts(model,page,searchText);
+    }
+    @GetMapping("/mypage/makerpost")
+    public ResponseEntity<?> makerpostss(Model model,
+                                           @PageableDefault(page = 0, size = 6, sort = "id", direction = Sort.Direction.DESC)
+                                           Pageable page) {
+        return postService.makerposts(model,page);
     }
 }

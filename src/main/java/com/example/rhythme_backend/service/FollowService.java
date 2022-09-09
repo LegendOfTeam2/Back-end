@@ -22,11 +22,10 @@ public class FollowService {
     private final TokenProvider tokenProvider;
     private final MemberRepository memberRepository;
 
-
-    public ResponseDto<?> upDownFollow(Long memberId, HttpServletRequest request) {
+    public ResponseDto<?> upDownFollow(String nickname, HttpServletRequest request) {
         Member follower = validateMember(request);
         checkAccessToken(request, follower);
-        Member following = isPresentMemberFollow(memberId);
+        Member following = isPresentMemberFollow(nickname);
         Optional<Follow> findFollowing = followRepository.findByFollowerAndFollowing(follower, following);
         if(findFollowing.isEmpty()) {
             FollowRequestDto followRequestDto = new FollowRequestDto(follower, following);
@@ -38,7 +37,29 @@ public class FollowService {
             return ResponseDto.success(false);
         }
     }
+        //  팔로우 // 팔로워 리스트 가져오는 서비스 로직// 챌린지로 추후 이야기 하기로 함.
+//    @Transactional(readOnly = true)
+//    public ResponseEntity<?> getMemberByAllFollower(String nickname, HttpServletRequest request) {
+//        validateMember(request);
+//        Member member = isPresentMemberFollow(nickname);
+//        List<Follow> followList = followRepository.findAllByFollowing(member);
+//        List<FollowingResponseDto> followedResponseDtoList = new ArrayList<>();
+//        for(Follow follow : followList) {
+//            followedResponseDtoList.add(new FollowingResponseDto(follow.getFollower().getId(),follow.getFollower().getNickname()));
+//        }
+//        return new ResponseEntity<>(Message.success(followedResponseDtoList), HttpStatus.OK);
+//    }
 
+//    @Transactional(readOnly = true)
+//    public ResponseEntity<?> getMemberByAllFoloowing(String nickname , HttpServletRequest request){
+//        validateMember(request);
+//        Member member = isPresentMemberFollow(nickname);
+//        List<Follow> followList = followRepository.findAllByFollower(member);
+//        List<FollowedResponseDto> followedResponseDtoList = new ArrayList<>();
+//        for(Follow follow : followList) {
+//            followedResponseDtoList.add(new FollowedResponseDto(follw))
+//        }
+//    }
     public Member validateMember(HttpServletRequest request) {
         if (!tokenProvider.validateToken(request.getHeader("Authorization").substring(7))) {
             return null;
@@ -51,8 +72,8 @@ public class FollowService {
                 throw new CustomException(ErrorCode.TOKEN_IS_EXPIRED);
             if (null == member) throw new CustomException(ErrorCode.MEMBER_NOT_FOUND);
         }
-    public Member isPresentMemberFollow(Long memberId) {
-        Optional<Member> optionalMember = memberRepository.findById(memberId);
+    public Member isPresentMemberFollow(String  nickname) {
+        Optional<Member> optionalMember = memberRepository.findByNickname(nickname);
         return optionalMember.orElseThrow(
                 () -> new CustomException(ErrorCode.MEMBER_NOT_FOUND)
         );
