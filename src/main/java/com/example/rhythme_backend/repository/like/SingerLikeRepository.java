@@ -3,6 +3,7 @@ package com.example.rhythme_backend.repository.like;
 
 import com.example.rhythme_backend.domain.Member;
 import com.example.rhythme_backend.domain.MemberHashTag;
+import com.example.rhythme_backend.domain.like.MakerLike;
 import com.example.rhythme_backend.domain.like.SingerLike;
 import com.example.rhythme_backend.domain.post.SingerPost;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,6 +19,6 @@ public interface SingerLikeRepository extends JpaRepository<SingerLike, Long> {
 
     //Optional<Like> findByMemberAndPostId(Member member, Long postId);
     Long countAllBySingerPostId(Long singerPostId);
-
     Optional<SingerLike> deleteAllByMemberId(Member memberId);
+    List<SingerLike> findAllByMemberIdOrderBySingerPost(Member memberId);
 }

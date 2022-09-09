@@ -24,6 +24,7 @@ import com.example.rhythme_backend.service.kakaoLogin.KakaoOauth;
 import com.example.rhythme_backend.util.Message;
 import com.example.rhythme_backend.util.RefreshToken;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -74,6 +75,7 @@ public class MemberService {
                 .email(requestDto.getEmail())
                 .imgUrl(requestDto.getImgUrl())
                 .nickname(requestDto.getNickname())
+                .followers(0L)
                 .introduce(defaultIntro)
                 .password(passwordEncoder.encode(requestDto.getPassword()))
                 .build();
@@ -138,12 +140,17 @@ public class MemberService {
         Member deleteMember = getPresentEmail(deleteEmail);
         Long deleteMemberId = deleteMember.getId();
         Member resignMember = getDeleteMember(deleteMemberId);
-        //논리삭제
-        if(!resignMember.getDeleteCheck()) {
-            resignMember.updateDeleteCheck(true);
-        } else {
-            return new ResponseEntity<>(Message.fail("MEMBER_NOT_FOUND","이미 탈퇴한 사용자입니다."),HttpStatus.NOT_FOUND);
+        if (null == resignMember) {
+            return new ResponseEntity<>(Message.fail("MEMBER_NOT_FOUND", "해당 멤버가 없습니다."), HttpStatus.NOT_FOUND);
         }
+        refreshTokenRepository.delete(deleteToken);
+        memberRepository.delete(resignMember);
+//        //논리삭제
+//        if(!resignMember.getDeleteCheck()) {
+//            resignMember.updateDeleteCheck(true);
+//        } else {
+//            return new ResponseEntity<>(Message.fail("MEMBER_NOT_FOUND","이미 탈퇴한 사용자입니다."),HttpStatus.NOT_FOUND);
+//        }
 
 //        //실제 삭제
 //        if (equals(memberHashTagRepository.findById(member.getId()))) {
@@ -188,7 +195,7 @@ public class MemberService {
 //        if (null == resignMember) {
 //            return new ResponseEntity<>(Message.fail("MEMBER_NOT_FOUND", "해당 멤버가 없습니다."), HttpStatus.NOT_FOUND);
 //        }
-        refreshTokenRepository.delete(deleteToken);
+//        refreshTokenRepository.delete(deleteToken);
 //        memberRepository.delete(resignMember);
         return new ResponseEntity<>(Message.success(
                 ResignResponseDto.builder()
@@ -198,13 +205,25 @@ public class MemberService {
     }
 
     public ResponseEntity<?> logoutMember(LogoutRequestDto requestDto, HttpServletRequest request) {
-        if (!tokenProvider.validateToken(request.getHeader("Refresh-Token"))) {
+
+        String[] BearerSplit = request.getHeader("Authorization").split(" ");
+        System.out.println("베어러 0번째:" + BearerSplit[0]);
+        System.out.println("베어러 1번째:"+ BearerSplit[1]);
+        String accessToken = BearerSplit[1];
+        if (!tokenProvider.validateToken(accessToken)) {
             return new ResponseEntity<>(Message.fail("INVALID_TOKEN", "Token이 유효하지 않습니다."),HttpStatus.UNAUTHORIZED);
         }
-        Member member = tokenProvider.getMemberFromAuthentication();
-        if (null == member) {
-            return new ResponseEntity<>(Message.fail("MEMBER_NOT_FOUND","사용자를 찾을 수 없습니다."),HttpStatus.NOT_FOUND);
+//        Member member = memberRepository.findByNickname(request);
+//        if (null == member) {
+//            return new ResponseEntity<>(Message.fail("MEMBER_NOT_FOUND","사용자를 찾을 수 없습니다."),HttpStatus.NOT_FOUND);
+//        }
+
+//        Member member = validateMembers(request);
+        Member member = memberRepository.findByNickname(requestDto.getNickname()).orElse(null);
+        if (member == null) {
+            return new ResponseEntity<>(Message.fail("NICKNAME_NOT_FOUND", "존재하지 않는 닉네임입니다."),HttpStatus.BAD_REQUEST);
         }
+
         String logoutNickname = requestDto.getNickname();
         Member logoutMember = presentNickname(logoutNickname);
         Long logoutMemberId = logoutMember.getId();
@@ -240,6 +259,7 @@ public class MemberService {
                     .deleteCheck(false)
                     .kakaoId(kakaoId)
                     .introduce(defaultIntro)
+                    .followers(0L)
                     .nickname(nickname)
                     .email(email)
                     .name(name)
@@ -299,6 +319,7 @@ public class MemberService {
                             .deleteCheck(false)
                             .introduce(defaultIntro)
                             .googleId(googleId)
+                            .followers(0L)
                             .nickname(googleDefaultName)
                             .email(email)
                             .name(name)
@@ -405,5 +426,14 @@ public class MemberService {
         response.addHeader("Authorization", "Bearer " + tokenDto.getAccessToken());
         response.addHeader("Access-Token-Expire-Time", tokenDto.getAccessTokenExpiresIn().toString());
     }
+
+//    public String getMemberNickName(String token) {
+//        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getSubject();
+//    }
+
+//    @Transactional
+//    public Member validateMembers(HttpServletRequest request) {
+//        return tokenProvider.getMemberFromAuthentication();
+//    }
 
 }

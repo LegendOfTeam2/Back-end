@@ -18,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Builder
-//@SQLDelete(sql = "UPDATE member SET delete_check = true where id = ?")
+@SQLDelete(sql = "UPDATE member SET delete_check = true where id = ?")
 public class Member extends Timestamped {
 
     @Id
@@ -53,7 +53,6 @@ public class Member extends Timestamped {
 
     @OneToMany(mappedBy = "tagId",fetch = FetchType.LAZY)
     private List<MemberHashTag> hashtag;
-
     @Column
     private Boolean deleteCheck;
 

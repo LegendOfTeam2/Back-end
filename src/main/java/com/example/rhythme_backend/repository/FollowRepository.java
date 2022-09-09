@@ -3,6 +3,7 @@ package com.example.rhythme_backend.repository;
 import com.example.rhythme_backend.domain.Follow;
 import com.example.rhythme_backend.domain.Member;
 import com.example.rhythme_backend.domain.MemberHashTag;
+import com.example.rhythme_backend.domain.like.SingerLike;
 import com.example.rhythme_backend.domain.post.MakerPost;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -21,6 +22,8 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
     Optional<Follow> deleteAllByMemberId(Member memberId);
 
     List<Follow> findDistinctTop3ByOrderByFollowing();
+    List<Follow> findAllByFollowingIdOrderByFollowing(Member memberId);
+
 
 
 }

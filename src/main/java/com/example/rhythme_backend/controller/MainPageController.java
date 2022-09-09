@@ -4,8 +4,10 @@ import com.example.rhythme_backend.service.MainPageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -41,6 +43,21 @@ public class MainPageController {
     @GetMapping("/api/powerartist")
     public ResponseEntity<?> getPowerArtist() {
         return mainPageService.MostLikeArtist();
+    }
+
+    @GetMapping("/auth/makerlikepost")
+    public List<Long> makerLikePost(HttpServletRequest request){
+        return mainPageService.makerLikeList(request);
+    }
+
+    @GetMapping("/auth/singerlikepost")
+    public List<Long> singerLikePost(HttpServletRequest request){
+        return mainPageService.singerLikeList(request);
+    }
+
+    @GetMapping("/auth/followerlist")
+    public List<Long> followList(HttpServletRequest request){
+        return mainPageService.followList(request);
     }
 
 }

@@ -32,10 +32,16 @@ public class FollowService {
             FollowRequestDto followRequestDto = new FollowRequestDto(follower, following);
             Follow follow = new Follow(followRequestDto);
             followRepository.save(follow);
+                System.out.println("팔로어 테이블 아이디: "+ follow.getId());
+                System.out.println("찍힘당한 애: "+ follow.getFollowing().getId());
+                System.out.println("찍은 애: "+follow.getMember().getId());
             //------
             Long followers = followRepository.countAllByFollowingId(memberId);
-            System.out.println(followers);
-            follower.updateFollowers(followers);
+                System.out.println("찍힘당한 애 팔로워 수: "+followers);
+            following.updateFollowers(followers);
+                System.out.println("follower: 찍은 애"+follower.getId());
+                System.out.println("following: 찍힘당한 애 "+following.getId());
+                System.out.println("memberId: 찍힘당한 애 "+ memberId);
             //------
             return ResponseDto.success(true);
         } else {

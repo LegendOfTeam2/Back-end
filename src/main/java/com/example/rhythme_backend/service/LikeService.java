@@ -79,7 +79,7 @@ public class LikeService {
             //
             return ResponseDto.success(true);
         } else {
-            singerLikeRepository.deleteById(findMakerLike.getId());
+            makerLikeRepository.deleteById(findMakerLike.getId());
             //
             Long likes = makerLikeRepository.countAllByMakerPostId(makerPostId);
             makerPost.makerUpdateLikes(likes);
