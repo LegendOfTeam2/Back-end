@@ -153,7 +153,7 @@ public class MainPageService {
         for (Member member : memberList) {
             powerArtistResponseDtoList.add(PowerArtistResponseDto.builder()
                             .nickname(member.getNickname())
-                            .imageUrl(member.getImgUrl())
+                            .imageUrl(member.getImageUrl())
                             .follower(member.getFollowers())
                             .build());
         }

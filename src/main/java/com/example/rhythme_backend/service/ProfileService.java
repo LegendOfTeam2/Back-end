@@ -14,7 +14,6 @@ import com.example.rhythme_backend.dto.responseDto.profile.ProfileUploadPostResp
 import com.example.rhythme_backend.repository.FollowRepository;
 import com.example.rhythme_backend.repository.HashTagRepository;
 import com.example.rhythme_backend.repository.MemberRepository;
-import com.example.rhythme_backend.repository.MemberTagRepository;
 import com.example.rhythme_backend.repository.like.MakerLikeRepository;
 import com.example.rhythme_backend.repository.like.SingerLikeRepository;
 import com.example.rhythme_backend.repository.media.ImageUrlRepository;
@@ -50,7 +49,6 @@ public class ProfileService {
 
     private final FollowRepository followRepository;
 
-    private final MemberTagRepository memberTagRepository;
 
     private final HashTagRepository hashTagRepository;
 
@@ -133,8 +131,8 @@ public class ProfileService {
     public List<ProfileUploadPostResponseDto> profileGetMyLike(String nickname){
         List<ProfileUploadPostResponseDto> answer = new ArrayList<>();
         Member member = memberRepository.findByNickname(nickname).orElseGet(Member::new);
-        List<MakerLike> makerLikeList = makerLikeRepository.findByMember(member);
-        List<SingerLike> singerLikeList = singerLikeRepository.findByMember(member);
+        List<MakerLike> makerLikeList = makerLikeRepository.findByMemberId(member);
+        List<SingerLike> singerLikeList = singerLikeRepository.findByMemberId(member);
         for (MakerLike a : makerLikeList) {
             MakerPost exportFromA = a.getMakerPost();
             answer.add(ProfileUploadPostResponseDto.builder()

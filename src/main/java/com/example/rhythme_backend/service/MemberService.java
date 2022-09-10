@@ -72,7 +72,7 @@ public class MemberService {
         Member member = Member.builder()
                 .deleteCheck("N")
                 .email(requestDto.getEmail())
-                .imgUrl(requestDto.getImgUrl())
+                .imageUrl(requestDto.getImgUrl())
                 .nickname(requestDto.getNickname())
                 .followers(0L)
                 .introduce(defaultIntro)
