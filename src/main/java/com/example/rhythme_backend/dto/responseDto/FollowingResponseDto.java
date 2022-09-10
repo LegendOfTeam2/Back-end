@@ -6,6 +6,10 @@
 //@Getter
 //@NoArgsConstructor
 //public class FollowingResponseDto {
+
+
+
+
 //    private Long following;
 //    private String nickname;
 //

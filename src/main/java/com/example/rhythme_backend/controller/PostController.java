@@ -4,12 +4,10 @@ import com.example.rhythme_backend.dto.requestDto.post.PostCreateRequestDto;
 import com.example.rhythme_backend.dto.requestDto.post.PostDeleteRequestDto;
 import com.example.rhythme_backend.dto.requestDto.post.PostPatchRequestDto;
 import com.example.rhythme_backend.service.PostService;
+import com.example.rhythme_backend.util.Message;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,45 +18,54 @@ public class PostController {
 
     // 카테고리별 게시판 전체 조회
     @GetMapping("/auth/makerpost")
-    public ResponseEntity<?> getMakerPost(){
-      return postService.getAllMakerPost();
+    public ResponseEntity<?> getMakerPost() {
+        return postService.getAllMakerPost();
     }
 
     @GetMapping("/auth/singerpost")
-    public ResponseEntity<?> getSingerPost(){
+    public ResponseEntity<?> getSingerPost() {
         return postService.getAllSingerPost();
     }
 
 
     // 글 쓰기 API
     @PostMapping("/auth/post")
-    public ResponseEntity<?> createPost(@RequestBody PostCreateRequestDto postCreateRequestDto){
+    public ResponseEntity<?> createPost(@RequestBody PostCreateRequestDto postCreateRequestDto) {
         return postService.createPost(postCreateRequestDto);
     }
 
     //글 수정 API
     @PatchMapping("/auth/post")
-    public ResponseEntity<?> patchPost(@RequestBody PostPatchRequestDto postPatchRequestDto){
+    public ResponseEntity<?> patchPost(@RequestBody PostPatchRequestDto postPatchRequestDto) {
         return postService.patchPost(postPatchRequestDto);
     }
 
     // 글삭제 API
     @DeleteMapping("/auth/post")
-    public ResponseEntity<?> deletePost(@RequestBody PostDeleteRequestDto postDeleteRequestDto){
+    public ResponseEntity<?> deletePost(@RequestBody PostDeleteRequestDto postDeleteRequestDto) {
         return postService.deletePost(postDeleteRequestDto);
     }
-    // 메이커게시물 페이징 및 검색
-//    @GetMapping("/makerpost/search")
-//    public ResponseEntity<?> pagemakerpost(Model model,
-//                       @PageableDefault(page = 0, size = 6, sort = "id", direction = Sort.Direction.DESC) Pageable page,
-//                       @RequestParam(required = false, defaultValue = "") String searchText) {
-//
-//        return postService.searchmakerposts(model,page,searchText);
-//    }
-    @GetMapping("/mypage/makerpost")
-    public ResponseEntity<?> makerpostss(Model model,
-                                           @PageableDefault(page = 0, size = 6, sort = "id", direction = Sort.Direction.DESC)
-                                           Pageable page) {
-        return postService.makerposts(model,page);
+
+
+    @GetMapping("/makerpost/search")
+    public ResponseEntity<?> getSearchMakerPost(@RequestParam(required = false, defaultValue = "") String searchText) {
+        return postService.getAllMakerPostSearch(searchText);
+    }
+
+    @GetMapping("/singerpost/search")
+    public ResponseEntity<?> getSearchSingerPost(@RequestParam(required = false, defaultValue = "") String searchText) {
+        return postService.getAllSingerPostSearch(searchText);
+    }
+
+    @GetMapping("/allpost/search")
+    public ResponseEntity<?> searchAllPost(@RequestParam(required = false, defaultValue = "") String searchText,
+                                           @RequestParam String category) {
+        if (category.equals("Singer")) {
+            return postService.getAllSingerPostSearch(searchText);
+
+        } else if (category.equals("Maker")) {
+            return postService.getAllMakerPostSearch(searchText);
+        }
+    return new ResponseEntity<>(Message.success("검색어를 입력 해주세요"), HttpStatus.OK);
     }
 }

@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 public class SingerPostGetResponseDto {
     private Long postId;
-    private String email;
+    private String nickname;
     private String position;
     private String title;
     private String content;
