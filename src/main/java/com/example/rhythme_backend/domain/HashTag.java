@@ -21,8 +21,7 @@ public class HashTag {
     @Column(nullable = false)
     private String hashtag;
 
-    @OneToMany(mappedBy = "memberId")
-    private List<MemberHashTag> memberTags;
-
-
+    @JoinColumn(name = "member_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Member member;
 }

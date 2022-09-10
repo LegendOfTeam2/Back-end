@@ -2,9 +2,6 @@ package com.example.rhythme_backend.repository;
 
 import com.example.rhythme_backend.domain.Follow;
 import com.example.rhythme_backend.domain.Member;
-import com.example.rhythme_backend.domain.MemberHashTag;
-import com.example.rhythme_backend.domain.like.SingerLike;
-import com.example.rhythme_backend.domain.post.MakerPost;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

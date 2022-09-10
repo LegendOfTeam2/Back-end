@@ -2,7 +2,6 @@ package com.example.rhythme_backend.service;
 
 import com.example.rhythme_backend.domain.HashTag;
 import com.example.rhythme_backend.domain.Member;
-import com.example.rhythme_backend.domain.MemberHashTag;
 import com.example.rhythme_backend.domain.post.MakerPost;
 import com.example.rhythme_backend.domain.post.SingerPost;
 import com.example.rhythme_backend.dto.TokenDto;
@@ -50,7 +49,6 @@ public class MemberService {
     private final GoogleOauth googleOauth;
     private final HttpServletResponse response;
     private final KakaoOauth kakaoOauth;
-    private final MemberHashTagRepository memberHashTagRepository;
     private final HashTagRepository hashTagRepository;
 //    private final FollowRepository followRepository;
 //    private final MakerLikeRepository makerLikeRepository;
@@ -336,12 +334,11 @@ public class MemberService {
 
     public void hashTagSave(List<String> hashtag,Member member){
         for(String tag : hashtag){
-            HashTag hashtagList = hashTagRepository.save(
+            hashTagRepository.save(
                     HashTag.builder()
+                            .member(member)
                             .hashtag(tag)
                             .build());
-            MemberHashTag memberTag = new MemberHashTag(member,hashtagList);
-            memberHashTagRepository.save(memberTag);
         }
     }
 

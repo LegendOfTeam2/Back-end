@@ -49,8 +49,6 @@ public class Member extends Timestamped {
     @Column
     private Long followers;
 
-    @OneToMany(mappedBy = "tagId",fetch = FetchType.LAZY)
-    private List<MemberHashTag> hashtag;
     @Column
     private String deleteCheck;
 
