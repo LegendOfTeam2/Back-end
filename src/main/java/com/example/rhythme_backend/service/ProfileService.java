@@ -9,6 +9,7 @@ import com.example.rhythme_backend.domain.post.MakerPost;
 import com.example.rhythme_backend.domain.post.SingerPost;
 import com.example.rhythme_backend.dto.responseDto.profile.ProfileResponseDto;
 import com.example.rhythme_backend.dto.responseDto.profile.ProfileUploadPostResponseDto;
+import com.example.rhythme_backend.repository.FollowRepository;
 import com.example.rhythme_backend.repository.MemberRepository;
 import com.example.rhythme_backend.repository.like.MakerLikeRepository;
 import com.example.rhythme_backend.repository.like.SingerLikeRepository;
@@ -18,9 +19,11 @@ import com.example.rhythme_backend.repository.profile.ProfileRepository;
 import com.example.rhythme_backend.util.Message;
 import lombok.RequiredArgsConstructor;
 
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,20 +43,39 @@ public class ProfileService {
 
     private final ProfileRepository profileRepository;
 
+    private final FollowRepository followRepository;
+
 
     public ProfileResponseDto profileGetOne(String nickname){
         //팔로워 팔로잉은 따로 API 있음
         Member member = memberRepository.findByNickname(nickname).orElseGet(Member::new);
         Profile profile = profileRepository.findByMember(member);
         List<String> stringList = new ArrayList<>();
+        Long follower = followRepository.countByFollower(member);
+        Long following = followRepository.countByFollowing(member);
+        Integer makerPostCnt = makerPostRepository.countByMember(member);
+
         for(MemberHashTag a  : member.getHashtag()){
             stringList.add(a.getTagId().getHashtag());
         }
         return ProfileResponseDto.builder()
-                        .hashtag(stringList)
-                        .build();
+                .hashtag(stringList)
+                .myPostConunt(makerPostCnt)
+                .follower(follower)
+                .following(following)
+                .build();
 
     }
+
+
+    public ProfileResponseDto profileModifiy(String nickname){
+        Member member = memberRepository.findByNickname(nickname).orElseGet(Member::new);
+        Profile profile = profileRepository.findByMember(member);
+
+        return ProfileResponseDto.builder()
+                .build();
+    }
+
 
     public List<ProfileUploadPostResponseDto>  profileGetMyUpload(String nickname) {
         Member member = memberRepository.findByNickname(nickname).orElseGet(Member::new);
@@ -135,5 +157,6 @@ public class ProfileService {
 
         return answer;
     }
+
 
 }
