@@ -1,6 +1,7 @@
 package com.example.rhythme_backend.controller;
 
 
+import com.example.rhythme_backend.dto.requestDto.profile.ModifyProfileRequestDto;
 import com.example.rhythme_backend.repository.MemberRepository;
 import com.example.rhythme_backend.repository.posts.MakerPostRepository;
 import com.example.rhythme_backend.repository.posts.SingerPostRepository;
@@ -41,9 +42,11 @@ public class ProfilePageController {
                 profileService.profileGetMyLike(nickname)
         ),HttpStatus.OK);
     }
-
-    @PutMapping("/profile/{nickname}")
-    public ResponseEntity<?> profileModify(){
-        return
-    }
+//
+//    @PutMapping("/profile/{nickname}")
+//    public ResponseEntity<?> profileModify(ModifyProfileRequestDto modifyProfileRequestDto){
+//        return new ResponseEntity<>(Message.success(
+//                profileService.profileModifiy(modifyProfileRequestDto)
+//        ),HttpStatus.OK);
+//    }
 }

@@ -43,13 +43,17 @@ public class Member extends Timestamped {
     private String googleId;
 
     @Column
-    private String imgUrl;
+    private String imageUrl;
 
     @OneToMany(mappedBy = "tagId",fetch = FetchType.LAZY)
     private List<MemberHashTag> hashtag;
 
     public boolean validatePassword(PasswordEncoder passwordEncoder, String password) {
         return passwordEncoder.matches(password, this.password);
+    }
+
+    public void updateImageUrl(String imageUrl){
+        this.imageUrl = imageUrl;
     }
 
 }

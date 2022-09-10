@@ -7,12 +7,17 @@ import com.example.rhythme_backend.domain.like.MakerLike;
 import com.example.rhythme_backend.domain.like.SingerLike;
 import com.example.rhythme_backend.domain.post.MakerPost;
 import com.example.rhythme_backend.domain.post.SingerPost;
+import com.example.rhythme_backend.dto.requestDto.profile.ModifyProfileRequestDto;
+import com.example.rhythme_backend.dto.responseDto.profile.ModifyProfileResponseDto;
 import com.example.rhythme_backend.dto.responseDto.profile.ProfileResponseDto;
 import com.example.rhythme_backend.dto.responseDto.profile.ProfileUploadPostResponseDto;
 import com.example.rhythme_backend.repository.FollowRepository;
+import com.example.rhythme_backend.repository.HashTagRepository;
 import com.example.rhythme_backend.repository.MemberRepository;
+import com.example.rhythme_backend.repository.MemberTagRepository;
 import com.example.rhythme_backend.repository.like.MakerLikeRepository;
 import com.example.rhythme_backend.repository.like.SingerLikeRepository;
+import com.example.rhythme_backend.repository.media.ImageUrlRepository;
 import com.example.rhythme_backend.repository.posts.MakerPostRepository;
 import com.example.rhythme_backend.repository.posts.SingerPostRepository;
 import com.example.rhythme_backend.repository.profile.ProfileRepository;
@@ -45,6 +50,10 @@ public class ProfileService {
 
     private final FollowRepository followRepository;
 
+    private final MemberTagRepository memberTagRepository;
+
+    private final HashTagRepository hashTagRepository;
+
 
     public ProfileResponseDto profileGetOne(String nickname){
         //팔로워 팔로잉은 따로 API 있음
@@ -68,13 +77,18 @@ public class ProfileService {
     }
 
 
-    public ProfileResponseDto profileModifiy(String nickname){
-        Member member = memberRepository.findByNickname(nickname).orElseGet(Member::new);
-        Profile profile = profileRepository.findByMember(member);
+    // 프로필 수정 메서드    수정사항 완료 후 로직 완성성
 
-        return ProfileResponseDto.builder()
-                .build();
-    }
+//    public ProfileResponseDto profileModifiy(ModifyProfileRequestDto modifyProfileRequestDto){
+//        Member member = memberRepository.findByNickname(modifyProfileRequestDto.getNickname()).orElseGet(Member::new);
+//        Profile profile = profileRepository.findByMember(member);
+//        member.updateImageUrl(modifyProfileRequestDto.getImageUrl());
+//        memberTagRepository.deleteAllByMemberId(member);
+//        hashTagRepository.deleteAllByMemberId(member);
+//
+//
+//        return ;
+//    }
 
 
     public List<ProfileUploadPostResponseDto>  profileGetMyUpload(String nickname) {
