@@ -24,7 +24,6 @@ public class MakerLike {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member memberId;
-
     // 게시글
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "makerpost_id")

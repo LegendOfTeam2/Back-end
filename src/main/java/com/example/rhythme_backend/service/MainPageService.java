@@ -40,7 +40,7 @@ public class MainPageService {
 
     public ResponseEntity<?> bestSong() {
         List<BestSongResponseDto> bestSongResponseDtoList = new ArrayList<>();
-        Optional<MakerPost> makerPostList = makerPostRepository.findTopByOrderByLikesDesc().ofNu;
+        Optional<MakerPost> makerPostList = makerPostRepository.findTopByOrderByLikesDesc();
         Optional<SingerPost> singerPostList = singerPostRepository.findTopByOrderByLikesDesc();
         Long makerPostLike = makerPostList.orElseThrow().getLikes();
         Long singerPostLike = singerPostList.orElseThrow().getLikes();
@@ -153,7 +153,7 @@ public class MainPageService {
         for (Member member : memberList) {
             powerArtistResponseDtoList.add(PowerArtistResponseDto.builder()
                             .nickname(member.getNickname())
-                            .imageUrl(member.getImgUrl())
+                            .imageUrl(member.getImageUrl())
                             .follower(member.getFollowers())
                             .build());
         }
