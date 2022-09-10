@@ -63,16 +63,16 @@ public class PostService{
     private final SingerLikeRepository singerLikeRepository;
 
     //============ 메이커게시물만  검색&페이징 기능
-    public ResponseEntity<?> searchmakerposts(Model model , Pageable page, String searchText) {
-        Page<MakerPost> makerpostEntity = makerPostRepository.findByTitleOrContent(searchText, page);
-        int startPage = Math.max(1, makerpostEntity.getPageable().getPageNumber() - 4);
-        int endPage = Math.min(makerpostEntity.getTotalPages(), makerpostEntity.getPageable().getPageNumber() + 4);
-        int nowPage = makerpostEntity.getPageable().getPageNumber() + 1;
-        model.addAttribute("startPage", startPage);
-        model.addAttribute("endPage", endPage);
-        model.addAttribute("nowPage", nowPage);
-        return new ResponseEntity<>(Message.success(makerpostEntity),HttpStatus.OK);
-    }
+//    public ResponseEntity<?> searchmakerposts(Model model , Pageable page, String searchText) {
+//        Page<MakerPost> makerpostEntity = makerPostRepository.findByTitleOrContent(searchText, page);
+//        int startPage = Math.max(1, makerpostEntity.getPageable().getPageNumber() - 4);
+//        int endPage = Math.min(makerpostEntity.getTotalPages(), makerpostEntity.getPageable().getPageNumber() + 4);
+//        int nowPage = makerpostEntity.getPageable().getPageNumber() + 1;
+//        model.addAttribute("startPage", startPage);
+//        model.addAttribute("endPage", endPage);
+//        model.addAttribute("nowPage", nowPage);
+//        return new ResponseEntity<>(Message.success(makerpostEntity),HttpStatus.OK);
+//    }
 
     public ResponseEntity<?> makerposts(Model model , Pageable page) {
         Page<MakerPost> makerpostEntity = makerPostRepository.findAll(page);

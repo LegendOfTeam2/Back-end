@@ -22,7 +22,7 @@ public interface SingerPostRepository extends JpaRepository<SingerPost,Long> {
     Optional<SingerPost> deleteAllByMember(Member member);
 
     //Optional<SingerPost> findById(Member memberId);
-    List<SingerPost> findTopByOrderByLikesDesc();
+    SingerPost findTopByOrderByLikesDesc();
 
 
 }
