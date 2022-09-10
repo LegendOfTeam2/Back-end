@@ -19,7 +19,10 @@ import com.example.rhythme_backend.repository.like.MakerLikeRepository;
 import com.example.rhythme_backend.repository.like.SingerLikeRepository;
 import com.example.rhythme_backend.repository.media.ImageUrlRepository;
 import com.example.rhythme_backend.repository.media.MediaUrlRepository;
-import com.example.rhythme_backend.repository.posts.*;
+import com.example.rhythme_backend.repository.posts.MakerPostRepository;
+import com.example.rhythme_backend.repository.posts.MakerPostTagRepository;
+import com.example.rhythme_backend.repository.posts.SingerPostRepository;
+import com.example.rhythme_backend.repository.posts.SingerPostTagRepository;
 import com.example.rhythme_backend.util.Message;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -53,9 +56,8 @@ public class PostService{
     private final S3Service s3Service;
     private final SingerLikeRepository singerLikeRepository;
 
-    // 메이커 게시판 검색
-    @Transactional(readOnly = true)
-    public ResponseEntity<?> getAllMakerPostSearch(String searchText) {
+    public ResponseEntity<?>  AllPostSearch(String searchText , String category) {
+        if (category.equals("Maker")) {
             List<MakerPost> makerPostList = makerPostRepository.findByTitleContainingOrContentContainingOrderByCreatedAtDesc(searchText, searchText);
             List<SearchMakerPostResponseDto> searchMakerPostResponseDtoList = new ArrayList<>();
             for (MakerPost makerPost : makerPostList) {
@@ -73,28 +75,26 @@ public class PostService{
                 );
             }
             return new ResponseEntity<>(Message.success(searchMakerPostResponseDtoList), HttpStatus.OK);
+        } else if (category.equals("Singer")) {
+            List<SingerPost> singerPostList = singerPostRepository.findByTitleContainingOrContentContainingOrderByCreatedAtDesc(searchText, searchText);
+            List<SearchSingerPostResponseDto> searchSingerPostResponseDtoList = new ArrayList<>();
+            for (SingerPost singerPost : singerPostList) {
+                searchSingerPostResponseDtoList.add(
+                        SearchSingerPostResponseDto.builder()
+                                .postId(singerPost.getId())
+                                .nickname(singerPost.getMember().getNickname())
+                                .title(singerPost.getTitle())
+                                .content(singerPost.getContent())
+                                .imageUrl(singerPost.getImageUrl().getImageUrl())
+                                .mediaUrl(singerPost.getMediaUrl().getMediaUrl())
+                                .singerlikeCnt(singerLikeRepository.countAllBySingerPost(singerPost))
+                                .collaborate(singerPost.getCollaborate())
+                                .build()
+                );
+            }
+            return new ResponseEntity<>(Message.success(searchSingerPostResponseDtoList), HttpStatus.OK);
         }
-
-    // 싱어 게시판 검색
-    @Transactional(readOnly = true)
-    public ResponseEntity<?> getAllSingerPostSearch(String searchText) {
-        List<SingerPost> singerPostList = singerPostRepository.findByTitleContainingOrContentContaining(searchText,searchText);
-        List<SearchSingerPostResponseDto> searchSingerPostResponseDtoList = new ArrayList<>();
-        for (SingerPost singerPost : singerPostList) {
-            searchSingerPostResponseDtoList.add(
-                    SearchSingerPostResponseDto.builder()
-                            .postId(singerPost.getId())
-                            .nickname(singerPost.getMember().getNickname())
-                            .title(singerPost.getTitle())
-                            .content(singerPost.getContent())
-                            .imageUrl(singerPost.getImageUrl().getImageUrl())
-                            .mediaUrl(singerPost.getMediaUrl().getMediaUrl())
-                            .singerlikeCnt(singerLikeRepository.countAllBySingerPost(singerPost))
-                            .collaborate(singerPost.getCollaborate())
-                            .build()
-            );
-        }
-        return new ResponseEntity<>(Message.success(searchSingerPostResponseDtoList), HttpStatus.OK);
+        return new ResponseEntity<>(Message.success("잘못된 접근 입니다."), HttpStatus.OK);
     }
 
     //============ 카테고리별 게시판 전체 조회 로직.
