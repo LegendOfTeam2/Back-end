@@ -28,7 +28,7 @@ public class MakerPost extends Timestamped {
     private Long id;
 
     @JsonIgnore
-    @JoinColumn(name = "member", nullable = false)
+    @JoinColumn(name = "member_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
@@ -55,7 +55,6 @@ public class MakerPost extends Timestamped {
 
     @OneToMany(mappedBy ="tagId", fetch = FetchType.LAZY)
     private List<MakerPostTag> tags;
-
     @Column
     private Long likes;
 

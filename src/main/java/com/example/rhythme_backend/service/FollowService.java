@@ -10,6 +10,7 @@ import com.example.rhythme_backend.repository.FollowRepository;
 import com.example.rhythme_backend.repository.MemberRepository;
 import com.example.rhythme_backend.util.ResponseDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +18,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class FollowService {
     private final FollowRepository followRepository;
     private final TokenProvider tokenProvider;
@@ -26,14 +28,19 @@ public class FollowService {
         Member follower = validateMember(request);
         checkAccessToken(request, follower);
         Member following = isPresentMemberFollow(nickname);
-        Optional<Follow> findFollowing = followRepository.findByFollowerAndFollowing(follower, following);
+        Optional<Follow> findFollowing = followRepository.findByMemberAndFollowing(follower, following);
         if(findFollowing.isEmpty()) {
             FollowRequestDto followRequestDto = new FollowRequestDto(follower, following);
             Follow follow = new Follow(followRequestDto);
             followRepository.save(follow);
+            Long followers = followRepository.countAllByFollowingId(nickname);
+            following.updateFollowers(followers);
+            memberRepository.save(following);
             return ResponseDto.success(true);
         } else {
             followRepository.deleteById(findFollowing.get().getId());
+            Long followers = followRepository.countAllByFollowingId(nickname);
+            follower.updateFollowers(followers);
             return ResponseDto.success(false);
         }
     }

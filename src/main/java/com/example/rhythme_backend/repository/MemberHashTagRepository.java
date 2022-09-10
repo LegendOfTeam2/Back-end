@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface MemberTagRepository extends JpaRepository<MemberHashTag,Long> {
+public interface MemberHashTagRepository extends JpaRepository<MemberHashTag,Long> {
 
     Optional<MemberHashTag> deleteAllByMemberId(Member memberId);
 

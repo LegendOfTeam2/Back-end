@@ -146,6 +146,7 @@ public class PostService{
         if(postCreateRequestDto.getPosition().equals("Maker")){
 //
             MakerPost createdMakerPost = MakerPost.builder()
+                    .likes(0L)
                     .member(memberWhoCreated)
                     .title(postCreateRequestDto.getTitle())
                     .content(postCreateRequestDto.getContent())
@@ -183,6 +184,7 @@ public class PostService{
 
         }else if(postCreateRequestDto.getPosition().equals("Singer")){
             SingerPost createdSingerPost = SingerPost.builder()
+                    .likes(0L)
                     .member(memberWhoCreated)
                     .title(postCreateRequestDto.getTitle())
                     .content(postCreateRequestDto.getContent())
