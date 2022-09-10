@@ -58,17 +58,18 @@ public class MainPageService {
 
             return new ResponseEntity<>(Message.success(bestSongResponseDtoList), HttpStatus.OK);
         }
-
-                bestSongResponseDtoList.add(BestSongResponseDto.builder()
-                                .position("Singer")
-                                .collaborate(singerPostList.get().getCollaborate())
-                                .imageUrl(singerPostList.get().getImageUrl())
-                                .title(singerPostList.get().getTitle())
-                                .likes(singerPostList.get().getLikes())
-                                .mediaUrl(singerPostList.get().getMediaUrl())
-                                .nickname(singerPostList.get().getMember().getNickname())
-                                .content(singerPostList.get().getContent())
-                                .build());
+        for (SingerPost singerPost : singerPostList) {
+            bestSongResponseDtoList.add(BestSongResponseDto.builder()
+                    .position("Singer")
+                    .collaborate(singerPost.getCollaborate())
+                    .imageUrl(singerPost.getImageUrl())
+                    .title(singerPost.getTitle())
+                    .likes(singerPost.getLikes())
+                    .mediaUrl(singerPost.getMediaUrl())
+                    .nickname(singerPost.getMember().getNickname())
+                    .content(singerPost.getContent())
+                    .build());
+        }
 
             return new ResponseEntity<>(Message.success(bestSongResponseDtoList), HttpStatus.OK);
     }
