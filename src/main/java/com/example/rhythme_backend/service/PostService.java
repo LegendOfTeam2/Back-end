@@ -57,25 +57,7 @@ public class PostService{
     private final SingerLikeRepository singerLikeRepository;
 
     public ResponseEntity<?>  AllPostSearch(String searchText , String category) {
-        if (category.equals("Maker")) {
-            List<MakerPost> makerPostList = makerPostRepository.findByTitleContainingOrContentContainingOrderByCreatedAtDesc(searchText, searchText);
-            List<SearchMakerPostResponseDto> searchMakerPostResponseDtoList = new ArrayList<>();
-            for (MakerPost makerPost : makerPostList) {
-                searchMakerPostResponseDtoList.add(
-                        SearchMakerPostResponseDto.builder()
-                                .postId(makerPost.getId())
-                                .nickname(makerPost.getMember().getNickname())
-                                .title(makerPost.getTitle())
-                                .content(makerPost.getContent())
-                                .imageUrl(makerPost.getImageUrl().getImageUrl())
-                                .mediaUrl(makerPost.getMediaUrl().getMediaUrl())
-                                .makerlikeCnt(makerLikeRepository.countAllByMakerPost(makerPost))
-                                .collaborate(makerPost.getCollaborate())
-                                .build()
-                );
-            }
-            return new ResponseEntity<>(Message.success(searchMakerPostResponseDtoList), HttpStatus.OK);
-        } else if (category.equals("Singer")) {
+        if (category.equals("Singer")) {
             List<SingerPost> singerPostList = singerPostRepository.findByTitleContainingOrContentContainingOrderByCreatedAtDesc(searchText, searchText);
             List<SearchSingerPostResponseDto> searchSingerPostResponseDtoList = new ArrayList<>();
             for (SingerPost singerPost : singerPostList) {
@@ -94,7 +76,26 @@ public class PostService{
             }
             return new ResponseEntity<>(Message.success(searchSingerPostResponseDtoList), HttpStatus.OK);
         }
-        return new ResponseEntity<>(Message.success("잘못된 접근 입니다."), HttpStatus.OK);
+        if (category.equals("Maker")) {
+            List<MakerPost> makerPostList = makerPostRepository.findByTitleContainingOrContentContainingOrderByCreatedAtDesc(searchText, searchText);
+            List<SearchMakerPostResponseDto> searchMakerPostResponseDtoList = new ArrayList<>();
+            for (MakerPost makerPost : makerPostList) {
+                searchMakerPostResponseDtoList.add(
+                        SearchMakerPostResponseDto.builder()
+                                .postId(makerPost.getId())
+                                .nickname(makerPost.getMember().getNickname())
+                                .title(makerPost.getTitle())
+                                .content(makerPost.getContent())
+                                .imageUrl(makerPost.getImageUrl().getImageUrl())
+                                .mediaUrl(makerPost.getMediaUrl().getMediaUrl())
+                                .makerlikeCnt(makerLikeRepository.countAllByMakerPost(makerPost))
+                                .collaborate(makerPost.getCollaborate())
+                                .build()
+                );
+            }
+            return new ResponseEntity<>(Message.success(searchMakerPostResponseDtoList), HttpStatus.OK);
+        }
+     return new ResponseEntity<>(Message.success("잘못된 접근 입니다"), HttpStatus.BAD_REQUEST);
     }
 
     //============ 카테고리별 게시판 전체 조회 로직.
