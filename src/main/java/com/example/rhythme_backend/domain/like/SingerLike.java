@@ -24,7 +24,7 @@ public class SingerLike {
     // 유저
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
-    private Member member;
+    private Member memberId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "singerpost_id")
@@ -34,7 +34,7 @@ public class SingerLike {
 
     @Builder
     public SingerLike(SingerLikeRequestDto requestDto) {
-        this.member = requestDto.getMember();
+        this.memberId = requestDto.getMember();
         this.singerPost = requestDto.getSingerPost();
     }
 }
