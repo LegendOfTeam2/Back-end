@@ -6,7 +6,6 @@ import com.example.rhythme_backend.domain.like.MakerLike;
 import com.example.rhythme_backend.domain.like.SingerLike;
 import com.example.rhythme_backend.domain.post.MakerPost;
 import com.example.rhythme_backend.domain.post.SingerPost;
-import com.example.rhythme_backend.dto.mainpage.*;
 import com.example.rhythme_backend.dto.responseDto.mainpage.*;
 import com.example.rhythme_backend.jwt.TokenProvider;
 import com.example.rhythme_backend.repository.FollowRepository;
@@ -21,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +41,7 @@ public class MainPageService {
         List<BestSongResponseDto> bestSongResponseDtoList = new ArrayList<>();
         List<MakerPost> makerPostList = makerPostRepository.findTopByOrderByLikesDesc();
         List<SingerPost> singerPostList = singerPostRepository.findTopByOrderByLikesDesc();
-        if(makerPostList.get(0).getLikes() >= singerPostList.get(0).getLikes()) {
+        if(makerPostList.size() >= singerPostList.size()) {
             for (MakerPost makerPost : makerPostList) {
                 bestSongResponseDtoList.add(BestSongResponseDto.builder()
                                 .position("Maker")
@@ -160,7 +160,7 @@ public class MainPageService {
     @Transactional(readOnly = true)
     public ResponseEntity<?> makerLikeList(HttpServletRequest request) {
         Member member = validateMember(request);
-        List<MakerLike> makerLikeList = makerLikeRepository.findAllByMemberIdOrderByMakerPost(member);
+        List<MakerLike> makerLikeList = makerLikeRepository.findAllByMemberOrderByMakerPost(member);
         List<MyMakerResponseDto> myMakerResponseDtoList = new ArrayList<>();
         for (MakerLike makerLike : makerLikeList) {
             myMakerResponseDtoList.add(MyMakerResponseDto.builder()
@@ -173,7 +173,7 @@ public class MainPageService {
     @Transactional(readOnly = true)
     public ResponseEntity<?> singerLikeList(HttpServletRequest request) {
         Member member = validateMember(request);
-        List<SingerLike> singerLikeList = singerLikeRepository.findAllByMemberIdOrderBySingerPost(member);
+        List<SingerLike> singerLikeList = singerLikeRepository.findAllByMemberOrderBySingerPost(member);
         List<MySingerResponseDto> mySingerResponseDtoList = new ArrayList<>();
         for (SingerLike singerLike : singerLikeList) {
             mySingerResponseDtoList.add(MySingerResponseDto.builder()

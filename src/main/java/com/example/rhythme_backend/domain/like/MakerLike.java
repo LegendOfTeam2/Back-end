@@ -24,7 +24,7 @@ public class MakerLike {
     // 유저
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
-    private Member memberId;
+    private Member member;
 
     // 게시글
     @ManyToOne(fetch = FetchType.LAZY)
@@ -35,7 +35,7 @@ public class MakerLike {
 
     @Builder
     public MakerLike(MakerLikeRequestDto requestDto) {
-        this.memberId = requestDto.getMember();
+        this.member = requestDto.getMember();
         this.makerPost = requestDto.getMakerPost();
 
     }
