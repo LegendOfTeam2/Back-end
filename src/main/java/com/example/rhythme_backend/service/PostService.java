@@ -52,7 +52,6 @@ public class PostService{
     //AWS S3
     private final S3Service s3Service;
     private final SingerLikeRepository singerLikeRepository;
-    private final MakerPostRepositorySupport makerPostRepositorySupport;
 
     // 메이커 게시판 검색
     @Transactional(readOnly = true)
@@ -78,7 +77,7 @@ public class PostService{
 
     // 싱어 게시판 검색
     @Transactional(readOnly = true)
-    public ResponseEntity<?> getAllSingerPostsearch(String searchText) {
+    public ResponseEntity<?> getAllSingerPostSearch(String searchText) {
         List<SingerPost> singerPostList = singerPostRepository.findByTitleContainingOrContentContaining(searchText,searchText);
         List<SearchSingerPostResponseDto> searchSingerPostResponseDtoList = new ArrayList<>();
         for (SingerPost singerPost : singerPostList) {

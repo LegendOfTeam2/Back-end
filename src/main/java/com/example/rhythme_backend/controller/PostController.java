@@ -55,14 +55,14 @@ public class PostController {
 
     @GetMapping("/singerpost/search")
     public ResponseEntity<?> getSearchSingerPost(@RequestParam(required = false, defaultValue = "") String searchText) {
-        return postService.getAllSingerPostsearch(searchText);
+        return postService.getAllSingerPostSearch(searchText);
     }
 
     @GetMapping("/allpost/search")
     public ResponseEntity<?> searchAllPost(@RequestParam(required = false, defaultValue = "") String searchText,
                                            @RequestParam String category) {
         if (category.equals("Singer")) {
-            return postService.getAllSingerPostsearch(searchText);
+            return postService.getAllSingerPostSearch(searchText);
 
         } else if (category.equals("Maker")) {
             return postService.getAllMakerPostSearch(searchText);
