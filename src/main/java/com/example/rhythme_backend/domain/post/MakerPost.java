@@ -35,10 +35,10 @@ public class MakerPost extends Timestamped {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
+    @Column(nullable = false,length = 1500)
     private String content;
 
-    @Column
+    @Column(nullable = false,length = 1500)
     private String lyrics;
 
     @JoinColumn(name = "image_url")
