@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface MakerLikeRepository extends JpaRepository<MakerLike, Long> {
 
-
+    List<MakerLike> findByMember(Member member);
     Optional<MakerLike> findByMemberAndMakerPost(Member member, MakerPost makerPost);
 
     Long countAllByMakerPost(MakerPost makerPost);

@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SingerLikeRepository extends JpaRepository<SingerLike, Long> {
+    List<SingerLike> findByMember(Member member);
     Optional<SingerLike> findByMemberAndSingerPost(Member member, SingerPost singerPost);
 
     Long countAllBySingerPost(SingerPost singerPost);

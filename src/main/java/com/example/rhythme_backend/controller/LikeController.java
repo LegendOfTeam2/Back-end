@@ -19,7 +19,7 @@ public class LikeController {
         return likeService.upDownSingerLike(postId, request);
     }
 
-    @PostMapping("/auth/makerpost/{makerpostId}/like")
+    @PostMapping("/auth/makerpost/{postId}/like")
     public ResponseDto<?> MakerLike(@PathVariable Long postId, HttpServletRequest request){
         return likeService.upDownMakerLike(postId, request);
     }
