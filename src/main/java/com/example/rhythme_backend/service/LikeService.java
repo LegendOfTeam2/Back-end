@@ -67,7 +67,7 @@ public class LikeService {
         MakerPost makerPost = getCurrentMakerPost(postId);
         checkMakerPost(makerPost);
 
-        MakerLike findMakerLike = makerLikeRepository.findByMemberIdAndMakerPost(member,makerPost).orElse(null);
+        MakerLike findMakerLike = makerLikeRepository.findByMemberAndMakerPost(member,makerPost).orElse(null);
 
         if(findMakerLike == null){
             MakerLikeRequestDto makerLikeRequestDto = new MakerLikeRequestDto(member, makerPost);

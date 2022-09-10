@@ -21,5 +21,5 @@ public interface SingerLikeRepository extends JpaRepository<SingerLike, Long> {
 
     Long countAllBySingerPostId(Long singerPostId);
 
-    List<SingerLike> findAllByMemberIdOrderBySingerPost(Member memberId);
+    List<SingerLike> findAllByMemberOrderBySingerPost(Member memberId);
 }

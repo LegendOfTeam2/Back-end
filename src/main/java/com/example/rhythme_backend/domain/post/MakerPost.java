@@ -35,7 +35,7 @@ public class MakerPost extends Timestamped {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false,columnDefinition = "TEXT")
+    @Column(nullable = false)
     private String content;
 
     @Column
