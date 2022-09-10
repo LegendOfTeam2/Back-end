@@ -42,7 +42,7 @@ public class Member extends Timestamped {
     private String googleId;
 
     @Column
-    private String imgUrl;
+    private String imageUrl;
 
     @Column
     private String introduce;
@@ -58,12 +58,17 @@ public class Member extends Timestamped {
         return passwordEncoder.matches(password, this.password);
     }
 
+
     public void updateFollowers(Long followers) {
         this.followers = followers;
     }
 
     public void updateDeleteCheck (String deleteCheck) {
         this.deleteCheck = deleteCheck;
+    }
+
+    public void updateImageUrl(String imageUrl){
+        this.imageUrl = imageUrl;
     }
 
 }
