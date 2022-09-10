@@ -14,11 +14,11 @@ public interface MakerLikeRepository extends JpaRepository<MakerLike, Long> {
 
     List<MakerLike> findByMemberId(Member member);
 
-    Optional<MakerLike> findByMemberAndMakerPost(Member member, MakerPost makerPost);
+    Optional<MakerLike> findByMemberIdAndMakerPost(Member member, MakerPost makerPost);
 
     Long countAllByMakerPost(MakerPost makerPost);
     Long countAllByMakerPostId(Long makerPostId);
 
-    List<MakerLike> findAllByMemberOrderByMakerPost(Member memberId);
+    List<MakerLike> findAllByMemberIdOrderByMakerPost(Member memberId);
 
 }
