@@ -12,13 +12,14 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SingerLikeRepository extends JpaRepository<SingerLike, Long> {
+
     Optional<SingerLike> findByMemberIdAndSingerPost(Member member, SingerPost singerPost);
 
-    Long countAllBySingerPost(SingerPost singerPost);
-    List<SingerLike> findBySingerPost(SingerPost singerPost);
+    List<SingerLike> findByMemberId(Member member);
 
-    //Optional<Like> findByMemberAndPostId(Member member, Long postId);
+    Long countAllBySingerPost(SingerPost singerPost);
+
     Long countAllBySingerPostId(Long singerPostId);
-    Optional<SingerLike> deleteAllByMemberId(Member memberId);
+
     List<SingerLike> findAllByMemberIdOrderBySingerPost(Member memberId);
 }

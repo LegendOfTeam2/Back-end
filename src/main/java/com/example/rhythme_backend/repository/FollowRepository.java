@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface FollowRepository extends JpaRepository<Follow, Long> {
-    Optional<Follow> findByMemberAndFollowing(Member following, Member follower);
+    Optional<Follow> findByFollowerAndFollowing(Member following, Member follower);
 
 
     List<Follow>findAllByFollowing(Member member);
@@ -22,7 +22,7 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
 
     Long countByFollowing(Member member);
 
-    Long countAllByFollowingId(String nickname);
+    Long countAllByFollowingId(Long following);
     Optional<Follow> deleteAllByFollower(Member memberId);
     List<Follow> findAllByFollowerOrderByFollowing(Member memberId);
 

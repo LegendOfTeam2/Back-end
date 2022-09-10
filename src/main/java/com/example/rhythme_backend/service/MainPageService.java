@@ -6,7 +6,6 @@ import com.example.rhythme_backend.domain.like.MakerLike;
 import com.example.rhythme_backend.domain.like.SingerLike;
 import com.example.rhythme_backend.domain.post.MakerPost;
 import com.example.rhythme_backend.domain.post.SingerPost;
-import com.example.rhythme_backend.dto.mainpage.*;
 import com.example.rhythme_backend.dto.responseDto.mainpage.*;
 import com.example.rhythme_backend.jwt.TokenProvider;
 import com.example.rhythme_backend.repository.FollowRepository;
@@ -21,9 +20,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -41,7 +42,7 @@ public class MainPageService {
         List<BestSongResponseDto> bestSongResponseDtoList = new ArrayList<>();
         List<MakerPost> makerPostList = makerPostRepository.findTopByOrderByLikesDesc();
         List<SingerPost> singerPostList = singerPostRepository.findTopByOrderByLikesDesc();
-        if(makerPostList.get(0).getLikes() >= singerPostList.get(0).getLikes()) {
+        if(makerPostList.size() >= singerPostList.size()) {
             for (MakerPost makerPost : makerPostList) {
                 bestSongResponseDtoList.add(BestSongResponseDto.builder()
                                 .position("Maker")
@@ -54,25 +55,27 @@ public class MainPageService {
                                 .content(makerPost.getContent())
                                 .build());
             }
+
             return new ResponseEntity<>(Message.success(bestSongResponseDtoList), HttpStatus.OK);
         }
-            for (SingerPost singerPost : singerPostList) {
-                bestSongResponseDtoList.add(BestSongResponseDto.builder()
-                                .position("Singer")
-                                .collaborate(singerPost.getCollaborate())
-                                .imageUrl(singerPost.getImageUrl())
-                                .title(singerPost.getTitle())
-                                .likes(singerPost.getLikes())
-                                .mediaUrl(singerPost.getMediaUrl())
-                                .nickname(singerPost.getMember().getNickname())
-                                .content(singerPost.getContent())
-                                .build());
+        for (SingerPost singerPost : singerPostList) {
+            bestSongResponseDtoList.add(BestSongResponseDto.builder()
+                    .position("Singer")
+                    .collaborate(singerPost.getCollaborate())
+                    .imageUrl(singerPost.getImageUrl())
+                    .title(singerPost.getTitle())
+                    .likes(singerPost.getLikes())
+                    .mediaUrl(singerPost.getMediaUrl())
+                    .nickname(singerPost.getMember().getNickname())
+                    .content(singerPost.getContent())
+                    .build());
         }
+
             return new ResponseEntity<>(Message.success(bestSongResponseDtoList), HttpStatus.OK);
     }
 
     public ResponseEntity<?> recentMaker() {
-        List<MakerPost> makerPostList = makerPostRepository.findAllByOrderByCreatedAt();
+        List<MakerPost> makerPostList = makerPostRepository.findAllByOrderByLikesDesc();
         List<RecentMakerResponseDto> recentMakerResponseDtoList = new ArrayList<>();
         for (MakerPost makerPost : makerPostList) {
             recentMakerResponseDtoList.add(RecentMakerResponseDto.builder()
@@ -91,7 +94,7 @@ public class MainPageService {
     }
 
     public ResponseEntity<?> recentSinger() {
-        List<SingerPost> singerPostList = singerPostRepository.findAllByOrderByCreatedAt();
+        List<SingerPost> singerPostList = singerPostRepository.findTop10ByOrderByCreatedAt();
         List<RecentSingerResponseDto> recentSingerResponseDtoList = new ArrayList<>();
         for (SingerPost singerPost : singerPostList) {
             recentSingerResponseDtoList.add(RecentSingerResponseDto.builder()
@@ -127,7 +130,7 @@ public class MainPageService {
     }
 
     public ResponseEntity<?> bestSinger() {
-        List<SingerPost> singerPostList = singerPostRepository.findAllByOrderByLikesDesc();
+        List<SingerPost> singerPostList = singerPostRepository.findTop10ByOrderByLikesDesc();
         List<BestSingerResponseDto> bestSingerResponseDtoList = new ArrayList<>();
         for (SingerPost singerPost : singerPostList) {
             bestSingerResponseDtoList.add(BestSingerResponseDto.builder()
@@ -145,12 +148,12 @@ public class MainPageService {
     }
 
     public ResponseEntity<?> MostLikeArtist() {
-        List<Member> memberList = memberRepository.findTop8ByOrderByFollowersDesc();
+        List<Member> memberList = memberRepository.findTop10ByOrderByFollowersDesc();
         List<PowerArtistResponseDto> powerArtistResponseDtoList = new ArrayList<>();
         for (Member member : memberList) {
             powerArtistResponseDtoList.add(PowerArtistResponseDto.builder()
                             .nickname(member.getNickname())
-                            .imageUrl(member.getImgUrl())
+                            .imageUrl(member.getImageUrl())
                             .follower(member.getFollowers())
                             .build());
         }
@@ -186,7 +189,7 @@ public class MainPageService {
     @Transactional(readOnly = true)
     public ResponseEntity<?> followList(HttpServletRequest request) {
         Member member = validateMember(request);
-        List<Follow> followList = followRepository.findAllByMemberOrderByFollowing(member);
+        List<Follow> followList = followRepository.findAllByFollowerOrderByFollowing(member);
         List<MyArtistResponseDto> myArtistResponseDtoList = new ArrayList<>();
         for (Follow follow : followList) {
             myArtistResponseDtoList.add(MyArtistResponseDto.builder()
@@ -196,6 +199,7 @@ public class MainPageService {
         return new ResponseEntity<>(Message.success(myArtistResponseDtoList),HttpStatus.OK);
     }
 
+    
     public Member validateMember(HttpServletRequest request) {
         if (!tokenProvider.validateToken(request.getHeader("Authorization").substring(7))) {
             return null;
