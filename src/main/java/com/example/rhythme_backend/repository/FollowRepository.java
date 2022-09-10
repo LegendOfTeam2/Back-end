@@ -22,7 +22,7 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
 
     Long countByFollowing(Member member);
 
-    Long countAllByFollowingId(String nickname);
+    Long countAllByFollowingId(Long following);
     Optional<Follow> deleteAllByFollower(Member memberId);
     List<Follow> findAllByFollowerOrderByFollowing(Member memberId);
 

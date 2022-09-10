@@ -15,8 +15,8 @@ public interface MakerPostRepository extends JpaRepository<MakerPost,Long> {
     //@Query(value = "SELECT * FROM maker_post WHERE title LIKE %:searchText% or content LIKE %:searchText%", nativeQuery = true)
     //Page<MakerPost> findByTitleOrContent(String searchText, Pageable page);
     Page<MakerPost> findAll(Pageable page);
-    List<MakerPost> findAllByOrderByCreatedAt();
-    MakerPost findTopByOrderByLikesDesc();
+    List<MakerPost> findTop10ByOrderByCreatedAt();
+    Optional<MakerPost> findTopByOrderByLikesDesc();
     List<MakerPost> findAllByOrderByLikesDesc();
     //Optional<MakerPost> deleteAllByMember(Member member);
 

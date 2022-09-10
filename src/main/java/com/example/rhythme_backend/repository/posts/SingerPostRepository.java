@@ -15,14 +15,14 @@ public interface SingerPostRepository extends JpaRepository<SingerPost,Long> {
     @Override
     Optional<SingerPost> findById(Long id);
 
-    List<SingerPost> findAllByOrderByCreatedAt();
+    List<SingerPost> findTop10ByOrderByCreatedAt();
 
-    List<SingerPost> findAllByOrderByLikesDesc();
+    List<SingerPost> findTop10ByOrderByLikesDesc();
 
     Optional<SingerPost> deleteAllByMember(Member member);
 
     //Optional<SingerPost> findById(Member memberId);
-    SingerPost findTopByOrderByLikesDesc();
+    Optional<SingerPost> findTopByOrderByLikesDesc();
 
 
 }

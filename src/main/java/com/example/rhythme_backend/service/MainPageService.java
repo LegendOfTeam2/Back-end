@@ -40,21 +40,21 @@ public class MainPageService {
 
     public ResponseEntity<?> bestSong() {
         List<BestSongResponseDto> bestSongResponseDtoList = new ArrayList<>();
-        MakerPost makerPostList = makerPostRepository.findTopByOrderByLikesDesc();
-        SingerPost singerPostList = singerPostRepository.findTopByOrderByLikesDesc();
-        Long makerPostLike = makerPostList.getLikes();
-        Long singerPostLike = singerPostList.getLikes();
+        Optional<MakerPost> makerPostList = makerPostRepository.findTopByOrderByLikesDesc().ofNu;
+        Optional<SingerPost> singerPostList = singerPostRepository.findTopByOrderByLikesDesc();
+        Long makerPostLike = makerPostList.orElseThrow().getLikes();
+        Long singerPostLike = singerPostList.orElseThrow().getLikes();
 
         if(makerPostLike >= singerPostLike) {
             bestSongResponseDtoList.add(BestSongResponseDto.builder()
                     .position("Maker")
-                    .collaborate(makerPostList.getCollaborate())
-                    .imageUrl(makerPostList.getImageUrl())
-                    .title(makerPostList.getTitle())
-                    .likes(makerPostList.getLikes())
-                    .mediaUrl(makerPostList.getMediaUrl())
-                    .nickname(makerPostList.getMember().getNickname())
-                    .content(makerPostList.getContent())
+                    .collaborate(makerPostList.get().getCollaborate())
+                    .imageUrl(makerPostList.get().getImageUrl())
+                    .title(makerPostList.get().getTitle())
+                    .likes(makerPostList.get().getLikes())
+                    .mediaUrl(makerPostList.get().getMediaUrl())
+                    .nickname(makerPostList.get().getMember().getNickname())
+                    .content(makerPostList.get().getContent())
                     .build());
 
             return new ResponseEntity<>(Message.success(bestSongResponseDtoList), HttpStatus.OK);
@@ -62,20 +62,20 @@ public class MainPageService {
 
                 bestSongResponseDtoList.add(BestSongResponseDto.builder()
                                 .position("Singer")
-                                .collaborate(singerPostList.getCollaborate())
-                                .imageUrl(singerPostList.getImageUrl())
-                                .title(singerPostList.getTitle())
-                                .likes(singerPostList.getLikes())
-                                .mediaUrl(singerPostList.getMediaUrl())
-                                .nickname(singerPostList.getMember().getNickname())
-                                .content(singerPostList.getContent())
+                                .collaborate(singerPostList.get().getCollaborate())
+                                .imageUrl(singerPostList.get().getImageUrl())
+                                .title(singerPostList.get().getTitle())
+                                .likes(singerPostList.get().getLikes())
+                                .mediaUrl(singerPostList.get().getMediaUrl())
+                                .nickname(singerPostList.get().getMember().getNickname())
+                                .content(singerPostList.get().getContent())
                                 .build());
 
             return new ResponseEntity<>(Message.success(bestSongResponseDtoList), HttpStatus.OK);
     }
 
     public ResponseEntity<?> recentMaker() {
-        List<MakerPost> makerPostList = makerPostRepository.findAllByOrderByCreatedAt();
+        List<MakerPost> makerPostList = makerPostRepository.findAllByOrderByLikesDesc();
         List<RecentMakerResponseDto> recentMakerResponseDtoList = new ArrayList<>();
         for (MakerPost makerPost : makerPostList) {
             recentMakerResponseDtoList.add(RecentMakerResponseDto.builder()
@@ -94,7 +94,7 @@ public class MainPageService {
     }
 
     public ResponseEntity<?> recentSinger() {
-        List<SingerPost> singerPostList = singerPostRepository.findAllByOrderByCreatedAt();
+        List<SingerPost> singerPostList = singerPostRepository.findTop10ByOrderByCreatedAt();
         List<RecentSingerResponseDto> recentSingerResponseDtoList = new ArrayList<>();
         for (SingerPost singerPost : singerPostList) {
             recentSingerResponseDtoList.add(RecentSingerResponseDto.builder()
@@ -130,7 +130,7 @@ public class MainPageService {
     }
 
     public ResponseEntity<?> bestSinger() {
-        List<SingerPost> singerPostList = singerPostRepository.findAllByOrderByLikesDesc();
+        List<SingerPost> singerPostList = singerPostRepository.findTop10ByOrderByLikesDesc();
         List<BestSingerResponseDto> bestSingerResponseDtoList = new ArrayList<>();
         for (SingerPost singerPost : singerPostList) {
             bestSingerResponseDtoList.add(BestSingerResponseDto.builder()
@@ -148,7 +148,7 @@ public class MainPageService {
     }
 
     public ResponseEntity<?> MostLikeArtist() {
-        List<Member> memberList = memberRepository.findTop8ByOrderByFollowersDesc();
+        List<Member> memberList = memberRepository.findTop10ByOrderByFollowersDesc();
         List<PowerArtistResponseDto> powerArtistResponseDtoList = new ArrayList<>();
         for (Member member : memberList) {
             powerArtistResponseDtoList.add(PowerArtistResponseDto.builder()
