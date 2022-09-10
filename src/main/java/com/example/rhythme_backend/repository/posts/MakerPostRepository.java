@@ -12,8 +12,7 @@ public interface MakerPostRepository extends JpaRepository<MakerPost,Long> {
 
 //    @Query(value = "SELECT * FROM maker_post WHERE title LIKE %:searchText% or content LIKE %:searchText%"
 //            ,nativeQuery = true)
-    List<MakerPost> findByTitleContainingOrContentContaining(String title,String content);
-
+    List<MakerPost> findByTitleContainingOrContentContainingOrderByCreatedAtDesc(String title,String content);
     List<MakerPost> findAllByOrderByCreatedAt();
 
     List<MakerPost> findTopByOrderByLikesDesc();

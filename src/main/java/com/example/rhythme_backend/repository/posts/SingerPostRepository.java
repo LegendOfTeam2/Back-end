@@ -12,6 +12,7 @@ public interface SingerPostRepository extends JpaRepository<SingerPost,Long> {
     @Override
     Optional<SingerPost> findById(Long id);
 
+    List<SingerPost> findByTitleContainingOrContentContaining(String title, String content);
     List<SingerPost> findAllByOrderByCreatedAt();
 
     List<SingerPost> findAllByOrderByLikesDesc();

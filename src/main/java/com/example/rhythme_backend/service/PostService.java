@@ -23,14 +23,10 @@ import com.example.rhythme_backend.repository.posts.*;
 import com.example.rhythme_backend.util.Message;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.Model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,69 +54,49 @@ public class PostService{
     private final SingerLikeRepository singerLikeRepository;
     private final MakerPostRepositorySupport makerPostRepositorySupport;
 
+    // 메이커 게시판 검색
     @Transactional(readOnly = true)
-    public ResponseEntity<?> getAllMakerPostsearch(String searchText){
-        List<MakerPost> makerPostList = makerPostRepository.findByTitleContainingOrContentContaining(searchText,searchText);
-        List<MakerPostGetResponseDto> makerpostGetResponseDtoList = new ArrayList<>();
-        for(MakerPost makerPost : makerPostList){
-            makerpostGetResponseDtoList.add(
-                    MakerPostGetResponseDto.builder()
-                            .postId(makerPost.getId())
-                            .nickname(makerPost.getMember().getNickname())
-//                            .position("Maker")
-                            .title(makerPost.getTitle())
-                            .content(makerPost.getContent())
-                            .imageUrl(makerPost.getImageUrl().getImageUrl())
-                            .mediaUrl(makerPost.getMediaUrl().getMediaUrl())
-                            .makerlikeCnt(makerLikeRepository.countAllByMakerPost(makerPost))
-                            .collaborate(makerPost.getCollaborate())
+    public ResponseEntity<?> getAllMakerPostSearch(String searchText) {
+            List<MakerPost> makerPostList = makerPostRepository.findByTitleContainingOrContentContainingOrderByCreatedAtDesc(searchText, searchText);
+            List<SearchMakerPostResponseDto> searchMakerPostResponseDtoList = new ArrayList<>();
+            for (MakerPost makerPost : makerPostList) {
+                searchMakerPostResponseDtoList.add(
+                        SearchMakerPostResponseDto.builder()
+                                .postId(makerPost.getId())
+                                .nickname(makerPost.getMember().getNickname())
+                                .title(makerPost.getTitle())
+                                .content(makerPost.getContent())
+                                .imageUrl(makerPost.getImageUrl().getImageUrl())
+                                .mediaUrl(makerPost.getMediaUrl().getMediaUrl())
+                                .makerlikeCnt(makerLikeRepository.countAllByMakerPost(makerPost))
+                                .collaborate(makerPost.getCollaborate())
+                                .build()
+                );
+            }
+            return new ResponseEntity<>(Message.success(searchMakerPostResponseDtoList), HttpStatus.OK);
+        }
+
+    // 싱어 게시판 검색
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> getAllSingerPostsearch(String searchText) {
+        List<SingerPost> singerPostList = singerPostRepository.findByTitleContainingOrContentContaining(searchText,searchText);
+        List<SearchSingerPostResponseDto> searchSingerPostResponseDtoList = new ArrayList<>();
+        for (SingerPost singerPost : singerPostList) {
+            searchSingerPostResponseDtoList.add(
+                    SearchSingerPostResponseDto.builder()
+                            .postId(singerPost.getId())
+                            .nickname(singerPost.getMember().getNickname())
+                            .title(singerPost.getTitle())
+                            .content(singerPost.getContent())
+                            .imageUrl(singerPost.getImageUrl().getImageUrl())
+                            .mediaUrl(singerPost.getMediaUrl().getMediaUrl())
+                            .singerlikeCnt(singerLikeRepository.countAllBySingerPost(singerPost))
+                            .collaborate(singerPost.getCollaborate())
                             .build()
             );
         }
-        return new ResponseEntity<>(Message.success(makerpostGetResponseDtoList),HttpStatus.OK);
+        return new ResponseEntity<>(Message.success(searchSingerPostResponseDtoList), HttpStatus.OK);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    //============ 메이커게시물만  검색&페이징 기능
-//    public ResponseEntity<?> searchmakerposts(String searchText) {
-//        List<MakerPost> makerpostEntity = makerPostRepository.findByTitleContaining(searchText);
-//        return new ResponseEntity<>(Message.success(makerpostEntity), HttpStatus.OK);
-//    }
-
-
-    public ResponseEntity<?> makerposts(Model model , Pageable page) {
-        Page<MakerPost> makerpostEntity = makerPostRepository.findAll(page);
-        int startPage = Math.max(1, makerpostEntity.getPageable().getPageNumber() - 4);
-        int endPage = Math.min(makerpostEntity.getTotalPages(), makerpostEntity.getPageable().getPageNumber() + 4);
-        int nowPage = makerpostEntity.getPageable().getPageNumber() + 1;
-        model.addAttribute("startPage", startPage);
-        model.addAttribute("endPage", endPage);
-        model.addAttribute("nowPage", nowPage);
-        return new ResponseEntity<>(Message.success(makerpostEntity),HttpStatus.OK);
-    }
-
-    @Transactional(readOnly = true)
-    public ResponseEntity<?> findAllBymakerPost(Pageable pageable) {
-            PageImpl<MakerPostGetResponseDto> makerPostGetResponseDtoPage = makerPostRepositorySupport.findAll(pageable);
-            return new ResponseEntity<>(Message.success(makerPostGetResponseDtoPage),HttpStatus.OK);
-        }
-
 
 
     //============ 카테고리별 게시판 전체 조회 로직.
@@ -152,7 +128,7 @@ public class PostService{
             singerpostGetResponseDtoList.add(
                     SingerPostGetResponseDto.builder()
                             .postId(singerPost.getId())
-                            .email(singerPost.getMember().getEmail())
+                            .nickname(singerPost.getMember().getNickname())
                             .position("Singer")
                             .title(singerPost.getTitle())
                             .content(singerPost.getContent())
