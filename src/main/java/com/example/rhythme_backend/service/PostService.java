@@ -12,10 +12,7 @@ import com.example.rhythme_backend.domain.post.SingerPostTag;
 import com.example.rhythme_backend.dto.requestDto.post.PostCreateRequestDto;
 import com.example.rhythme_backend.dto.requestDto.post.PostDeleteRequestDto;
 import com.example.rhythme_backend.dto.requestDto.post.PostPatchRequestDto;
-import com.example.rhythme_backend.dto.responseDto.post.MakerPostGetResponseDto;
-import com.example.rhythme_backend.dto.responseDto.post.PostPatchResponseDto;
-import com.example.rhythme_backend.dto.responseDto.post.PostsCreateResponseDto;
-import com.example.rhythme_backend.dto.responseDto.post.SingerPostGetResponseDto;
+import com.example.rhythme_backend.dto.responseDto.post.*;
 import com.example.rhythme_backend.repository.MemberRepository;
 import com.example.rhythme_backend.repository.TagRepository;
 import com.example.rhythme_backend.repository.like.MakerLikeRepository;
@@ -61,17 +58,51 @@ public class PostService{
     private final SingerLikeRepository singerLikeRepository;
     private final MakerPostRepositorySupport makerPostRepositorySupport;
 
-    //============ 메이커게시물만  검색&페이징 기능
-    public ResponseEntity<?> searchmakerposts(Model model , Pageable page, String searchText) {
-        Page<MakerPost> makerpostEntity = makerPostRepository.findByTitleOrContent(searchText, page);
-        int startPage = Math.max(1, makerpostEntity.getPageable().getPageNumber() - 4);
-        int endPage = Math.min(makerpostEntity.getTotalPages(), makerpostEntity.getPageable().getPageNumber() + 4);
-        int nowPage = makerpostEntity.getPageable().getPageNumber() + 1;
-        model.addAttribute("startPage", startPage);
-        model.addAttribute("endPage", endPage);
-        model.addAttribute("nowPage", nowPage);
-        return new ResponseEntity<>(Message.success(makerpostEntity),HttpStatus.OK);
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> getAllMakerPostsearch(String searchText){
+        List<MakerPost> makerPostList = makerPostRepository.findByTitleContainingOrContentContaining(searchText,searchText);
+        List<MakerPostGetResponseDto> makerpostGetResponseDtoList = new ArrayList<>();
+        for(MakerPost makerPost : makerPostList){
+            makerpostGetResponseDtoList.add(
+                    MakerPostGetResponseDto.builder()
+                            .postId(makerPost.getId())
+                            .nickname(makerPost.getMember().getNickname())
+//                            .position("Maker")
+                            .title(makerPost.getTitle())
+                            .content(makerPost.getContent())
+                            .imageUrl(makerPost.getImageUrl().getImageUrl())
+                            .mediaUrl(makerPost.getMediaUrl().getMediaUrl())
+                            .makerlikeCnt(makerLikeRepository.countAllByMakerPost(makerPost))
+                            .collaborate(makerPost.getCollaborate())
+                            .build()
+            );
+        }
+        return new ResponseEntity<>(Message.success(makerpostGetResponseDtoList),HttpStatus.OK);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //============ 메이커게시물만  검색&페이징 기능
+//    public ResponseEntity<?> searchmakerposts(String searchText) {
+//        List<MakerPost> makerpostEntity = makerPostRepository.findByTitleContaining(searchText);
+//        return new ResponseEntity<>(Message.success(makerpostEntity), HttpStatus.OK);
+//    }
+
 
     public ResponseEntity<?> makerposts(Model model , Pageable page) {
         Page<MakerPost> makerpostEntity = makerPostRepository.findAll(page);

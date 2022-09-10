@@ -15,7 +15,6 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "like_table")
 public class MakerLike {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
