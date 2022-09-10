@@ -18,11 +18,8 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
     Long countByFollowing(Member member);
 
     Long countAllByFollowingId(Long memberId);
-
     Optional<Follow> deleteAllByMemberId(Member memberId);
-
-    List<Follow> findDistinctTop3ByOrderByFollowing();
-    List<Follow> findAllByFollowingIdOrderByFollowing(Member memberId);
+    List<Follow> findAllByMemberOrderByFollowing(Member memberId);
 
 
 

@@ -1,4 +1,4 @@
-package com.example.rhythme_backend.dto.responseDto;
+package com.example.rhythme_backend.dto.responseDto.mainpage;
 
 import com.example.rhythme_backend.domain.media.ImageUrl;
 import com.example.rhythme_backend.domain.media.MediaUrl;
@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class RecentMakerResponseDto {
+public class RecentSingerResponseDto {
 
     private MediaUrl mediaUrl;
     private ImageUrl imageUrl;

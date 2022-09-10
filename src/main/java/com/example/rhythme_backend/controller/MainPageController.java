@@ -46,17 +46,17 @@ public class MainPageController {
     }
 
     @GetMapping("/auth/makerlikepost")
-    public List<Long> makerLikePost(HttpServletRequest request){
+    public ResponseEntity<?> makerLikePost(HttpServletRequest request){
         return mainPageService.makerLikeList(request);
     }
 
     @GetMapping("/auth/singerlikepost")
-    public List<Long> singerLikePost(HttpServletRequest request){
+    public ResponseEntity<?> singerLikePost(HttpServletRequest request){
         return mainPageService.singerLikeList(request);
     }
 
     @GetMapping("/auth/followerlist")
-    public List<Long> followList(HttpServletRequest request){
+    public ResponseEntity<?> followList(HttpServletRequest request){
         return mainPageService.followList(request);
     }
 

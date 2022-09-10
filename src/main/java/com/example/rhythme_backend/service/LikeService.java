@@ -73,17 +73,13 @@ public class LikeService {
             MakerLikeRequestDto makerLikeRequestDto = new MakerLikeRequestDto(member, makerPost);
             MakerLike makerLike = new MakerLike(makerLikeRequestDto);
             makerLikeRepository.save(makerLike);
-            //
             Long likes = makerLikeRepository.countAllByMakerPostId(makerPostId);
             makerPost.makerUpdateLikes(likes);
-            //
             return ResponseDto.success(true);
         } else {
             makerLikeRepository.deleteById(findMakerLike.getId());
-            //
             Long likes = makerLikeRepository.countAllByMakerPostId(makerPostId);
             makerPost.makerUpdateLikes(likes);
-            //
             return ResponseDto.success(false);
         }
     }

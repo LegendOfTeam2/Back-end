@@ -6,7 +6,8 @@ import com.example.rhythme_backend.domain.like.MakerLike;
 import com.example.rhythme_backend.domain.like.SingerLike;
 import com.example.rhythme_backend.domain.post.MakerPost;
 import com.example.rhythme_backend.domain.post.SingerPost;
-import com.example.rhythme_backend.dto.responseDto.*;
+import com.example.rhythme_backend.dto.mainpage.*;
+import com.example.rhythme_backend.dto.responseDto.mainpage.*;
 import com.example.rhythme_backend.jwt.TokenProvider;
 import com.example.rhythme_backend.repository.FollowRepository;
 import com.example.rhythme_backend.repository.MemberRepository;
@@ -20,7 +21,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
@@ -145,44 +145,55 @@ public class MainPageService {
     }
 
     public ResponseEntity<?> MostLikeArtist() {
-        List<Follow> followList = followRepository.findDistinctTop3ByOrderByFollowing();
+        List<Member> memberList = memberRepository.findTop8ByOrderByFollowersDesc();
         List<PowerArtistResponseDto> powerArtistResponseDtoList = new ArrayList<>();
-        for (Follow follow : followList) {
+        for (Member member : memberList) {
             powerArtistResponseDtoList.add(PowerArtistResponseDto.builder()
-                    .nickname(follow.getFollowing().getNickname())
-                    .build());
+                            .nickname(member.getNickname())
+                            .imageUrl(member.getImgUrl())
+                            .follower(member.getFollowers())
+                            .build());
         }
         return new ResponseEntity<>(Message.success(powerArtistResponseDtoList),HttpStatus.OK);
     }
 
     @Transactional(readOnly = true)
-    public List<Long> makerLikeList(HttpServletRequest request) {
+    public ResponseEntity<?> makerLikeList(HttpServletRequest request) {
         Member member = validateMember(request);
-        List<Long> makerLikeList = new ArrayList<>();
-        for (MakerLike makerLike : makerLikeRepository.findAllByMemberIdOrderByMakerPost(member)) {
-            makerLikeList.add(makerLike.getMemberId().getId());
+        List<MakerLike> makerLikeList = makerLikeRepository.findAllByMemberIdOrderByMakerPost(member);
+        List<MyMakerResponseDto> myMakerResponseDtoList = new ArrayList<>();
+        for (MakerLike makerLike : makerLikeList) {
+            myMakerResponseDtoList.add(MyMakerResponseDto.builder()
+                            .makerId(makerLike.getMakerPost().getId())
+                            .build());
         }
-        return makerLikeList;
+        return new ResponseEntity<>(Message.success(myMakerResponseDtoList),HttpStatus.OK);
     }
 
     @Transactional(readOnly = true)
-    public List<Long> singerLikeList(HttpServletRequest request) {
+    public ResponseEntity<?> singerLikeList(HttpServletRequest request) {
         Member member = validateMember(request);
-        List<Long> singerLikeList = new ArrayList<>();
-        for (SingerLike singerLike : singerLikeRepository.findAllByMemberIdOrderBySingerPost(member)) {
-            singerLikeList.add(singerLike.getMemberId().getId());
+        List<SingerLike> singerLikeList = singerLikeRepository.findAllByMemberIdOrderBySingerPost(member);
+        List<MySingerResponseDto> mySingerResponseDtoList = new ArrayList<>();
+        for (SingerLike singerLike : singerLikeList) {
+            mySingerResponseDtoList.add(MySingerResponseDto.builder()
+                            .singerId(singerLike.getSingerPost().getId())
+                            .build());
         }
-        return singerLikeList;
+        return new ResponseEntity<>(Message.success(mySingerResponseDtoList),HttpStatus.OK);
     }
 
     @Transactional(readOnly = true)
-    public List<Long> followList(HttpServletRequest request) {
+    public ResponseEntity<?> followList(HttpServletRequest request) {
         Member member = validateMember(request);
-        List<Long> followerList = new ArrayList<>();
-        for (Follow follow : followRepository.findAllByFollowingIdOrderByFollowing(member)) {
-            followerList.add(follow.getFollowing().getId());
+        List<Follow> followList = followRepository.findAllByMemberOrderByFollowing(member);
+        List<MyArtistResponseDto> myArtistResponseDtoList = new ArrayList<>();
+        for (Follow follow : followList) {
+            myArtistResponseDtoList.add(MyArtistResponseDto.builder()
+                            .followingId(follow.getFollowing().getId())
+                            .build());
         }
-        return followerList;
+        return new ResponseEntity<>(Message.success(myArtistResponseDtoList),HttpStatus.OK);
     }
 
     public Member validateMember(HttpServletRequest request) {

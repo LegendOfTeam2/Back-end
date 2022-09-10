@@ -1,4 +1,4 @@
-package com.example.rhythme_backend.dto.responseDto;
+package com.example.rhythme_backend.dto.responseDto.mainpage;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -8,5 +8,7 @@ import lombok.Getter;
 public class PowerArtistResponseDto {
 
     private String nickname;
+    private Long follower;
+    private String imageUrl;
 
 }
