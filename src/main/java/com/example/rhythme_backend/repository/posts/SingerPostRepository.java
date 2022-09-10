@@ -16,7 +16,7 @@ public interface SingerPostRepository extends JpaRepository<SingerPost,Long> {
     List<SingerPost> findTop10ByOrderByCreatedAt();
     List<SingerPost> findAllByMember(Member member);
     List<SingerPost> findTop10ByOrderByLikesDesc();
-    Optional<SingerPost> findTopByOrderByLikesDesc();
+    List<SingerPost> findTopByOrderByLikesDesc();
 
 
 }

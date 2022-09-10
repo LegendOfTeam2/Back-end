@@ -40,22 +40,21 @@ public class MainPageService {
 
     public ResponseEntity<?> bestSong() {
         List<BestSongResponseDto> bestSongResponseDtoList = new ArrayList<>();
-        Optional<MakerPost> makerPostList = makerPostRepository.findTopByOrderByLikesDesc();
-        Optional<SingerPost> singerPostList = singerPostRepository.findTopByOrderByLikesDesc();
-        Long makerPostLike = makerPostList.orElseThrow().getLikes();
-        Long singerPostLike = singerPostList.orElseThrow().getLikes();
-
-        if(makerPostLike >= singerPostLike) {
-            bestSongResponseDtoList.add(BestSongResponseDto.builder()
-                    .position("Maker")
-                    .collaborate(makerPostList.get().getCollaborate())
-                    .imageUrl(makerPostList.get().getImageUrl())
-                    .title(makerPostList.get().getTitle())
-                    .likes(makerPostList.get().getLikes())
-                    .mediaUrl(makerPostList.get().getMediaUrl())
-                    .nickname(makerPostList.get().getMember().getNickname())
-                    .content(makerPostList.get().getContent())
-                    .build());
+        List<MakerPost> makerPostList = makerPostRepository.findTopByOrderByLikesDesc();
+        List<SingerPost> singerPostList = singerPostRepository.findTopByOrderByLikesDesc();
+        if(makerPostList.size() >= singerPostList.size()) {
+            for (MakerPost makerPost : makerPostList) {
+                bestSongResponseDtoList.add(BestSongResponseDto.builder()
+                                .position("Maker")
+                                .collaborate(makerPost.getCollaborate())
+                                .imageUrl(makerPost.getImageUrl())
+                                .title(makerPost.getTitle())
+                                .likes(makerPost.getLikes())
+                                .mediaUrl(makerPost.getMediaUrl())
+                                .nickname(makerPost.getMember().getNickname())
+                                .content(makerPost.getContent())
+                                .build());
+            }
 
             return new ResponseEntity<>(Message.success(bestSongResponseDtoList), HttpStatus.OK);
         }
@@ -163,7 +162,7 @@ public class MainPageService {
     @Transactional(readOnly = true)
     public ResponseEntity<?> makerLikeList(HttpServletRequest request) {
         Member member = validateMember(request);
-        List<MakerLike> makerLikeList = makerLikeRepository.findAllByMemberIdOrderByMakerPost(member);
+        List<MakerLike> makerLikeList = makerLikeRepository.findAllByMemberOrderByMakerPost(member);
         List<MyMakerResponseDto> myMakerResponseDtoList = new ArrayList<>();
         for (MakerLike makerLike : makerLikeList) {
             myMakerResponseDtoList.add(MyMakerResponseDto.builder()
@@ -176,7 +175,7 @@ public class MainPageService {
     @Transactional(readOnly = true)
     public ResponseEntity<?> singerLikeList(HttpServletRequest request) {
         Member member = validateMember(request);
-        List<SingerLike> singerLikeList = singerLikeRepository.findAllByMemberIdOrderBySingerPost(member);
+        List<SingerLike> singerLikeList = singerLikeRepository.findAllByMemberOrderBySingerPost(member);
         List<MySingerResponseDto> mySingerResponseDtoList = new ArrayList<>();
         for (SingerLike singerLike : singerLikeList) {
             mySingerResponseDtoList.add(MySingerResponseDto.builder()

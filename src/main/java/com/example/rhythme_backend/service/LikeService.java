@@ -44,7 +44,7 @@ public class LikeService {
         SingerPost singerPost = getCurrentSingerPost(postId);
         checkSingerPost(singerPost);
 
-        SingerLike findSingerLike = singerLikeRepository.findByMemberIdAndSingerPost(member,singerPost).orElse(null);
+        SingerLike findSingerLike = singerLikeRepository.findByMemberAndSingerPost(member,singerPost).orElse(null);
         if(findSingerLike == null){
             SingerLikeRequestDto singerLikeRequestDto = new SingerLikeRequestDto(member, singerPost);
             SingerLike singerLike = new SingerLike(singerLikeRequestDto);
@@ -67,7 +67,7 @@ public class LikeService {
         MakerPost makerPost = getCurrentMakerPost(postId);
         checkMakerPost(makerPost);
 
-        MakerLike findMakerLike = makerLikeRepository.findByMemberIdAndMakerPost(member,makerPost).orElse(null);
+        MakerLike findMakerLike = makerLikeRepository.findByMemberAndMakerPost(member,makerPost).orElse(null);
 
         if(findMakerLike == null){
             MakerLikeRequestDto makerLikeRequestDto = new MakerLikeRequestDto(member, makerPost);

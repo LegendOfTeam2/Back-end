@@ -25,10 +25,8 @@ public interface MakerPostRepository extends JpaRepository<MakerPost,Long> {
 
 
     Page<MakerPost> findAll(Pageable page);
-    List<MakerPost> findTop10ByOrderByCreatedAt();
-    Optional<MakerPost> findTopByOrderByLikesDesc();
+    List<MakerPost> findTopByOrderByLikesDesc();
     List<MakerPost> findAllByOrderByLikesDesc();
-    //Optional<MakerPost> deleteAllByMember(Member member);
 
 
     Integer countByMember(Member member);
