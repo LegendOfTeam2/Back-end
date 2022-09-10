@@ -1,14 +1,12 @@
 package com.example.rhythme_backend.service;
 
+import com.example.rhythme_backend.domain.HashTag;
 import com.example.rhythme_backend.domain.Member;
-import com.example.rhythme_backend.domain.MemberHashTag;
 import com.example.rhythme_backend.domain.Profile;
 import com.example.rhythme_backend.domain.like.MakerLike;
 import com.example.rhythme_backend.domain.like.SingerLike;
 import com.example.rhythme_backend.domain.post.MakerPost;
 import com.example.rhythme_backend.domain.post.SingerPost;
-import com.example.rhythme_backend.dto.requestDto.profile.ModifyProfileRequestDto;
-import com.example.rhythme_backend.dto.responseDto.profile.ModifyProfileResponseDto;
 import com.example.rhythme_backend.dto.responseDto.profile.ProfileResponseDto;
 import com.example.rhythme_backend.dto.responseDto.profile.ProfileUploadPostResponseDto;
 import com.example.rhythme_backend.repository.FollowRepository;
@@ -16,18 +14,11 @@ import com.example.rhythme_backend.repository.HashTagRepository;
 import com.example.rhythme_backend.repository.MemberRepository;
 import com.example.rhythme_backend.repository.like.MakerLikeRepository;
 import com.example.rhythme_backend.repository.like.SingerLikeRepository;
-import com.example.rhythme_backend.repository.media.ImageUrlRepository;
 import com.example.rhythme_backend.repository.posts.MakerPostRepository;
 import com.example.rhythme_backend.repository.posts.SingerPostRepository;
 import com.example.rhythme_backend.repository.profile.ProfileRepository;
-import com.example.rhythme_backend.util.Message;
 import lombok.RequiredArgsConstructor;
-
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,9 +53,8 @@ public class ProfileService {
         Long following = followRepository.countByFollowing(member);
         Integer makerPostCnt = makerPostRepository.countByMember(member);
 
-        for(MemberHashTag a  : member.getHashtag()){
-            stringList.add(a.getTagId().getHashtag());
-        }
+        hashTagRepository.findAllByMember(member);
+
         return ProfileResponseDto.builder()
                 .hashtag(stringList)
                 .myPostConunt(makerPostCnt)

@@ -30,7 +30,4 @@ public class Tag {
     @OneToMany(mappedBy = "singerPostId")
     private List<SingerPostTag> singerPostTags;
 
-    @OneToMany(mappedBy = "memberId")
-    private List<MemberHashTag> memberTags;
-
 }
