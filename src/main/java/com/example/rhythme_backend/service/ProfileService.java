@@ -53,10 +53,10 @@ public class ProfileService {
         Long following = followRepository.countByFollowing(member);
         Integer makerPostCnt = makerPostRepository.countByMember(member);
 
-        hashTagRepository.findAllByMember(member);
+         List<String> stringList1 = hashTagRepository.findAllByMember(member);
 
         return ProfileResponseDto.builder()
-                .hashtag(stringList)
+                .hashtag(stringList1)
                 .myPostConunt(makerPostCnt)
                 .follower(follower)
                 .following(following)
