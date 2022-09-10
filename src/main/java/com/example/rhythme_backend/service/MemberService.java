@@ -72,14 +72,14 @@ public class MemberService {
         Member member = Member.builder()
                 .deleteCheck("N")
                 .email(requestDto.getEmail())
-                .imgUrl(requestDto.getImgUrl())
+                .imageUrl(requestDto.getImgUrl())
                 .nickname(requestDto.getNickname())
                 .followers(0L)
                 .introduce(defaultIntro)
                 .password(passwordEncoder.encode(requestDto.getPassword()))
                 .build();
         memberRepository.save(member);
-        memberTagSave(requestDto.getHashtag(),member);
+        hashTagSave(requestDto.getHashtag(),member);
 
         return new ResponseEntity<>(Message.success("회원가입에 성공했습니다."), HttpStatus.OK);
     }
@@ -334,14 +334,13 @@ public class MemberService {
     }
 
 
-    public void memberTagSave(List<String> hashtag,Member member){
+    public void hashTagSave(List<String> hashtag,Member member){
         for(String tag : hashtag){
-            HashTag memberHashtag = hashTagRepository.save(
+            HashTag hashtagList = hashTagRepository.save(
                     HashTag.builder()
-                            .memberId(member)
                             .hashtag(tag)
                             .build());
-            MemberHashTag memberTag = new MemberHashTag(member,memberHashtag);
+            MemberHashTag memberTag = new MemberHashTag(member,hashtagList);
             memberHashTagRepository.save(memberTag);
         }
     }

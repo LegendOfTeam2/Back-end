@@ -13,13 +13,13 @@ import java.util.Optional;
 public interface MakerLikeRepository extends JpaRepository<MakerLike, Long> {
 
 
-    Optional<MakerLike> findByMemberAndMakerPost(Member member, MakerPost makerPost);
+    Optional<MakerLike> findByMemberIdAndMakerPost(Member member, MakerPost makerPost);
 
     Long countAllByMakerPost(MakerPost makerPost);
     List<MakerLike> findByMakerPost(MakerPost makerPost);
     //Optional<Like> findByMemberAndPostId(Member member, Long postId);
     Long countAllByMakerPostId(Long makerPostId);
     Optional<MakerLike> deleteAllByMemberId(Member memberId);
-    List<MakerLike> findAllByMemberOrderByMakerPost(Member memberId);
+    List<MakerLike> findAllByMemberIdOrderByMakerPost(Member memberId);
 
 }

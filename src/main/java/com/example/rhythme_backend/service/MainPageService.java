@@ -150,7 +150,7 @@ public class MainPageService {
         for (Member member : memberList) {
             powerArtistResponseDtoList.add(PowerArtistResponseDto.builder()
                             .nickname(member.getNickname())
-                            .imageUrl(member.getImgUrl())
+                            .imageUrl(member.getImageUrl())
                             .follower(member.getFollowers())
                             .build());
         }
@@ -160,7 +160,7 @@ public class MainPageService {
     @Transactional(readOnly = true)
     public ResponseEntity<?> makerLikeList(HttpServletRequest request) {
         Member member = validateMember(request);
-        List<MakerLike> makerLikeList = makerLikeRepository.findAllByMemberOrderByMakerPost(member);
+        List<MakerLike> makerLikeList = makerLikeRepository.findAllByMemberIdOrderByMakerPost(member);
         List<MyMakerResponseDto> myMakerResponseDtoList = new ArrayList<>();
         for (MakerLike makerLike : makerLikeList) {
             myMakerResponseDtoList.add(MyMakerResponseDto.builder()
@@ -173,7 +173,7 @@ public class MainPageService {
     @Transactional(readOnly = true)
     public ResponseEntity<?> singerLikeList(HttpServletRequest request) {
         Member member = validateMember(request);
-        List<SingerLike> singerLikeList = singerLikeRepository.findAllByMemberOrderBySingerPost(member);
+        List<SingerLike> singerLikeList = singerLikeRepository.findAllByMemberIdOrderBySingerPost(member);
         List<MySingerResponseDto> mySingerResponseDtoList = new ArrayList<>();
         for (SingerLike singerLike : singerLikeList) {
             mySingerResponseDtoList.add(MySingerResponseDto.builder()
@@ -196,7 +196,7 @@ public class MainPageService {
         return new ResponseEntity<>(Message.success(myArtistResponseDtoList),HttpStatus.OK);
     }
 
-    
+
     public Member validateMember(HttpServletRequest request) {
         if (!tokenProvider.validateToken(request.getHeader("Authorization").substring(7))) {
             return null;

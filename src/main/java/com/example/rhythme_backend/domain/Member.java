@@ -42,7 +42,7 @@ public class Member extends Timestamped {
     private String googleId;
 
     @Column
-    private String imgUrl;
+    private String imageUrl;
 
     @Column
     private String introduce;
