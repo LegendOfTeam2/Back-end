@@ -6,6 +6,7 @@ import com.example.rhythme_backend.domain.like.MakerLike;
 import com.example.rhythme_backend.domain.like.SingerLike;
 import com.example.rhythme_backend.domain.post.MakerPost;
 import com.example.rhythme_backend.domain.post.SingerPost;
+import com.example.rhythme_backend.dto.responseDto.MyImageResponseDto;
 import com.example.rhythme_backend.dto.responseDto.mainpage.*;
 import com.example.rhythme_backend.jwt.TokenProvider;
 import com.example.rhythme_backend.repository.FollowRepository;
@@ -239,6 +240,15 @@ public class MainPageService {
                             .build());
         }
         return new ResponseEntity<>(Message.success(myArtistResponseDtoList),HttpStatus.OK);
+    }
+
+    public ResponseEntity<?> getMyImage(HttpServletRequest request) {
+        Member member = validateMember(request);
+        Member optionalMember = memberRepository.findByNickname(member.getNickname()).orElseGet(Member::new);
+        MyImageResponseDto myImageResponseDto = MyImageResponseDto.builder()
+                .imgUrl(optionalMember.getImageUrl())
+                .build();
+        return new ResponseEntity<>(Message.success(myImageResponseDto),HttpStatus.OK);
     }
 
 

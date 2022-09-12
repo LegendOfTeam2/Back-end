@@ -59,4 +59,9 @@ public class MainPageController {
         return mainPageService.followList(request);
     }
 
+    @GetMapping("/auth/myimage")
+    public ResponseEntity<?> getMyImage(HttpServletRequest request) {
+        return mainPageService.getMyImage(request);
+    }
+
 }
