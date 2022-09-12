@@ -6,6 +6,7 @@ import com.example.rhythme_backend.domain.like.MakerLike;
 import com.example.rhythme_backend.domain.like.SingerLike;
 import com.example.rhythme_backend.domain.post.MakerPost;
 import com.example.rhythme_backend.domain.post.SingerPost;
+import com.example.rhythme_backend.dto.responseDto.MyImageResponseDto;
 import com.example.rhythme_backend.dto.responseDto.mainpage.*;
 import com.example.rhythme_backend.jwt.TokenProvider;
 import com.example.rhythme_backend.repository.FollowRepository;
@@ -50,15 +51,16 @@ public class MainPageService {
         if (makerPostList.size() == 0) {
             for (SingerPost singerPost : singerPostList) {
                 bestSongResponseDtoList.add(BestSongResponseDto.builder()
-                        .position("Singer")
-                        .collaborate(singerPost.getCollaborate())
-                        .imageUrl(singerPost.getImageUrl())
-                        .title(singerPost.getTitle())
-                        .likes(singerPost.getLikes())
-                        .mediaUrl(singerPost.getMediaUrl())
-                        .nickname(singerPost.getMember().getNickname())
-                        .content(singerPost.getContent())
-                        .build());
+                                .postId(singerPost.getId())
+                                .position("Singer")
+                                .collaborate(singerPost.getCollaborate())
+                                .imageUrl(singerPost.getImageUrl())
+                                .title(singerPost.getTitle())
+                                .likes(singerPost.getLikes())
+                                .mediaUrl(singerPost.getMediaUrl())
+                                .nickname(singerPost.getMember().getNickname())
+                                .content(singerPost.getContent())
+                                .build());
             }
             return new ResponseEntity<>(Message.success(bestSongResponseDtoList), HttpStatus.OK);
         }
@@ -66,15 +68,16 @@ public class MainPageService {
         if (singerPostList.size() == 0) {
             for (MakerPost makerPost : makerPostList) {
                 bestSongResponseDtoList.add(BestSongResponseDto.builder()
-                        .position("Maker")
-                        .collaborate(makerPost.getCollaborate())
-                        .imageUrl(makerPost.getImageUrl())
-                        .title(makerPost.getTitle())
-                        .likes(makerPost.getLikes())
-                        .mediaUrl(makerPost.getMediaUrl())
-                        .nickname(makerPost.getMember().getNickname())
-                        .content(makerPost.getContent())
-                        .build());
+                                .postId(makerPost.getId())
+                                .position("Maker")
+                                .collaborate(makerPost.getCollaborate())
+                                .imageUrl(makerPost.getImageUrl())
+                                .title(makerPost.getTitle())
+                                .likes(makerPost.getLikes())
+                                .mediaUrl(makerPost.getMediaUrl())
+                                .nickname(makerPost.getMember().getNickname())
+                                .content(makerPost.getContent())
+                                .build());
             }
             return new ResponseEntity<>(Message.success(bestSongResponseDtoList), HttpStatus.OK);
         }
@@ -82,6 +85,7 @@ public class MainPageService {
         if(makerPostList.get(0).getLikes() >= singerPostList.get(0).getLikes()) {
             for (MakerPost makerPost : makerPostList) {
                 bestSongResponseDtoList.add(BestSongResponseDto.builder()
+                                .postId(makerPost.getId())
                                 .position("Maker")
                                 .collaborate(makerPost.getCollaborate())
                                 .imageUrl(makerPost.getImageUrl())
@@ -96,15 +100,16 @@ public class MainPageService {
         }
         for (SingerPost singerPost : singerPostList) {
             bestSongResponseDtoList.add(BestSongResponseDto.builder()
-                    .position("Singer")
-                    .collaborate(singerPost.getCollaborate())
-                    .imageUrl(singerPost.getImageUrl())
-                    .title(singerPost.getTitle())
-                    .likes(singerPost.getLikes())
-                    .mediaUrl(singerPost.getMediaUrl())
-                    .nickname(singerPost.getMember().getNickname())
-                    .content(singerPost.getContent())
-                    .build());
+                            .postId(singerPost.getId())
+                            .position("Singer")
+                            .collaborate(singerPost.getCollaborate())
+                            .imageUrl(singerPost.getImageUrl())
+                            .title(singerPost.getTitle())
+                            .likes(singerPost.getLikes())
+                            .mediaUrl(singerPost.getMediaUrl())
+                            .nickname(singerPost.getMember().getNickname())
+                            .content(singerPost.getContent())
+                            .build());
         }
             return new ResponseEntity<>(Message.success(bestSongResponseDtoList), HttpStatus.OK);
     }
@@ -114,6 +119,7 @@ public class MainPageService {
         List<RecentMakerResponseDto> recentMakerResponseDtoList = new ArrayList<>();
         for (MakerPost makerPost : makerPostList) {
             recentMakerResponseDtoList.add(RecentMakerResponseDto.builder()
+                            .postId(makerPost.getId())
                             .imageUrl(makerPost.getImageUrl())
                             .collaborate(makerPost.getCollaborate())
                             .position("Maker")
@@ -132,6 +138,7 @@ public class MainPageService {
         List<RecentSingerResponseDto> recentSingerResponseDtoList = new ArrayList<>();
         for (SingerPost singerPost : singerPostList) {
             recentSingerResponseDtoList.add(RecentSingerResponseDto.builder()
+                            .postId(singerPost.getId())
                             .imageUrl(singerPost.getImageUrl())
                             .collaborate(singerPost.getCollaborate())
                             .position("Singer")
@@ -150,6 +157,7 @@ public class MainPageService {
         List<BestMakerResponseDto> bestMakerResponseDtoList = new ArrayList<>();
         for (MakerPost makerPost : makerPostList) {
             bestMakerResponseDtoList.add(BestMakerResponseDto.builder()
+                            .postId(makerPost.getId())
                             .imageUrl(makerPost.getImageUrl())
                             .collaborate(makerPost.getCollaborate())
                             .position("Maker")
@@ -168,6 +176,7 @@ public class MainPageService {
         List<BestSingerResponseDto> bestSingerResponseDtoList = new ArrayList<>();
         for (SingerPost singerPost : singerPostList) {
             bestSingerResponseDtoList.add(BestSingerResponseDto.builder()
+                            .postId(singerPost.getId())
                             .imageUrl(singerPost.getImageUrl())
                             .collaborate(singerPost.getCollaborate())
                             .position("Singer")
@@ -231,6 +240,15 @@ public class MainPageService {
                             .build());
         }
         return new ResponseEntity<>(Message.success(myArtistResponseDtoList),HttpStatus.OK);
+    }
+
+    public ResponseEntity<?> getMyImage(HttpServletRequest request) {
+        Member member = validateMember(request);
+        Member optionalMember = memberRepository.findByNickname(member.getNickname()).orElseGet(Member::new);
+        MyImageResponseDto myImageResponseDto = MyImageResponseDto.builder()
+                .imgUrl(optionalMember.getImageUrl())
+                .build();
+        return new ResponseEntity<>(Message.success(myImageResponseDto),HttpStatus.OK);
     }
 
 
