@@ -48,12 +48,15 @@ public class ProfileService {
         Member member = memberRepository.findByNickname(nickname).orElseGet(Member::new);
         Long follower = followRepository.countByFollower(member);
         Long following = followRepository.countByFollowing(member);
-        Integer makerPostCnt = makerPostRepository.countByMember(member);
-
-         List<String> stringList1 = hashTagRepository.findAllByMember(member);
+        Long makerPostCnt = makerPostRepository.countByMember(member);
+        List<HashTag> HashTagList = hashTagRepository.findAllByMember(member);
+        List<String> stringList = new ArrayList<>();
+        for(HashTag a : HashTagList){
+            stringList.add(a.getHashtag());
+        }
 
         return ProfileResponseDto.builder()
-                .hashtag(stringList1)
+                .hashtag(stringList)
                 .nickname(nickname)
                 .myPostConunt(makerPostCnt)
                 .follower(follower)
