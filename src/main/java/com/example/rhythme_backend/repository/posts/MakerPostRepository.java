@@ -20,8 +20,7 @@ public interface MakerPostRepository extends JpaRepository<MakerPost,Long> {
     List<MakerPost> findByTitleContainingOrContentContainingOrderByCreatedAtDesc(String title,String content);
     List<MakerPost> findTopByOrderByLikesDesc();
     List<MakerPost> findAllByOrderByLikesDesc();
-    Integer countByMember(Member member);
     List<MakerPost> findAllByOrderByCreatedAtDesc();
-
+    Long countByMember(Member member);
 
 }
