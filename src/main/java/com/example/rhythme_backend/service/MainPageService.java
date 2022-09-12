@@ -114,6 +114,7 @@ public class MainPageService {
         List<RecentMakerResponseDto> recentMakerResponseDtoList = new ArrayList<>();
         for (MakerPost makerPost : makerPostList) {
             recentMakerResponseDtoList.add(RecentMakerResponseDto.builder()
+                            .makerId(makerPost.getId())
                             .imageUrl(makerPost.getImageUrl())
                             .collaborate(makerPost.getCollaborate())
                             .position("Maker")
@@ -132,6 +133,7 @@ public class MainPageService {
         List<RecentSingerResponseDto> recentSingerResponseDtoList = new ArrayList<>();
         for (SingerPost singerPost : singerPostList) {
             recentSingerResponseDtoList.add(RecentSingerResponseDto.builder()
+                            .SingerId(singerPost.getId())
                             .imageUrl(singerPost.getImageUrl())
                             .collaborate(singerPost.getCollaborate())
                             .position("Singer")
@@ -150,6 +152,7 @@ public class MainPageService {
         List<BestMakerResponseDto> bestMakerResponseDtoList = new ArrayList<>();
         for (MakerPost makerPost : makerPostList) {
             bestMakerResponseDtoList.add(BestMakerResponseDto.builder()
+                            .makerId(makerPost.getId())
                             .imageUrl(makerPost.getImageUrl())
                             .collaborate(makerPost.getCollaborate())
                             .position("Maker")
@@ -168,6 +171,7 @@ public class MainPageService {
         List<BestSingerResponseDto> bestSingerResponseDtoList = new ArrayList<>();
         for (SingerPost singerPost : singerPostList) {
             bestSingerResponseDtoList.add(BestSingerResponseDto.builder()
+                            .singerId(singerPost.getId())
                             .imageUrl(singerPost.getImageUrl())
                             .collaborate(singerPost.getCollaborate())
                             .position("Singer")
