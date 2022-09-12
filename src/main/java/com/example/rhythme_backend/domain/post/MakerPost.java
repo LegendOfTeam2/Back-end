@@ -24,7 +24,7 @@ import java.util.List;
 @Entity
 public class MakerPost extends Timestamped {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @JsonIgnore
@@ -58,6 +58,7 @@ public class MakerPost extends Timestamped {
     @Column
     private Long likes;
 
+    
     public void updateMakerPost(PostPatchRequestDto patchRequestDto){
         this.lyrics = patchRequestDto.getLyrics();
         this.content = patchRequestDto.getContent();

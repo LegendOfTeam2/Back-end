@@ -11,7 +11,7 @@ public class ProfileResponseDto {
     private String nickname;
     private List<String> hashtag;
     private String introduce;
-    private Integer myPostConunt;
+    private Long myPostConunt;
     private Long follower;
     private Long following;
 }
