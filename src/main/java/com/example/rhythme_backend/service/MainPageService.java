@@ -42,7 +42,44 @@ public class MainPageService {
         List<BestSongResponseDto> bestSongResponseDtoList = new ArrayList<>();
         List<MakerPost> makerPostList = makerPostRepository.findTopByOrderByLikesDesc();
         List<SingerPost> singerPostList = singerPostRepository.findTopByOrderByLikesDesc();
-        if(makerPostList.size() >= singerPostList.size()) {
+
+        if (makerPostList.size() == 0 && singerPostList.size() == 0) {
+            return new ResponseEntity<>(Message.fail("POST_NOT_FOUND","해당되는 게시글이 없습니다."),HttpStatus.NOT_FOUND);
+        }
+
+        if (makerPostList.size() == 0) {
+            for (SingerPost singerPost : singerPostList) {
+                bestSongResponseDtoList.add(BestSongResponseDto.builder()
+                        .position("Singer")
+                        .collaborate(singerPost.getCollaborate())
+                        .imageUrl(singerPost.getImageUrl())
+                        .title(singerPost.getTitle())
+                        .likes(singerPost.getLikes())
+                        .mediaUrl(singerPost.getMediaUrl())
+                        .nickname(singerPost.getMember().getNickname())
+                        .content(singerPost.getContent())
+                        .build());
+            }
+            return new ResponseEntity<>(Message.success(bestSongResponseDtoList), HttpStatus.OK);
+        }
+
+        if (singerPostList.size() == 0) {
+            for (MakerPost makerPost : makerPostList) {
+                bestSongResponseDtoList.add(BestSongResponseDto.builder()
+                        .position("Maker")
+                        .collaborate(makerPost.getCollaborate())
+                        .imageUrl(makerPost.getImageUrl())
+                        .title(makerPost.getTitle())
+                        .likes(makerPost.getLikes())
+                        .mediaUrl(makerPost.getMediaUrl())
+                        .nickname(makerPost.getMember().getNickname())
+                        .content(makerPost.getContent())
+                        .build());
+            }
+            return new ResponseEntity<>(Message.success(bestSongResponseDtoList), HttpStatus.OK);
+        }
+
+        if(makerPostList.get(0).getLikes() >= singerPostList.get(0).getLikes()) {
             for (MakerPost makerPost : makerPostList) {
                 bestSongResponseDtoList.add(BestSongResponseDto.builder()
                                 .position("Maker")
@@ -55,7 +92,6 @@ public class MainPageService {
                                 .content(makerPost.getContent())
                                 .build());
             }
-
             return new ResponseEntity<>(Message.success(bestSongResponseDtoList), HttpStatus.OK);
         }
         for (SingerPost singerPost : singerPostList) {
@@ -70,12 +106,11 @@ public class MainPageService {
                     .content(singerPost.getContent())
                     .build());
         }
-
             return new ResponseEntity<>(Message.success(bestSongResponseDtoList), HttpStatus.OK);
     }
 
     public ResponseEntity<?> recentMaker() {
-        List<MakerPost> makerPostList = makerPostRepository.findAllByOrderByLikesDesc();
+        List<MakerPost> makerPostList = makerPostRepository.findAllByOrderByCreatedAtDesc();
         List<RecentMakerResponseDto> recentMakerResponseDtoList = new ArrayList<>();
         for (MakerPost makerPost : makerPostList) {
             recentMakerResponseDtoList.add(RecentMakerResponseDto.builder()
@@ -89,12 +124,11 @@ public class MainPageService {
                             .content(makerPost.getContent())
                             .build());
         }
-
         return new ResponseEntity<>(Message.success(recentMakerResponseDtoList),HttpStatus.OK);
     }
 
     public ResponseEntity<?> recentSinger() {
-        List<SingerPost> singerPostList = singerPostRepository.findTop10ByOrderByCreatedAt();
+        List<SingerPost> singerPostList = singerPostRepository.findTop10ByOrderByCreatedAtDesc();
         List<RecentSingerResponseDto> recentSingerResponseDtoList = new ArrayList<>();
         for (SingerPost singerPost : singerPostList) {
             recentSingerResponseDtoList.add(RecentSingerResponseDto.builder()

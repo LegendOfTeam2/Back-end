@@ -65,5 +65,6 @@ public class Member extends Timestamped {
     public void updateImageUrl(String imageUrl){
         this.imageUrl = imageUrl;
     }
+    public void updateIntroduce(String introduce) {this.introduce = introduce;}
 
 }
