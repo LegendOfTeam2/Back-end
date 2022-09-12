@@ -10,4 +10,5 @@ import java.util.Optional;
 
 public interface HashTagRepository extends JpaRepository<HashTag,Long> {
     List<String> findAllByMember(Member member);
+    void deleteByMember(Member member);
 }

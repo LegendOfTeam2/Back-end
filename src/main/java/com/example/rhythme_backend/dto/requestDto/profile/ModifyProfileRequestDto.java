@@ -10,6 +10,6 @@ import java.util.List;
 public class ModifyProfileRequestDto {
     private String nickname;
     private String imageUrl;
-    private String introduction;
+    private String introduce;
     private List<String> hashtag;
 }
