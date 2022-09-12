@@ -58,6 +58,7 @@ public class ProfileService {
         return ProfileResponseDto.builder()
                 .hashtag(stringList)
                 .nickname(nickname)
+                .introduce(member.getIntroduce())
                 .myPostConunt(makerPostCnt)
                 .follower(follower)
                 .following(following)
