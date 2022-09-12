@@ -59,6 +59,7 @@ public class MemberService {
 //    private final MakerPostRepository makerPostRepository;
 //    private final SingerPostRepository singerPostRepository;
 
+    
     @Transactional
     public ResponseEntity<?> signupMember(SignupRequestDto requestDto) {
 
@@ -155,9 +156,6 @@ public class MemberService {
         memberRepository.delete(resignMember);
 
 //        //실제 삭제
-//        if (equals(memberHashTagRepository.findById(member.getId()))) {
-//            memberHashTagRepository.deleteAllByMemberId(member);
-//        }
 //        if (equals(hashTagRepository.findById(member.getId()))) {
 //            hashTagRepository.deleteAllByMemberId(member);
 //        }
