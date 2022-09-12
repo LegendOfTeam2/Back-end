@@ -12,10 +12,7 @@ import com.example.rhythme_backend.domain.post.SingerPostTag;
 import com.example.rhythme_backend.dto.requestDto.post.PostCreateRequestDto;
 import com.example.rhythme_backend.dto.requestDto.post.PostDeleteRequestDto;
 import com.example.rhythme_backend.dto.requestDto.post.PostPatchRequestDto;
-import com.example.rhythme_backend.dto.responseDto.post.PostPatchResponseDto;
-import com.example.rhythme_backend.dto.responseDto.post.MakerPostGetResponseDto;
-import com.example.rhythme_backend.dto.responseDto.post.PostsCreateResponseDto;
-import com.example.rhythme_backend.dto.responseDto.post.SingerPostGetResponseDto;
+import com.example.rhythme_backend.dto.responseDto.post.*;
 import com.example.rhythme_backend.repository.MemberRepository;
 import com.example.rhythme_backend.repository.TagRepository;
 import com.example.rhythme_backend.repository.like.MakerLikeRepository;
@@ -23,6 +20,7 @@ import com.example.rhythme_backend.repository.like.SingerLikeRepository;
 import com.example.rhythme_backend.repository.media.ImageUrlRepository;
 import com.example.rhythme_backend.repository.media.MediaUrlRepository;
 import com.example.rhythme_backend.domain.Message;
+
 import com.example.rhythme_backend.repository.posts.MakerPostRepository;
 import com.example.rhythme_backend.repository.posts.MakerPostTagRepository;
 import com.example.rhythme_backend.repository.posts.SingerPostRepository;
@@ -59,6 +57,47 @@ public class PostService{
     private final S3Service s3Service;
     private final SingerLikeRepository singerLikeRepository;
 
+    public ResponseEntity<?>  AllPostSearch(String searchText , String category) {
+        if (category.equals("Singer")) {
+            List<SingerPost> singerPostList = singerPostRepository.findByTitleContainingOrContentContainingOrderByCreatedAtDesc(searchText, searchText);
+            List<SearchSingerPostResponseDto> searchSingerPostResponseDtoList = new ArrayList<>();
+            for (SingerPost singerPost : singerPostList) {
+                searchSingerPostResponseDtoList.add(
+                        SearchSingerPostResponseDto.builder()
+                                .postId(singerPost.getId())
+                                .nickname(singerPost.getMember().getNickname())
+                                .title(singerPost.getTitle())
+                                .content(singerPost.getContent())
+                                .imageUrl(singerPost.getImageUrl().getImageUrl())
+                                .mediaUrl(singerPost.getMediaUrl().getMediaUrl())
+                                .singerlikeCnt(singerLikeRepository.countAllBySingerPost(singerPost))
+                                .collaborate(singerPost.getCollaborate())
+                                .build()
+                );
+            }
+            return new ResponseEntity<>(Message.success(searchSingerPostResponseDtoList), HttpStatus.OK);
+        }
+        if (category.equals("Maker")) {
+            List<MakerPost> makerPostList = makerPostRepository.findByTitleContainingOrContentContainingOrderByCreatedAtDesc(searchText, searchText);
+            List<SearchMakerPostResponseDto> searchMakerPostResponseDtoList = new ArrayList<>();
+            for (MakerPost makerPost : makerPostList) {
+                searchMakerPostResponseDtoList.add(
+                        SearchMakerPostResponseDto.builder()
+                                .postId(makerPost.getId())
+                                .nickname(makerPost.getMember().getNickname())
+                                .title(makerPost.getTitle())
+                                .content(makerPost.getContent())
+                                .imageUrl(makerPost.getImageUrl().getImageUrl())
+                                .mediaUrl(makerPost.getMediaUrl().getMediaUrl())
+                                .makerlikeCnt(makerLikeRepository.countAllByMakerPost(makerPost))
+                                .collaborate(makerPost.getCollaborate())
+                                .build()
+                );
+            }
+            return new ResponseEntity<>(Message.success(searchMakerPostResponseDtoList), HttpStatus.OK);
+        }
+     return new ResponseEntity<>(Message.success("잘못된 접근 입니다"), HttpStatus.BAD_REQUEST);
+    }
 
     //============ 카테고리별 게시판 전체 조회 로직.
     @Transactional(readOnly = true)
@@ -69,7 +108,7 @@ public class PostService{
             makerpostGetResponseDtoList.add(
                     MakerPostGetResponseDto.builder()
                             .postId(makerPost.getId())
-                            .email(makerPost.getMember().getEmail())
+                            .nickname(makerPost.getMember().getNickname())
                             .position("Maker")
                             .title(makerPost.getTitle())
                             .content(makerPost.getContent())
@@ -89,7 +128,7 @@ public class PostService{
             singerpostGetResponseDtoList.add(
                     SingerPostGetResponseDto.builder()
                             .postId(singerPost.getId())
-                            .email(singerPost.getMember().getEmail())
+                            .nickname(singerPost.getMember().getNickname())
                             .position("Singer")
                             .title(singerPost.getTitle())
                             .content(singerPost.getContent())
@@ -114,8 +153,8 @@ public class PostService{
         MediaUrl mediaUrl = mediaUrlSave(postCreateRequestDto);
 
         if(postCreateRequestDto.getPosition().equals("Maker")){
-//
             MakerPost createdMakerPost = MakerPost.builder()
+                    .likes(0L)
                     .member(memberWhoCreated)
                     .title(postCreateRequestDto.getTitle())
                     .content(postCreateRequestDto.getContent())
@@ -153,6 +192,7 @@ public class PostService{
 
         }else if(postCreateRequestDto.getPosition().equals("Singer")){
             SingerPost createdSingerPost = SingerPost.builder()
+                    .likes(0L)
                     .member(memberWhoCreated)
                     .title(postCreateRequestDto.getTitle())
                     .content(postCreateRequestDto.getContent())
@@ -369,7 +409,6 @@ public class PostService{
             Tag tag1 = tagRepository.save(
                     Tag.builder()
                             .tag(tag)
-                            .memberId(singerPost.getMember())
                             .build());
             SingerPostTag singerPostTag = new SingerPostTag(singerPost,tag1);
             singerPostTagRepository.save(singerPostTag);

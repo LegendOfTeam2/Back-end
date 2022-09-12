@@ -24,21 +24,21 @@ import java.util.List;
 @Entity
 public class MakerPost extends Timestamped {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @JsonIgnore
-    @JoinColumn(name = "member", nullable = false)
+    @JoinColumn(name = "member_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
+    @Column(nullable = false,length = 1500)
     private String content;
 
-    @Column
+    @Column(nullable = false,length = 1500)
     private String lyrics;
 
     @JoinColumn(name = "image_url")
@@ -55,10 +55,10 @@ public class MakerPost extends Timestamped {
 
     @OneToMany(mappedBy ="tagId", fetch = FetchType.LAZY)
     private List<MakerPostTag> tags;
-
     @Column
     private Long likes;
 
+    
     public void updateMakerPost(PostPatchRequestDto patchRequestDto){
         this.lyrics = patchRequestDto.getLyrics();
         this.content = patchRequestDto.getContent();

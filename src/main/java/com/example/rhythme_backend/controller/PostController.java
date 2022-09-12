@@ -16,31 +16,37 @@ public class PostController {
 
     // 카테고리별 게시판 전체 조회
     @GetMapping("/auth/makerpost")
-    public ResponseEntity<?> getMakerPost(){
-      return postService.getAllMakerPost();
+    public ResponseEntity<?> getMakerPost() {
+        return postService.getAllMakerPost();
     }
 
     @GetMapping("/auth/singerpost")
-    public ResponseEntity<?> getSingerPost(){
+    public ResponseEntity<?> getSingerPost() {
         return postService.getAllSingerPost();
     }
 
 
     // 글 쓰기 API
     @PostMapping("/auth/post")
-    public ResponseEntity<?> createPost(@RequestBody PostCreateRequestDto postCreateRequestDto){
+    public ResponseEntity<?> createPost(@RequestBody PostCreateRequestDto postCreateRequestDto) {
         return postService.createPost(postCreateRequestDto);
     }
 
     //글 수정 API
     @PatchMapping("/auth/post")
-    public ResponseEntity<?> patchPost(@RequestBody PostPatchRequestDto postPatchRequestDto){
+    public ResponseEntity<?> patchPost(@RequestBody PostPatchRequestDto postPatchRequestDto) {
         return postService.patchPost(postPatchRequestDto);
     }
 
     // 글삭제 API
     @DeleteMapping("/auth/post")
-    public ResponseEntity<?> deletePost(@RequestBody PostDeleteRequestDto postDeleteRequestDto){
+    public ResponseEntity<?> deletePost(@RequestBody PostDeleteRequestDto postDeleteRequestDto) {
         return postService.deletePost(postDeleteRequestDto);
+    }
+
+    @GetMapping("/allpost/search")
+    public ResponseEntity<?> searchAllPost(@RequestParam(required = false, defaultValue = "") String searchText,
+                                           @RequestParam String category) {
+        return postService.AllPostSearch(searchText,category);
     }
 }

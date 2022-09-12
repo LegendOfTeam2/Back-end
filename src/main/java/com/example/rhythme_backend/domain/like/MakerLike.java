@@ -15,7 +15,6 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "like_table")
 public class MakerLike {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +23,7 @@ public class MakerLike {
     // 유저
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
-    private Member member;
+    private Member memberId;
 
     // 게시글
     @ManyToOne(fetch = FetchType.LAZY)
@@ -35,7 +34,7 @@ public class MakerLike {
 
     @Builder
     public MakerLike(MakerLikeRequestDto requestDto) {
-        this.member = requestDto.getMember();
+        this.memberId = requestDto.getMember();
         this.makerPost = requestDto.getMakerPost();
 
     }

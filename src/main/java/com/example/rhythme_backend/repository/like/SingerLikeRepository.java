@@ -10,11 +10,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SingerLikeRepository extends JpaRepository<SingerLike, Long> {
-    Optional<SingerLike> findByMemberAndSingerPost(Member member, SingerPost singerPost);
-
+    Optional<SingerLike> findByMemberIdAndSingerPost(Member member, SingerPost singerPost);
+    List<SingerLike> findByMemberId(Member member);
     Long countAllBySingerPost(SingerPost singerPost);
-    List<SingerLike> findBySingerPost(SingerPost singerPost);
-
-    //Optional<Like> findByMemberAndPostId(Member member, Long postId);
     Long countAllBySingerPostId(Long singerPostId);
+    List<SingerLike> findAllByMemberIdOrderBySingerPost(Member memberId);
 }
