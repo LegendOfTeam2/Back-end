@@ -115,7 +115,7 @@ public class MainPageService {
     }
 
     public ResponseEntity<?> recentMaker() {
-        List<MakerPost> makerPostList = makerPostRepository.findAllByOrderByCreatedAtDesc();
+        List<MakerPost> makerPostList = makerPostRepository.findTop30ByOrderByCreatedAtDesc();
         List<RecentMakerResponseDto> recentMakerResponseDtoList = new ArrayList<>();
         for (MakerPost makerPost : makerPostList) {
             recentMakerResponseDtoList.add(RecentMakerResponseDto.builder()
@@ -134,7 +134,7 @@ public class MainPageService {
     }
 
     public ResponseEntity<?> recentSinger() {
-        List<SingerPost> singerPostList = singerPostRepository.findTop10ByOrderByCreatedAtDesc();
+        List<SingerPost> singerPostList = singerPostRepository.findTop30ByOrderByCreatedAtDesc();
         List<RecentSingerResponseDto> recentSingerResponseDtoList = new ArrayList<>();
         for (SingerPost singerPost : singerPostList) {
             recentSingerResponseDtoList.add(RecentSingerResponseDto.builder()
@@ -153,7 +153,7 @@ public class MainPageService {
     }
 
     public ResponseEntity<?> bestMaker() {
-        List<MakerPost> makerPostList = makerPostRepository.findAllByOrderByLikesDesc();
+        List<MakerPost> makerPostList = makerPostRepository.findTop30ByOrderByLikesDesc();
         List<BestMakerResponseDto> bestMakerResponseDtoList = new ArrayList<>();
         for (MakerPost makerPost : makerPostList) {
             bestMakerResponseDtoList.add(BestMakerResponseDto.builder()
@@ -172,7 +172,7 @@ public class MainPageService {
     }
 
     public ResponseEntity<?> bestSinger() {
-        List<SingerPost> singerPostList = singerPostRepository.findTop10ByOrderByLikesDesc();
+        List<SingerPost> singerPostList = singerPostRepository.findTop30ByOrderByLikesDesc();
         List<BestSingerResponseDto> bestSingerResponseDtoList = new ArrayList<>();
         for (SingerPost singerPost : singerPostList) {
             bestSingerResponseDtoList.add(BestSingerResponseDto.builder()
@@ -191,7 +191,7 @@ public class MainPageService {
     }
 
     public ResponseEntity<?> MostLikeArtist() {
-        List<Member> memberList = memberRepository.findTop10ByOrderByFollowersDesc();
+        List<Member> memberList = memberRepository.findTop30ByOrderByFollowersDesc();
         List<PowerArtistResponseDto> powerArtistResponseDtoList = new ArrayList<>();
         for (Member member : memberList) {
             powerArtistResponseDtoList.add(PowerArtistResponseDto.builder()

@@ -13,7 +13,7 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
     Boolean existsByNickname(String nickname);
     Optional<Member> findByNickname(String nickname);
     Optional<Member> findById(Long id);
-    List<Member> findTop10ByOrderByFollowersDesc();
+    List<Member> findTop30ByOrderByFollowersDesc();
 
 
 }
