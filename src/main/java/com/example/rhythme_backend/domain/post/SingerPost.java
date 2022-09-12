@@ -20,7 +20,7 @@ import java.util.List;
 @Entity
 public class SingerPost extends Timestamped {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @JoinColumn(name = "member_id", nullable = false)

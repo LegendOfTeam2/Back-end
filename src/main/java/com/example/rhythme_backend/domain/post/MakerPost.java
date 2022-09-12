@@ -24,7 +24,7 @@ import java.util.List;
 @Entity
 public class MakerPost extends Timestamped {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @JsonIgnore
