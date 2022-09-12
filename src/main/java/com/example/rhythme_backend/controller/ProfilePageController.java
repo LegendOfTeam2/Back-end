@@ -2,16 +2,18 @@ package com.example.rhythme_backend.controller;
 
 
 import com.example.rhythme_backend.dto.requestDto.profile.ModifyProfileRequestDto;
-import com.example.rhythme_backend.repository.MemberRepository;
-import com.example.rhythme_backend.repository.posts.MakerPostRepository;
-import com.example.rhythme_backend.repository.posts.SingerPostRepository;
 import com.example.rhythme_backend.service.ProfileService;
 import com.example.rhythme_backend.util.Message;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
@@ -30,9 +32,11 @@ public class ProfilePageController {
     }
 
     @GetMapping("/post/upload/{nickname}")
-    public ResponseEntity<?> profileGetMyUpload(@PathVariable String nickname){
+    public ResponseEntity<?> profileGetMyUpload(@PathVariable String nickname,
+                                                @PageableDefault(size = 6,sort = "id",direction = Sort.Direction.DESC)
+                                                Pageable pageable){
         return new ResponseEntity<>(Message.success(
-                profileService.profileGetMyUpload(nickname)),HttpStatus.OK
+                profileService.profileGetMyUpload(nickname,pageable)),HttpStatus.OK
         );
     }
 

@@ -29,6 +29,9 @@ public class FollowService {
         checkAccessToken(request, follower);
         Member following = isPresentMemberFollow(nickname);
         Optional<Follow> findFollowing = followRepository.findByFollowerAndFollowing(follower, following);
+        if(follower.getNickname().equals(following.getNickname())){
+            return ResponseDto.success("본인을 팔로우 할 수 없습니다 ");
+        }
         if(findFollowing.isEmpty()) {
             FollowRequestDto followRequestDto = new FollowRequestDto(follower, following);
             Follow follow = new Follow(followRequestDto);

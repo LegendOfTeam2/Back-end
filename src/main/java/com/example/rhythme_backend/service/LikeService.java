@@ -43,7 +43,6 @@ public class LikeService {
         checkAccessToken(request, member);
         SingerPost singerPost = getCurrentSingerPost(postId);
         checkSingerPost(singerPost);
-
         SingerLike findSingerLike = singerLikeRepository.findByMemberIdAndSingerPost(member,singerPost).orElse(null);
         if(findSingerLike == null){
             SingerLikeRequestDto singerLikeRequestDto = new SingerLikeRequestDto(member, singerPost);
