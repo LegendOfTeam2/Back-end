@@ -42,11 +42,11 @@ public class ProfilePageController {
                 profileService.profileGetMyLike(nickname)
         ),HttpStatus.OK);
     }
-//
-//    @PutMapping("/profile/{nickname}")
-//    public ResponseEntity<?> profileModify(ModifyProfileRequestDto modifyProfileRequestDto){
-//        return new ResponseEntity<>(Message.success(
-//                profileService.profileModifiy(modifyProfileRequestDto)
-//        ),HttpStatus.OK);
-//    }
+
+    @PutMapping("/profile/{nickname}")
+    public ResponseEntity<?> profileModify(ModifyProfileRequestDto modifyProfileRequestDto){
+        return new ResponseEntity<>(Message.success(
+                profileService.profileModifiy(modifyProfileRequestDto)
+        ),HttpStatus.OK);
+    }
 }

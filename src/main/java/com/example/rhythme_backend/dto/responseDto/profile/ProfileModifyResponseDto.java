@@ -7,9 +7,9 @@ import java.util.List;
 
 @Getter
 @Builder
-public class ModifyProfileResponseDto {
+public class ProfileModifyResponseDto {
     private String nickname;
     private String imageUrl;
-    private String introduction;
+    private String introduce;
     private List<String> hashtag;
 }

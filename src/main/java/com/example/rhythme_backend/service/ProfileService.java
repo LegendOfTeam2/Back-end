@@ -2,11 +2,12 @@ package com.example.rhythme_backend.service;
 
 import com.example.rhythme_backend.domain.HashTag;
 import com.example.rhythme_backend.domain.Member;
-import com.example.rhythme_backend.domain.Profile;
 import com.example.rhythme_backend.domain.like.MakerLike;
 import com.example.rhythme_backend.domain.like.SingerLike;
 import com.example.rhythme_backend.domain.post.MakerPost;
 import com.example.rhythme_backend.domain.post.SingerPost;
+import com.example.rhythme_backend.dto.requestDto.profile.ModifyProfileRequestDto;
+import com.example.rhythme_backend.dto.responseDto.profile.ProfileModifyResponseDto;
 import com.example.rhythme_backend.dto.responseDto.profile.ProfileResponseDto;
 import com.example.rhythme_backend.dto.responseDto.profile.ProfileUploadPostResponseDto;
 import com.example.rhythme_backend.repository.FollowRepository;
@@ -16,7 +17,6 @@ import com.example.rhythme_backend.repository.like.MakerLikeRepository;
 import com.example.rhythme_backend.repository.like.SingerLikeRepository;
 import com.example.rhythme_backend.repository.posts.MakerPostRepository;
 import com.example.rhythme_backend.repository.posts.SingerPostRepository;
-import com.example.rhythme_backend.repository.profile.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +36,6 @@ public class ProfileService {
 
     private final SingerLikeRepository singerLikeRepository;
 
-    private final ProfileRepository profileRepository;
 
     private final FollowRepository followRepository;
 
@@ -47,16 +46,18 @@ public class ProfileService {
     public ProfileResponseDto profileGetOne(String nickname){
         //팔로워 팔로잉은 따로 API 있음
         Member member = memberRepository.findByNickname(nickname).orElseGet(Member::new);
-        Profile profile = profileRepository.findByMember(member);
-        List<String> stringList = new ArrayList<>();
         Long follower = followRepository.countByFollower(member);
         Long following = followRepository.countByFollowing(member);
-        Integer makerPostCnt = makerPostRepository.countByMember(member);
-
-         List<String> stringList1 = hashTagRepository.findAllByMember(member);
+        Long makerPostCnt = makerPostRepository.countByMember(member);
+        List<HashTag> HashTagList = hashTagRepository.findAllByMember(member);
+        List<String> stringList = new ArrayList<>();
+        for(HashTag a : HashTagList){
+            stringList.add(a.getHashtag());
+        }
 
         return ProfileResponseDto.builder()
-                .hashtag(stringList1)
+                .hashtag(stringList)
+                .nickname(nickname)
                 .myPostConunt(makerPostCnt)
                 .follower(follower)
                 .following(following)
@@ -65,18 +66,25 @@ public class ProfileService {
     }
 
 
-    // 프로필 수정 메서드    수정사항 완료 후 로직 완성성
-
-//    public ProfileResponseDto profileModifiy(ModifyProfileRequestDto modifyProfileRequestDto){
-//        Member member = memberRepository.findByNickname(modifyProfileRequestDto.getNickname()).orElseGet(Member::new);
-//        Profile profile = profileRepository.findByMember(member);
-//        member.updateImageUrl(modifyProfileRequestDto.getImageUrl());
-//        memberTagRepository.deleteAllByMemberId(member);
-//        hashTagRepository.deleteAllByMemberId(member);
-//
-//
-//        return ;
-//    }
+    public ProfileModifyResponseDto profileModifiy(ModifyProfileRequestDto modifyProfileRequestDto){
+        Member member = memberRepository.findByNickname(modifyProfileRequestDto.getNickname()).orElseGet(Member::new);
+        member.updateImageUrl(modifyProfileRequestDto.getImageUrl());
+        member.updateIntroduce(modifyProfileRequestDto.getIntroduce());
+        hashTagRepository.deleteByMember(member);
+        for(String a : modifyProfileRequestDto.getHashtag()){
+            HashTag hashTag = HashTag.builder()
+                    .hashtag(a)
+                    .member(member)
+                    .build();
+            hashTagRepository.save(hashTag);
+        }
+        return ProfileModifyResponseDto.builder()
+                .hashtag(modifyProfileRequestDto.getHashtag())
+                .imageUrl(modifyProfileRequestDto.getImageUrl())
+                .nickname(modifyProfileRequestDto.getNickname())
+                .introduce(modifyProfileRequestDto.getIntroduce())
+                .build();
+    }
 
 
     public List<ProfileUploadPostResponseDto>  profileGetMyUpload(String nickname) {
