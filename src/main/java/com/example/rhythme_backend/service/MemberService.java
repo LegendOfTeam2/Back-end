@@ -86,7 +86,6 @@ public class MemberService {
 
     @Transactional
     public ResponseEntity<?> emailCheck(EmailCheckRequestDto requestDto) {
-
         if (null != getPresentEmail(requestDto.getEmail())) {
             return new ResponseEntity<>(Message.fail("DUPLICATED_EMAIL","사용 불가능한 이메일입니다."), HttpStatus.OK);
         }
@@ -96,7 +95,10 @@ public class MemberService {
 
     @Transactional
     public ResponseEntity<?> nicknameCheck(NicknameCheckRequestDto requestDto) {
-        return getPresentNickname(requestDto.getNickname());
+        if (memberRepository.existsByNickname(requestDto.getNickname())) {
+            return new ResponseEntity<>(Message.fail("DUPLICATED_NICKNAME","사용 불가능한 닉네임입니다."),HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(Message.success("사용 가능한 닉네임입니다."),HttpStatus.OK);
     }
 
 
@@ -139,7 +141,7 @@ public class MemberService {
         if (!tokenProvider.validateToken(accessToken)) {
             return new ResponseEntity<>(Message.fail("INVALID_TOKEN", "토큰이 유효하지 않습니다."),HttpStatus.UNAUTHORIZED);
         }
-        Member member = memberRepository.findByNickname(requestDto.getEmail()).orElseGet(Member::new);
+        Member member = memberRepository.findByNickname(requestDto.getEmail()).orElse(null);
         if (member == null) {
             return new ResponseEntity<>(Message.fail("NICKNAME_NOT_FOUND", "존재하지 않는 닉네임입니다."),HttpStatus.BAD_REQUEST);
         }
@@ -217,7 +219,7 @@ public class MemberService {
         }
 
         String logoutNickname = requestDto.getNickname();
-        Member logoutMember = presentNickname(logoutNickname);
+        Member logoutMember = getPresentNickname(logoutNickname);
         Long logoutMemberId = logoutMember.getId();
         Member logout = getDeleteMember(logoutMemberId);
         tokenProvider.deleteRefreshToken(logout);
@@ -372,21 +374,12 @@ public class MemberService {
         return optionalMember.orElseGet(Member::new);
     }
 
-    //수정해야 함 (통합)
     @Transactional(readOnly = true)
-    public Member presentNickname(String nickname) {
+    public Member getPresentNickname(String nickname) {
         Optional<Member> optionalMember = memberRepository.findByNickname(nickname);
         return optionalMember.orElseGet(Member::new);
     }
 
-    @Transactional(readOnly = true)
-    public ResponseEntity<?> getPresentNickname(String nickname) {
-       if (memberRepository.existsByNickname(nickname)) {
-           return new ResponseEntity<>(Message.fail("DUPLICATED_NICKNAME","사용 불가능한 닉네임입니다."),HttpStatus.NOT_FOUND);
-       }
-        return new ResponseEntity<>(Message.success("사용 가능한 닉네임입니다."),HttpStatus.OK);
-    }
-    //////------------
     @Transactional
     public Member validateMember(HttpServletRequest request) {
         if (!tokenProvider.validateToken(request.getHeader("Refresh-Token"))) {
