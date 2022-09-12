@@ -9,7 +9,7 @@ import lombok.Getter;
 @Builder
 public class BestMakerResponseDto {
 
-    private Long makerId;
+    private Long postId;
     private MediaUrl mediaUrl;
     private ImageUrl imageUrl;
     private String nickname;
