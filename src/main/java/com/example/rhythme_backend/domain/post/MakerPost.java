@@ -58,6 +58,7 @@ public class MakerPost extends Timestamped {
     @Column
     private Long likes;
 
+    
     public void updateMakerPost(PostPatchRequestDto patchRequestDto){
         this.lyrics = patchRequestDto.getLyrics();
         this.content = patchRequestDto.getContent();
