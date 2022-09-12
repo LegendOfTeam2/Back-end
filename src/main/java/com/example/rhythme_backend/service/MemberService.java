@@ -25,6 +25,7 @@ import com.example.rhythme_backend.util.RefreshToken;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -41,6 +42,7 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
@@ -62,7 +64,7 @@ public class MemberService {
     
     @Transactional
     public ResponseEntity<?> signupMember(SignupRequestDto requestDto) {
-
+        log.info("들어오나"+requestDto.getEmail());
         if (null != getPresentEmail(requestDto.getEmail())) {
             return new ResponseEntity<>(Message.fail("DUPLICATED_EMAIL","중복된 이메일입니다."),HttpStatus.BAD_REQUEST);
         }
@@ -371,13 +373,13 @@ public class MemberService {
     @Transactional(readOnly = true)
     public Member getPresentEmail(String email) {
         Optional<Member> optionalMember = memberRepository.findByEmail(email);
-        return optionalMember.orElseGet(Member::new);
+        return optionalMember.orElse(null);
     }
 
     @Transactional(readOnly = true)
     public Member getPresentNickname(String nickname) {
         Optional<Member> optionalMember = memberRepository.findByNickname(nickname);
-        return optionalMember.orElseGet(Member::new);
+        return optionalMember.orElse(null);
     }
 
     @Transactional
@@ -390,12 +392,12 @@ public class MemberService {
 
     public Member getDeleteMember(Long id) {
         Optional<Member> optionalMember = memberRepository.findById(id);
-        return optionalMember.orElseGet(Member::new);
+        return optionalMember.orElse(null);
     }
 
     public RefreshToken getDeleteToken(Member member) {
         Optional<RefreshToken> optionalMember = refreshTokenRepository.findByMember(member);
-        return optionalMember.orElseGet(RefreshToken::new);
+        return optionalMember.orElse(null);
     }
 
 
