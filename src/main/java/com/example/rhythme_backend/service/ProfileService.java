@@ -59,6 +59,7 @@ public class ProfileService {
         return ProfileResponseDto.builder()
                 .hashtag(stringList)
                 .nickname(nickname)
+                .imageUrl(member.getImageUrl())
                 .myPostConunt(makerPostCnt)
                 .follower(follower)
                 .following(following)
