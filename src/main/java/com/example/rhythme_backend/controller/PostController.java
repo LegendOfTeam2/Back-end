@@ -45,9 +45,9 @@ public class PostController {
     }
 
     @GetMapping("/allpost/search")
-    public ResponseEntity<?> searchAllPost(@RequestParam(required = false, defaultValue = "") String searchText,
+    public ResponseEntity<?> searchAllPost(@RequestParam(required = false, defaultValue = "") String searchtext,
                                            @RequestParam String category) {
         
-        return postService.AllPostSearch(searchText,category);
+        return postService.AllPostSearch(searchtext,category);
     }
 }
