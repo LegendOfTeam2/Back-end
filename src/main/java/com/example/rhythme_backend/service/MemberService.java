@@ -139,7 +139,7 @@ public class MemberService {
         if (!tokenProvider.validateToken(accessToken)) {
             return new ResponseEntity<>(Message.fail("INVALID_TOKEN", "토큰이 유효하지 않습니다."),HttpStatus.UNAUTHORIZED);
         }
-        Member member = memberRepository.findByNickname(requestDto.getEmail()).orElse(null);
+        Member member = memberRepository.findByNickname(requestDto.getEmail()).orElseGet(Member::new);
         if (member == null) {
             return new ResponseEntity<>(Message.fail("NICKNAME_NOT_FOUND", "존재하지 않는 닉네임입니다."),HttpStatus.BAD_REQUEST);
         }
@@ -369,14 +369,14 @@ public class MemberService {
     @Transactional(readOnly = true)
     public Member getPresentEmail(String email) {
         Optional<Member> optionalMember = memberRepository.findByEmail(email);
-        return optionalMember.orElse(null);
+        return optionalMember.orElseGet(Member::new);
     }
 
     //수정해야 함 (통합)
     @Transactional(readOnly = true)
     public Member presentNickname(String nickname) {
         Optional<Member> optionalMember = memberRepository.findByNickname(nickname);
-        return optionalMember.orElse(null);
+        return optionalMember.orElseGet(Member::new);
     }
 
     @Transactional(readOnly = true)
@@ -397,12 +397,12 @@ public class MemberService {
 
     public Member getDeleteMember(Long id) {
         Optional<Member> optionalMember = memberRepository.findById(id);
-        return optionalMember.orElse(null);
+        return optionalMember.orElseGet(Member::new);
     }
 
     public RefreshToken getDeleteToken(Member member) {
         Optional<RefreshToken> optionalMember = refreshTokenRepository.findByMember(member);
-        return optionalMember.orElse(null);
+        return optionalMember.orElseGet(RefreshToken::new);
     }
 
 
