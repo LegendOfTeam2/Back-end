@@ -17,11 +17,11 @@ public interface MakerPostRepository extends JpaRepository<MakerPost,Long> {
     //Page<MakerPost> findByTitleOrContent(String searchText, Pageable page);
 
     List<MakerPost> findAllByMember(Member member);
-
     List<MakerPost> findByTitleContainingOrContentContainingOrderByCreatedAtDesc(String title,String content);
     List<MakerPost> findTopByOrderByLikesDesc();
     List<MakerPost> findAllByOrderByLikesDesc();
-
     Integer countByMember(Member member);
+    List<MakerPost> findAllByOrderByCreatedAtDesc();
+
 
 }
