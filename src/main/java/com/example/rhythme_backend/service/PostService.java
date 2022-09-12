@@ -56,9 +56,9 @@ public class PostService{
     private final S3Service s3Service;
     private final SingerLikeRepository singerLikeRepository;
 
-    public ResponseEntity<?>  AllPostSearch(String searchtext , String category) {
+    public ResponseEntity<?>  AllPostSearch(String searchText , String category) {
         if (category.equals("Singer")) {
-            List<SingerPost> singerPostList = singerPostRepository.findByTitleContainingOrContentContainingOrderByCreatedAtDesc(searchtext, searchtext);
+            List<SingerPost> singerPostList = singerPostRepository.findByTitleContainingOrContentContainingOrderByCreatedAtDesc(searchText, searchText);
             List<SearchSingerPostResponseDto> searchSingerPostResponseDtoList = new ArrayList<>();
             for (SingerPost singerPost : singerPostList) {
                 searchSingerPostResponseDtoList.add(
@@ -77,7 +77,7 @@ public class PostService{
             return new ResponseEntity<>(Message.success(searchSingerPostResponseDtoList), HttpStatus.OK);
         }
         if (category.equals("Maker")) {
-            List<MakerPost> makerPostList = makerPostRepository.findByTitleContainingOrContentContainingOrderByCreatedAtDesc(searchtext, searchtext);
+            List<MakerPost> makerPostList = makerPostRepository.findByTitleContainingOrContentContainingOrderByCreatedAtDesc(searchText, searchText);
             List<SearchMakerPostResponseDto> searchMakerPostResponseDtoList = new ArrayList<>();
             for (MakerPost makerPost : makerPostList) {
                 searchMakerPostResponseDtoList.add(
