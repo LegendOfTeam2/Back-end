@@ -5,6 +5,9 @@ import com.example.rhythme_backend.dto.requestDto.post.PostDeleteRequestDto;
 import com.example.rhythme_backend.dto.requestDto.post.PostPatchRequestDto;
 import com.example.rhythme_backend.service.PostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,8 +49,9 @@ public class PostController {
 
     @GetMapping("/allpost/search")
     public ResponseEntity<?> searchAllPost(@RequestParam(required = false, defaultValue = "") String searchText,
-                                           @RequestParam String category) {
-        
-        return postService.AllPostSearch(searchText,category);
+                                           @RequestParam String category,
+                                           @PageableDefault (size = 6,sort = "id",direction = Sort.Direction.DESC)
+                                           Pageable pageable) {
+        return postService.AllPostSearch(searchText,category,pageable);
     }
 }
