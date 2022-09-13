@@ -309,7 +309,6 @@ public class MainPageService {
 
         return new ResponseEntity<>(Message.success(detailResponseDto),HttpStatus.OK);
     }
-
     
     public Member validateMember(HttpServletRequest request) {
         if (!tokenProvider.validateToken(request.getHeader("Authorization").substring(7))) {
