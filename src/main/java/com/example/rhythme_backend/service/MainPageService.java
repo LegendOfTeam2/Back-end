@@ -319,5 +319,4 @@ public class MainPageService {
         }
         return tokenProvider.getMemberFromAuthentication();
     }
-
 }
