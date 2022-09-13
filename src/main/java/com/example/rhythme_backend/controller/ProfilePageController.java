@@ -1,12 +1,12 @@
 package com.example.rhythme_backend.controller;
 
 
+import com.example.rhythme_backend.domain.Message;
 import com.example.rhythme_backend.dto.requestDto.profile.ModifyProfileRequestDto;
 import com.example.rhythme_backend.repository.MemberRepository;
 import com.example.rhythme_backend.repository.posts.MakerPostRepository;
 import com.example.rhythme_backend.repository.posts.SingerPostRepository;
 import com.example.rhythme_backend.service.ProfileService;
-import com.example.rhythme_backend.util.Message;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

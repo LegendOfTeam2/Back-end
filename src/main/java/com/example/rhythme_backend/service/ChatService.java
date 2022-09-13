@@ -1,6 +1,7 @@
 package com.example.rhythme_backend.service;
 
-import com.example.rhythme_backend.domain.ChatRoom;
+
+import com.example.rhythme_backend.domain.chat.ChatRoom;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,8 @@ public class ChatService {
 
     private Map<String, ChatRoom> chatRooms;
 
-    @PostConstruct
+    @PostConstruct // 최초 한번만 Bean 주입하는 어노테이션 반복 주입할 필요없다
+    // 왜? 소켓으로 연결되어 있는데 계속 빈을 주입할 필요는 없다.
     //의존관게 주입완료되면 실행되는 코드
     private void init() {
         chatRooms = new LinkedHashMap<>();

@@ -1,6 +1,7 @@
 package com.example.rhythme_backend.controller;
 
-import com.example.rhythme_backend.domain.ChatMessage;
+
+import com.example.rhythme_backend.domain.chat.ChatMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -19,4 +20,6 @@ public class MessageController {
         }
         sendingOperations.convertAndSend("/topic/chat/room/"+message.getRoomId(),message);
     }
+
+
 }
