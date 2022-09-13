@@ -64,8 +64,7 @@ public class MemberService {
     
     @Transactional
     public ResponseEntity<?> signupMember(SignupRequestDto requestDto) {
-        log.info("들어오나"+requestDto.getEmail());
-        if (null != getPresentEmail(requestDto.getEmail())) {
+        if (memberRepository.existsByEmail(requestDto.getEmail())) {
             return new ResponseEntity<>(Message.fail("DUPLICATED_EMAIL","중복된 이메일입니다."),HttpStatus.BAD_REQUEST);
         }
 
@@ -88,7 +87,7 @@ public class MemberService {
 
     @Transactional
     public ResponseEntity<?> emailCheck(EmailCheckRequestDto requestDto) {
-        if (null != getPresentEmail(requestDto.getEmail())) {
+        if (memberRepository.existsByEmail(requestDto.getEmail())) {
             return new ResponseEntity<>(Message.fail("DUPLICATED_EMAIL","사용 불가능한 이메일입니다."), HttpStatus.OK);
         }
         return new ResponseEntity<>(Message.success("사용 가능한 이메일입니다."), HttpStatus.OK);
