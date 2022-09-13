@@ -267,7 +267,6 @@ public class MainPageService {
             for (MakerPostTag tag: makerTagList) {
                 tagResponseList.add(tag.getTagId().getTag());
             }
-
             DetailResponseDto detailResponseDto = DetailResponseDto.builder()
                     .postId(makerPost.getId())
                     .position("Maker")
@@ -291,25 +290,27 @@ public class MainPageService {
         for (SingerPostTag tag: singerPostTagList) {
             tagResponseList.add(tag.getTagId().getTag());
         }
+        if(position.equals("Singer")) {
+            DetailResponseDto detailResponseDto = DetailResponseDto.builder()
+                    .postId(singerPost.getId())
+                    .position("Singer")
+                    .memberImageUrl(singerPost.getMember().getImageUrl())
+                    .title(singerPost.getTitle())
+                    .content(singerPost.getContent())
+                    .nickname(singerPost.getMember().getNickname())
+                    .lyrics(singerPost.getLyrics())
+                    .imageUrl(singerPost.getImageUrl().getImageUrl())
+                    .mediaUrl(singerPost.getMediaUrl().getMediaUrl())
+                    .createdAt(singerPost.getCreatedAt())
+                    .modifiedAt(singerPost.getModifiedAt())
+                    .likes(singerPost.getLikes())
+                    .collaborate(singerPost.getCollaborate())
+                    .tags(tagResponseList)
+                    .build();
 
-        DetailResponseDto detailResponseDto = DetailResponseDto.builder()
-                .postId(singerPost.getId())
-                .position("Singer")
-                .memberImageUrl(makerPost.getMember().getImageUrl())
-                .title(singerPost.getTitle())
-                .content(singerPost.getContent())
-                .nickname(singerPost.getMember().getNickname())
-                .lyrics(singerPost.getLyrics())
-                .imageUrl(singerPost.getImageUrl().getImageUrl())
-                .mediaUrl(singerPost.getMediaUrl().getMediaUrl())
-                .createdAt(singerPost.getCreatedAt())
-                .modifiedAt(singerPost.getModifiedAt())
-                .likes(singerPost.getLikes())
-                .collaborate(singerPost.getCollaborate())
-                .tags(tagResponseList)
-                .build();
-
-        return new ResponseEntity<>(Message.success(detailResponseDto),HttpStatus.OK);
+            return new ResponseEntity<>(Message.success(detailResponseDto),HttpStatus.OK);
+        }
+        return new ResponseEntity<>(Message.fail("POSITION_NOT_FOUND","리드미에서 지원하지 않는 포지션입니다."),HttpStatus.OK);
     }
     
     public Member validateMember(HttpServletRequest request) {

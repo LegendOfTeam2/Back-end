@@ -60,7 +60,6 @@ public class MemberService {
 //    private final TagRepository tagRepository;
 //    private final MakerPostRepository makerPostRepository;
 //    private final SingerPostRepository singerPostRepository;
-
     
     @Transactional
     public ResponseEntity<?> signupMember(SignupRequestDto requestDto) {
@@ -373,6 +372,19 @@ public class MemberService {
     public Member getPresentEmail(String email) {
         Optional<Member> optionalMember = memberRepository.findByEmail(email);
         return optionalMember.orElse(null);
+    }
+
+//    리펙토링 할 때 사용하기 (삭제ㄴㄴ)
+//    @Transactional(readOnly = true)
+//    public Member getPresentEmail(String email) {
+//        Optional<Member> optionalMember = memberRepository.findByEmail(email);
+//        return optionalMember.orElseGet(()->new Member("notEmail"));
+//    }
+
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> emailDupCheck(String email) {
+        memberRepository.existsByEmail(email);
+        return new ResponseEntity<>(Message.fail("DUPLICATED_EMAIL","중복된 이메일입니다."),HttpStatus.BAD_REQUEST);
     }
 
     @Transactional(readOnly = true)

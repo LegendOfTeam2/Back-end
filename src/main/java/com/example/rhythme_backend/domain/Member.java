@@ -49,6 +49,14 @@ public class Member extends Timestamped {
     @Column
     private String deleteCheck;
 
+//    @Column
+//    @JsonIgnore
+//    String notEmail;
+//
+//    public Member(String notEmail) {
+//        this.notEmail = notEmail;
+//    }
+
     public boolean validatePassword(PasswordEncoder passwordEncoder, String password) {
         return passwordEncoder.matches(password, this.password);
     }
