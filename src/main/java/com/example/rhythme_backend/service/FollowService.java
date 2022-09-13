@@ -29,9 +29,7 @@ public class FollowService {
         checkAccessToken(request, follower);
         Member following = isPresentMemberFollow(nickname);
         Optional<Follow> findFollowing = followRepository.findByFollowerAndFollowing(follower, following);
-        if(follower.getNickname().equals(following.getNickname())){
-            return ResponseDto.success("본인을 팔로우 할 수 없습니다 ");
-        }
+        
         if(findFollowing.isEmpty()) {
             FollowRequestDto followRequestDto = new FollowRequestDto(follower, following);
             Follow follow = new Follow(followRequestDto);
@@ -59,7 +57,6 @@ public class FollowService {
 //        }
 //        return new ResponseEntity<>(Message.success(followedResponseDtoList), HttpStatus.OK);
 //    }
-
 //    @Transactional(readOnly = true)
 //    public ResponseEntity<?> getMemberByAllFoloowing(String nickname , HttpServletRequest request){
 //        validateMember(request);
@@ -71,17 +68,17 @@ public class FollowService {
 //        }
 //    }
     public Member validateMember(HttpServletRequest request) {
-        if (!tokenProvider.validateToken(request.getHeader("Authorization").substring(7))) {
+        if(!tokenProvider.validateToken(request.getHeader("Authorization").substring(7))) {
             return null;
         }
         return tokenProvider.getMemberFromAuthentication();
     }
 
-        public void checkAccessToken (HttpServletRequest request, Member member){
-            if (!tokenProvider.validateToken(request.getHeader("Authorization").substring(7)))
-                throw new CustomException(ErrorCode.TOKEN_IS_EXPIRED);
-            if (null == member) throw new CustomException(ErrorCode.MEMBER_NOT_FOUND);
-        }
+    public void checkAccessToken (HttpServletRequest request, Member member){
+        if (!tokenProvider.validateToken(request.getHeader("Authorization").substring(7)))
+            throw new CustomException(ErrorCode.TOKEN_IS_EXPIRED);
+        if (null == member) throw new CustomException(ErrorCode.MEMBER_NOT_FOUND);
+    }
     public Member isPresentMemberFollow(String  nickname) {
         Optional<Member> optionalMember = memberRepository.findByNickname(nickname);
         return optionalMember.orElseThrow(
