@@ -19,6 +19,7 @@ public class DetailResponseDto {
     private String mediaUrl;
     private Boolean collaborate;
     private Long likes;
+    private String memberImageUrl;
 
     @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss", timezone="Asia/Seoul")
     private LocalDateTime createdAt;
