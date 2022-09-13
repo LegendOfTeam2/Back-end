@@ -26,7 +26,6 @@ import com.example.rhythme_backend.repository.posts.SingerPostTagRepository;
 import com.example.rhythme_backend.util.Message;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -57,9 +56,9 @@ public class PostService{
     private final S3Service s3Service;
     private final SingerLikeRepository singerLikeRepository;
 
-    public ResponseEntity<?>  AllPostSearch(String searchText , String category, Pageable pageable) {
+    public ResponseEntity<?>  AllPostSearch(String searchText , String category) {
         if (category.equals("Singer")) {
-            List<SingerPost> singerPostList = singerPostRepository.findByTitleContainingOrContentContainingOrderByCreatedAtDesc(searchText, searchText,pageable);
+            List<SingerPost> singerPostList = singerPostRepository.findByTitleContainingOrContentContainingOrderByCreatedAtDesc(searchText, searchText);
             List<SearchSingerPostResponseDto> searchSingerPostResponseDtoList = new ArrayList<>();
             for (SingerPost singerPost : singerPostList) {
                 searchSingerPostResponseDtoList.add(
@@ -78,7 +77,7 @@ public class PostService{
             return new ResponseEntity<>(Message.success(searchSingerPostResponseDtoList), HttpStatus.OK);
         }
         if (category.equals("Maker")) {
-            List<MakerPost> makerPostList = makerPostRepository.findByTitleContainingOrContentContainingOrderByCreatedAtDesc(searchText, searchText,pageable);
+            List<MakerPost> makerPostList = makerPostRepository.findByTitleContainingOrContentContainingOrderByCreatedAtDesc(searchText, searchText);
             List<SearchMakerPostResponseDto> searchMakerPostResponseDtoList = new ArrayList<>();
             for (MakerPost makerPost : makerPostList) {
                 searchMakerPostResponseDtoList.add(

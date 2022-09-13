@@ -14,7 +14,7 @@ public interface MakerPostRepository extends JpaRepository<MakerPost,Long> {
 
 
     List<MakerPost> findAllByMember(Member member, Pageable pageable);
-    List<MakerPost> findByTitleContainingOrContentContainingOrderByCreatedAtDesc(String title, String content, Pageable pageable);
+    List<MakerPost> findByTitleContainingOrContentContainingOrderByCreatedAtDesc(String title, String content);
     List<MakerPost> findTopByOrderByLikesDesc();
     List<MakerPost> findTop30ByOrderByLikesDesc();
     List<MakerPost> findTop30ByOrderByCreatedAtDesc();
