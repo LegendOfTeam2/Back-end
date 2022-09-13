@@ -8,7 +8,6 @@ import com.example.rhythme_backend.domain.post.MakerPost;
 import com.example.rhythme_backend.domain.post.SingerPost;
 import com.example.rhythme_backend.dto.responseDto.MyImageResponseDto;
 import com.example.rhythme_backend.dto.responseDto.mainpage.*;
-import com.example.rhythme_backend.jwt.TokenProvider;
 import com.example.rhythme_backend.repository.FollowRepository;
 import com.example.rhythme_backend.repository.MemberRepository;
 import com.example.rhythme_backend.repository.like.MakerLikeRepository;
@@ -16,6 +15,7 @@ import com.example.rhythme_backend.repository.like.SingerLikeRepository;
 import com.example.rhythme_backend.repository.posts.MakerPostRepository;
 import com.example.rhythme_backend.repository.posts.SingerPostRepository;
 import com.example.rhythme_backend.util.Message;
+import com.example.rhythme_backend.util.Validation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -36,8 +35,8 @@ public class MainPageService {
     private final MemberRepository memberRepository;
     private final MakerLikeRepository makerLikeRepository;
     private final FollowRepository followRepository;
-    private final TokenProvider tokenProvider;
     private final SingerLikeRepository singerLikeRepository;
+    private final Validation validation;
 
     public ResponseEntity<?> bestSong() {
         List<BestSongResponseDto> bestSongResponseDtoList = new ArrayList<>();
@@ -205,7 +204,7 @@ public class MainPageService {
 
     @Transactional(readOnly = true)
     public ResponseEntity<?> makerLikeList(HttpServletRequest request) {
-        Member member = validateMember(request);
+        Member member = validation.validateMember(request);
         List<MakerLike> makerLikeList = makerLikeRepository.findAllByMemberIdOrderByMakerPost(member);
         List<MyMakerResponseDto> myMakerResponseDtoList = new ArrayList<>();
         for (MakerLike makerLike : makerLikeList) {
@@ -218,7 +217,7 @@ public class MainPageService {
 
     @Transactional(readOnly = true)
     public ResponseEntity<?> singerLikeList(HttpServletRequest request) {
-        Member member = validateMember(request);
+        Member member = validation.validateMember(request);
         List<SingerLike> singerLikeList = singerLikeRepository.findAllByMemberIdOrderBySingerPost(member);
         List<MySingerResponseDto> mySingerResponseDtoList = new ArrayList<>();
         for (SingerLike singerLike : singerLikeList) {
@@ -231,7 +230,7 @@ public class MainPageService {
 
     @Transactional(readOnly = true)
     public ResponseEntity<?> followList(HttpServletRequest request) {
-        Member member = validateMember(request);
+        Member member = validation.validateMember(request);
         List<Follow> followList = followRepository.findAllByFollowerOrderByFollowing(member);
         List<MyArtistResponseDto> myArtistResponseDtoList = new ArrayList<>();
         for (Follow follow : followList) {
@@ -243,20 +242,12 @@ public class MainPageService {
     }
 
     public ResponseEntity<?> getMyImage(HttpServletRequest request) {
-        Member member = validateMember(request);
+        Member member = validation.validateMember(request);
         Member optionalMember = memberRepository.findByNickname(member.getNickname()).orElseGet(Member::new);
         MyImageResponseDto myImageResponseDto = MyImageResponseDto.builder()
                 .imgUrl(optionalMember.getImageUrl())
                 .build();
         return new ResponseEntity<>(Message.success(myImageResponseDto),HttpStatus.OK);
-    }
-
-
-    public Member validateMember(HttpServletRequest request) {
-        if (!tokenProvider.validateToken(request.getHeader("Authorization").substring(7))) {
-            return null;
-        }
-        return tokenProvider.getMemberFromAuthentication();
     }
 
 }

@@ -1,20 +1,18 @@
 package com.example.rhythme_backend.service;
 
-import com.example.rhythme_backend.domain.like.MakerLike;
 import com.example.rhythme_backend.domain.Member;
+import com.example.rhythme_backend.domain.like.MakerLike;
 import com.example.rhythme_backend.domain.like.SingerLike;
 import com.example.rhythme_backend.domain.post.MakerPost;
 import com.example.rhythme_backend.domain.post.SingerPost;
 import com.example.rhythme_backend.dto.requestDto.like.MakerLikeRequestDto;
 import com.example.rhythme_backend.dto.requestDto.like.SingerLikeRequestDto;
-import com.example.rhythme_backend.exception.CustomException;
-import com.example.rhythme_backend.exception.ErrorCode;
-import com.example.rhythme_backend.jwt.TokenProvider;
 import com.example.rhythme_backend.repository.like.MakerLikeRepository;
 import com.example.rhythme_backend.repository.like.SingerLikeRepository;
 import com.example.rhythme_backend.repository.posts.MakerPostRepository;
 import com.example.rhythme_backend.repository.posts.SingerPostRepository;
 import com.example.rhythme_backend.util.ResponseDto;
+import com.example.rhythme_backend.util.Validation;
 import com.example.rhythme_backend.util.exception.NotFoundPostException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,8 +25,6 @@ import java.util.Optional;
 @Service
 public class LikeService {
 
-    private final TokenProvider tokenProvider;
-
     private final SingerPostRepository singerPostRepository;
 
     private final MakerPostRepository makerPostRepository;
@@ -36,11 +32,12 @@ public class LikeService {
     private final SingerLikeRepository singerLikeRepository;
 
     private final MakerLikeRepository makerLikeRepository;
+    private final Validation validation;
 
     @Transactional
     public ResponseDto<?> upDownSingerLike(Long postId, HttpServletRequest request) {
-        Member member = validateMember(request);
-        checkAccessToken(request, member);
+        Member member = validation.validateMember(request);
+        validation.checkAccessToken(request, member);
         SingerPost singerPost = getCurrentSingerPost(postId);
         checkSingerPost(singerPost);
         SingerLike findSingerLike = singerLikeRepository.findByMemberIdAndSingerPost(member,singerPost).orElse(null);
@@ -61,8 +58,8 @@ public class LikeService {
 
     @Transactional
     public ResponseDto<?> upDownMakerLike(Long postId, HttpServletRequest request) {
-        Member member = validateMember(request);
-        checkAccessToken(request, member);
+        Member member = validation.validateMember(request);
+        validation.checkAccessToken(request, member);
         MakerPost makerPost = getCurrentMakerPost(postId);
         checkMakerPost(makerPost);
 
@@ -83,19 +80,6 @@ public class LikeService {
         }
     }
 
-    public Member validateMember(HttpServletRequest request) {
-        if (!tokenProvider.validateToken(request.getHeader("Authorization").substring(7))) {
-            return null;
-        }
-        return tokenProvider.getMemberFromAuthentication();
-    }
-
-    public void checkAccessToken (HttpServletRequest request, Member member){
-        if (!tokenProvider.validateToken(request.getHeader("Authorization").substring(7)))
-            throw new CustomException(ErrorCode.TOKEN_IS_EXPIRED);
-        if (null == member) throw new CustomException(ErrorCode.MEMBER_NOT_FOUND);
-    }
-
     @Transactional(readOnly = true)
     public SingerPost getCurrentSingerPost(Long id) {
         Optional<SingerPost> optionalSingerPost = singerPostRepository.findById(id);
@@ -107,8 +91,6 @@ public class LikeService {
         Optional<MakerPost> optionalMakerPost = makerPostRepository.findById(id);
         return optionalMakerPost.orElse(null);
     }
-
-
 
     public void checkSingerPost(SingerPost singerPost) {
         if (singerPost == null) throw new NotFoundPostException();

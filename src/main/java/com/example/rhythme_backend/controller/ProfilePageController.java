@@ -5,9 +5,6 @@ import com.example.rhythme_backend.dto.requestDto.profile.ModifyProfileRequestDt
 import com.example.rhythme_backend.service.ProfileService;
 import com.example.rhythme_backend.util.Message;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,11 +29,9 @@ public class ProfilePageController {
     }
 
     @GetMapping("/post/upload/{nickname}")
-    public ResponseEntity<?> profileGetMyUpload(@PathVariable String nickname,
-                                                @PageableDefault(size = 6,sort = "id",direction = Sort.Direction.DESC)
-                                                Pageable pageable){
+    public ResponseEntity<?> profileGetMyUpload(@PathVariable String nickname){
         return new ResponseEntity<>(Message.success(
-                profileService.profileGetMyUpload(nickname,pageable)),HttpStatus.OK
+                profileService.profileGetMyUpload(nickname)),HttpStatus.OK
         );
     }
 
