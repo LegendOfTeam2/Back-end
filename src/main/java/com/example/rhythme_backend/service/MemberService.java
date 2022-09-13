@@ -412,13 +412,4 @@ public class MemberService {
         response.addHeader("Access-Token-Expire-Time", tokenDto.getAccessTokenExpiresIn().toString());
     }
 
-//    public String getSubject(String token) {
-//        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getSubject();
-//    }
-
-//    @Transactional
-//    public Member validateMembers(HttpServletRequest request) {
-//        return tokenProvider.getMemberFromAuthentication();
-//    }
-
 }

@@ -5,7 +5,10 @@ import com.example.rhythme_backend.domain.Member;
 import com.example.rhythme_backend.domain.like.MakerLike;
 import com.example.rhythme_backend.domain.like.SingerLike;
 import com.example.rhythme_backend.domain.post.MakerPost;
+import com.example.rhythme_backend.domain.post.MakerPostTag;
 import com.example.rhythme_backend.domain.post.SingerPost;
+import com.example.rhythme_backend.domain.post.SingerPostTag;
+import com.example.rhythme_backend.dto.responseDto.DetailResponseDto;
 import com.example.rhythme_backend.dto.responseDto.MyImageResponseDto;
 import com.example.rhythme_backend.dto.responseDto.mainpage.*;
 import com.example.rhythme_backend.jwt.TokenProvider;
@@ -14,7 +17,9 @@ import com.example.rhythme_backend.repository.MemberRepository;
 import com.example.rhythme_backend.repository.like.MakerLikeRepository;
 import com.example.rhythme_backend.repository.like.SingerLikeRepository;
 import com.example.rhythme_backend.repository.posts.MakerPostRepository;
+import com.example.rhythme_backend.repository.posts.MakerPostTagRepository;
 import com.example.rhythme_backend.repository.posts.SingerPostRepository;
+import com.example.rhythme_backend.repository.posts.SingerPostTagRepository;
 import com.example.rhythme_backend.util.Message;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,7 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +42,8 @@ public class MainPageService {
     private final FollowRepository followRepository;
     private final TokenProvider tokenProvider;
     private final SingerLikeRepository singerLikeRepository;
+    private final MakerPostTagRepository makerPostTagRepository;
+    private final SingerPostTagRepository singerPostTagRepository;
 
     public ResponseEntity<?> bestSong() {
         List<BestSongResponseDto> bestSongResponseDtoList = new ArrayList<>();
@@ -251,6 +257,58 @@ public class MainPageService {
         return new ResponseEntity<>(Message.success(myImageResponseDto),HttpStatus.OK);
     }
 
+    public ResponseEntity<?> getDetailPage(Long postId, String position) {
+        MakerPost makerPost = makerPostRepository.findById(postId).orElseGet(MakerPost::new);
+        SingerPost singerPost = singerPostRepository.findById(postId).orElseGet(SingerPost::new);
+        List<String> tagResponseList = new ArrayList<>();
+
+        if(position.equals("Maker")) {
+            List<MakerPostTag> makerTagList = makerPostTagRepository.findAllByMakerPostId(makerPost);
+            for (MakerPostTag tag: makerTagList) {
+                tagResponseList.add(tag.getTagId().getTag());
+            }
+
+            DetailResponseDto detailResponseDto = DetailResponseDto.builder()
+                    .postId(makerPost.getId())
+                    .position("Maker")
+                    .title(makerPost.getTitle())
+                    .content(makerPost.getContent())
+                    .nickname(makerPost.getMember().getNickname())
+                    .lyrics(makerPost.getLyrics())
+                    .imageUrl(makerPost.getImageUrl().getImageUrl())
+                    .mediaUrl(makerPost.getMediaUrl().getMediaUrl())
+                    .createdAt(makerPost.getCreatedAt())
+                    .modifiedAt(makerPost.getModifiedAt())
+                    .likes(makerPost.getLikes())
+                    .collaborate(makerPost.getCollaborate())
+                    .tags(tagResponseList)
+                    .build();
+
+            return new ResponseEntity<>(Message.success(detailResponseDto),HttpStatus.OK);
+        }
+        List<SingerPostTag> singerPostTagList = singerPostTagRepository.findAllBySingerPostId(singerPost);
+        for (SingerPostTag tag: singerPostTagList) {
+            tagResponseList.add(tag.getTagId().getTag());
+        }
+
+        DetailResponseDto detailResponseDto = DetailResponseDto.builder()
+                .postId(singerPost.getId())
+                .position("Singer")
+                .title(singerPost.getTitle())
+                .content(singerPost.getContent())
+                .nickname(singerPost.getMember().getNickname())
+                .lyrics(singerPost.getLyrics())
+                .imageUrl(singerPost.getImageUrl().getImageUrl())
+                .mediaUrl(singerPost.getMediaUrl().getMediaUrl())
+                .createdAt(singerPost.getCreatedAt())
+                .modifiedAt(singerPost.getModifiedAt())
+                .likes(singerPost.getLikes())
+                .collaborate(singerPost.getCollaborate())
+                .tags(tagResponseList)
+                .build();
+
+        return new ResponseEntity<>(Message.success(detailResponseDto),HttpStatus.OK);
+    }
 
     public Member validateMember(HttpServletRequest request) {
         if (!tokenProvider.validateToken(request.getHeader("Authorization").substring(7))) {
