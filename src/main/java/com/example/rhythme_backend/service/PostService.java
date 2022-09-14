@@ -426,10 +426,6 @@ public class PostService{
 
     @Transactional
     public void updateSingerPostTag(SingerPost singerPost, PostPatchRequestDto patchRequestDto) {
-//        List<SingerPostTag> singerPostTags = singerPostTagRepository.findAllBySingerPostId(singerPost);
-//        for (SingerPostTag singerPostTag : singerPostTags) {
-//            tagRepository.deleteById(singerPostTag.getTagId().getId());
-//        }
         singerPostTagRepository.deleteBySingerPostId(singerPost);
         singerPostTagSave(patchRequestDto.getTags(), singerPost);
     }
