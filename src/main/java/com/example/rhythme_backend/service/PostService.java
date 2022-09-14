@@ -26,7 +26,6 @@ import com.example.rhythme_backend.repository.posts.SingerPostTagRepository;
 import com.example.rhythme_backend.util.Message;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -43,14 +42,11 @@ public class PostService{
     private final MemberRepository memberRepository;
     private final SingerPostRepository singerPostRepository;
     private final MakerPostRepository makerPostRepository;
-
     // 게시글에 달려있는 이미지,태그
     private final TagRepository tagRepository;
     private final ImageUrlRepository imageUrlRepository;
     private final MediaUrlRepository mediaUrlRepository;
-
     private final MakerPostTagRepository makerPostTagRepository;
-
     private final SingerPostTagRepository singerPostTagRepository;
     private final MakerLikeRepository makerLikeRepository;
     //AWS S3
@@ -351,14 +347,6 @@ public class PostService{
         }
         return member;
     }
-//    //Position 으로 FK 값 찾기
-//    public MakerPost findMakerPostByPostId(Long postId){
-//        return makerPostRepository.findById(postId).orElseGet(MakerPost::new);
-//    }
-//    public SingerPost findSingerPostByPostId(Long postId){
-//        return singerPostRepository.findById(postId).orElseGet(SingerPost::new);
-//    }
-
 
     // URL엔티티에 저장 로직
     public ImageUrl imageUrlSave(PostCreateRequestDto postCreateRequestDto){

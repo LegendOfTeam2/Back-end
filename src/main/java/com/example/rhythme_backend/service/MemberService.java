@@ -50,8 +50,12 @@ public class MemberService {
     private final Validation validation;
 
 
+
     @Transactional
     public ResponseEntity<?> signupMember(SignupRequestDto requestDto) {
+
+//    @Transactional
+//    public ResponseEntity<?> signupMember(SignupRequestDto requestDto) {
 
 //        Member member = memberRepository.findByEmail(requestDto.getEmail()).orElseGet(Member::new);
 //        if ("Y".equals(member.getDeleteCheck())) {
@@ -121,14 +125,16 @@ public class MemberService {
     }
 
 
+
     @Transactional
     public ResponseEntity<?> emailCheck(EmailCheckRequestDto requestDto) {
         if (memberRepository.existsByEmail(requestDto.getEmail())) {
-            return new ResponseEntity<>(Message.fail("DUPLICATED_EMAIL","사용 불가능한 이메일입니다."), HttpStatus.OK);
+            if (null != validation.getPresentEmail(requestDto.getEmail())) {
+                return new ResponseEntity<>(Message.fail("DUPLICATED_EMAIL", "사용 불가능한 이메일입니다."), HttpStatus.OK);
+            }
         }
-        return new ResponseEntity<>(Message.success("사용 가능한 이메일입니다."), HttpStatus.OK);
-    }
-
+            return new ResponseEntity<>(Message.success("사용 가능한 이메일입니다."), HttpStatus.OK);
+        }
 
     @Transactional
     public ResponseEntity<?> nicknameCheck(NicknameCheckRequestDto requestDto) {
@@ -141,7 +147,7 @@ public class MemberService {
 
     @Transactional
     public ResponseEntity<?> loginMember(LoginRequestDto requestDto, HttpServletResponse response) {
-        Member member = getPresentEmail(requestDto.getEmail());
+        Member member = validation.getPresentEmail(requestDto.getEmail());
         if (null == member) {
             return new ResponseEntity<>(Message.fail("EMAIL_NOT_FOUND","존재하지 않는 이메일입니다."),HttpStatus.NOT_FOUND);
         }
@@ -170,7 +176,7 @@ public class MemberService {
 
         RefreshToken deleteToken = getDeleteToken(member);
         String deleteEmail = requestDto.getEmail();
-        Member deleteMember = getPresentEmail(deleteEmail);
+        Member deleteMember = validation.getPresentEmail(deleteEmail);
         Long deleteMemberId = deleteMember.getId();
         Member resignMember = getDeleteMember(deleteMemberId);
         if (null == resignMember) {
@@ -368,14 +374,6 @@ public class MemberService {
     public Member getPresentNickname(String nickname) {
         Optional<Member> optionalMember = memberRepository.findByNickname(nickname);
         return optionalMember.orElse(null);
-    }
-
-    @Transactional
-    public Member validateMember(HttpServletRequest request) {
-        if (!tokenProvider.validateToken(request.getHeader("Refresh-Token"))) {
-            return null;
-        }
-        return tokenProvider.getMemberFromAuthentication();
     }
 
 //    @Transactional(readOnly = true)
