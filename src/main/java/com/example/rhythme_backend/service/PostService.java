@@ -42,14 +42,11 @@ public class PostService{
     private final MemberRepository memberRepository;
     private final SingerPostRepository singerPostRepository;
     private final MakerPostRepository makerPostRepository;
-
     // 게시글에 달려있는 이미지,태그
     private final TagRepository tagRepository;
     private final ImageUrlRepository imageUrlRepository;
     private final MediaUrlRepository mediaUrlRepository;
-
     private final MakerPostTagRepository makerPostTagRepository;
-
     private final SingerPostTagRepository singerPostTagRepository;
     private final MakerLikeRepository makerLikeRepository;
     //AWS S3
@@ -224,10 +221,8 @@ public class PostService{
 
             result = new ResponseEntity<>(Message.success(responseDto),HttpStatus.OK);
 
-
             return result;
         }
-
         return result;
     }
 
@@ -263,38 +258,39 @@ public class PostService{
                             .build()),HttpStatus.OK);
         } else if(position.equals("Singer")){
             updateUrl(postPatchRequestDto);
-           SingerPost singerPost = singerPostRepository.findById(postId).orElse(new SingerPost());
-           singerPost.updateSingerPost(postPatchRequestDto);
-           updateSingerPostTag(singerPost,postPatchRequestDto);
-           result = new ResponseEntity<>(Message.success(
-                   PostPatchResponseDto.builder()
-                           .postId(postId)
-                           .position("Singer")
-                           .title(postPatchRequestDto.getTitle())
-                           .content(postPatchRequestDto.getContent())
-                           .nickname(postPatchRequestDto.getNickname())
-                           .lyrics(postPatchRequestDto.getLyrics())
-                           .imageUrl(postPatchRequestDto.getImageUrl())
-                           .mediaUrl(postPatchRequestDto.getMediaUrl())
-                           .tags(postPatchRequestDto.getTags())
-                           .collaborate(postPatchRequestDto.getCollaborate())
-                           .createdAt(singerPost.getCreatedAt())
-                           .modifiedAt(singerPost.getModifiedAt())
-                           .build()),HttpStatus.OK);
+            SingerPost singerPost = singerPostRepository.findById(postId).orElse(new SingerPost());
+            singerPost.updateSingerPost(postPatchRequestDto);
+            updateSingerPostTag(singerPost,postPatchRequestDto);
+            result = new ResponseEntity<>(Message.success(
+                    PostPatchResponseDto.builder()
+                            .postId(postId)
+                            .position("Singer")
+                            .title(postPatchRequestDto.getTitle())
+                            .content(postPatchRequestDto.getContent())
+                            .nickname(postPatchRequestDto.getNickname())
+                            .lyrics(postPatchRequestDto.getLyrics())
+                            .imageUrl(postPatchRequestDto.getImageUrl())
+                            .mediaUrl(postPatchRequestDto.getMediaUrl())
+                            .tags(postPatchRequestDto.getTags())
+                            .collaborate(postPatchRequestDto.getCollaborate())
+                            .createdAt(singerPost.getCreatedAt())
+                            .modifiedAt(singerPost.getModifiedAt())
+                            .build()),HttpStatus.OK);
         }
         return result;
     }
 
     //imageUrl 과 mediaUrl 수정.
+    @Transactional
     public void updateUrl(PostPatchRequestDto postPatchRequestDto){
         if(postPatchRequestDto.getPosition().equals("Maker")){
-           MakerPost makerPost = findMakerPostByPostId(postPatchRequestDto.getPostId());
+           MakerPost makerPost = makerPostRepository.findById(postPatchRequestDto.getPostId()).orElseGet(MakerPost::new);
            ImageUrl imageUrl = makerPost.getImageUrl();
            MediaUrl mediaUrl = makerPost.getMediaUrl();
            imageUrl.updateUrl(postPatchRequestDto.getImageUrl());
            mediaUrl.updateUrl(postPatchRequestDto.getMediaUrl());
         }else if(postPatchRequestDto.getPosition().equals("Singer")){
-            SingerPost singerPost = findSingerPostByPostId(postPatchRequestDto.getPostId());
+            SingerPost singerPost = singerPostRepository.findById(postPatchRequestDto.getPostId()).orElseGet(SingerPost::new);
             ImageUrl imageUrl = singerPost.getImageUrl();
             MediaUrl mediaUrl = singerPost.getMediaUrl();
             imageUrl.updateUrl(postPatchRequestDto.getImageUrl());
@@ -339,9 +335,17 @@ public class PostService{
     }
 
 
-    //
-
-
+    // Nickname으로 아이디 찾은 Optional 처리 로직.
+    public Member validateByNickname(String nickname){
+        Member member;
+        Optional<Member> memberRepositoryByNickname = memberRepository.findByNickname(nickname);
+        if(memberRepositoryByNickname.isPresent()){
+            member = memberRepositoryByNickname.get();
+        }else{
+            throw new NullPointerException("찾는 닉네임 정보가 없습니다.");
+        }
+        return member;
+    }
 
     // URL엔티티에 저장 로직
     public ImageUrl imageUrlSave(PostCreateRequestDto postCreateRequestDto){
@@ -399,20 +403,14 @@ public class PostService{
     }
 
 
+    @Transactional
     public void updateMakerPostTag(MakerPost makerPost, PostPatchRequestDto patchRequestDto) {
-        List<MakerPostTag> makerPostTags = makerPostTagRepository.findAllByMakerPostId(makerPost);
-        for (int i = 0; i < makerPostTags.size(); i++) {
-            tagRepository.deleteById(makerPostTags.get(i).getTagId().getId());
-        }
         makerPostTagRepository.deleteByMakerPostId(makerPost);
-        makerPostTagSave(patchRequestDto.getTags(), makerPost);
+        makerPostTagSave(patchRequestDto.getTags(),makerPost);
     }
 
+    @Transactional
     public void updateSingerPostTag(SingerPost singerPost, PostPatchRequestDto patchRequestDto) {
-        List<SingerPostTag> singerPostTags = singerPostTagRepository.findAllBySingerPostId(singerPost);
-        for(int i =0; i< singerPostTags.size(); i++){
-            tagRepository.deleteById(singerPostTags.get(i).getTagId().getId());
-        }
         singerPostTagRepository.deleteBySingerPostId(singerPost);
         singerPostTagSave(patchRequestDto.getTags(), singerPost);
     }
@@ -424,22 +422,9 @@ public class PostService{
         return singerPostRepository.findById(postId).orElseGet(SingerPost::new);
     }
 
-    // Nickname으로 아이디 찾은 Optional 처리 로직.
-    public Member validateByNickname(String nickname){
-        Member member;
-        Optional<Member> memberRepositoryByNickname = memberRepository.findByNickname(nickname);
-        if(memberRepositoryByNickname.isPresent()){
-            member = memberRepositoryByNickname.get();
-        }else{
-            throw new NullPointerException("찾는 닉네임 정보가 없습니다.");
-        }
-        return member;
-    }
-
     public void imageUrlDelete(){
 //        imageUrlRepository.deleteByPostId();
     }
-
 
     public void mediaUrlDelete(){
 
