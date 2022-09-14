@@ -228,7 +228,6 @@ public class PostService{
 
             return result;
         }
-
         return result;
     }
 
@@ -295,7 +294,7 @@ public class PostService{
            MediaUrl mediaUrl = makerPost.getMediaUrl();
            imageUrl.updateUrl(postPatchRequestDto.getImageUrl());
            mediaUrl.updateUrl(postPatchRequestDto.getMediaUrl());
-        }else if(postPatchRequestDto.getPosition().equals("Signer")){
+        }else if(postPatchRequestDto.getPosition().equals("Singer")){
             SingerPost singerPost = singerPostRepository.findById(postPatchRequestDto.getPostId()).orElseGet(SingerPost::new);
             ImageUrl imageUrl = singerPost.getImageUrl();
             MediaUrl mediaUrl = singerPost.getMediaUrl();
