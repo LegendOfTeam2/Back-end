@@ -2,6 +2,8 @@ package com.example.rhythme_backend.service;
 
 import com.example.rhythme_backend.domain.HashTag;
 import com.example.rhythme_backend.domain.Member;
+import com.example.rhythme_backend.domain.post.MakerPost;
+import com.example.rhythme_backend.domain.post.SingerPost;
 import com.example.rhythme_backend.dto.TokenDto;
 import com.example.rhythme_backend.dto.requestDto.member.*;
 import com.example.rhythme_backend.dto.responseDto.ResignResponseDto;
@@ -62,9 +64,6 @@ public class MemberService {
     @Transactional
     public ResponseEntity<?> signupMember(SignupRequestDto requestDto) {
 
-//    @Transactional
-//    public ResponseEntity<?> signupMember(SignupRequestDto requestDto) {
-
 //        Member member = memberRepository.findByEmail(requestDto.getEmail()).orElseGet(Member::new);
 //        if ("Y".equals(member.getDeleteCheck())) {
 //        //실제 삭제
@@ -109,8 +108,8 @@ public class MemberService {
 //        }
 //        refreshTokenRepository.delete(deleteToken);
 //        memberRepository.delete(resignMember);
-//          }
-//      }
+//  }
+
 
         if (null != validation.getPresentEmail(requestDto.getEmail())) {
             return new ResponseEntity<>(Message.fail("DUPLICATED_EMAIL", "중복된 이메일입니다."), HttpStatus.BAD_REQUEST);
@@ -334,7 +333,6 @@ public class MemberService {
     }
 
     public ResponseEntity<?> refreshToken(HttpServletRequest request, HttpServletResponse response) {
-
         tokenProvider.validateToken(request.getHeader("Refresh-Token"));
         Member requestingMember = validation.validateMember(request);
         long accessTokenExpire = Long.parseLong(request.getHeader("Access-Token-Expire-Time"));
