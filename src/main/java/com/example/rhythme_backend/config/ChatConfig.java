@@ -19,7 +19,9 @@ public class ChatConfig implements WebSocketMessageBrokerConfigurer {
     // 다른 HTTP 기반의 기술을 시도하는 방법이다.
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws/chat").setAllowedOriginPatterns("*")
+        registry.addEndpoint("/ws/chat")
+                .setAllowedOrigins("http://localhost:3000")
+                .setAllowedOriginPatterns("*")
                 .withSockJS();
         // Heartbeat Message : 프록시가 커넥션이 끊겼다고 판단하지 않도록 한다
 
