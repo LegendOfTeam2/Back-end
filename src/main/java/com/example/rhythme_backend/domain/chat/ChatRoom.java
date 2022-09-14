@@ -11,23 +11,13 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-@Entity
-@Table(name = "ChatRoom")
 @Getter
 @Setter
 @NoArgsConstructor
 public class ChatRoom {
 
-    @Id
-    @Column
     private String roomId;
     private String roomName;
-
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "ChatRoom_member",
-            joinColumns = @JoinColumn(name = "chatRoomId"),
-            inverseJoinColumns = @JoinColumn(name = "memberId"))
-    private Set<Member> members = new HashSet<>();
 
 
     public static ChatRoom create(String name) {
