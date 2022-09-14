@@ -2,28 +2,22 @@ package com.example.rhythme_backend.service;
 
 import com.example.rhythme_backend.domain.HashTag;
 import com.example.rhythme_backend.domain.Member;
-import com.example.rhythme_backend.domain.post.MakerPost;
-import com.example.rhythme_backend.domain.post.SingerPost;
 import com.example.rhythme_backend.dto.TokenDto;
 import com.example.rhythme_backend.dto.requestDto.member.*;
 import com.example.rhythme_backend.dto.responseDto.ResignResponseDto;
 import com.example.rhythme_backend.exception.CustomException;
 import com.example.rhythme_backend.exception.ErrorCode;
 import com.example.rhythme_backend.jwt.TokenProvider;
-import com.example.rhythme_backend.repository.*;
-import com.example.rhythme_backend.repository.like.MakerLikeRepository;
-import com.example.rhythme_backend.repository.like.SingerLikeRepository;
-import com.example.rhythme_backend.repository.posts.MakerPostRepository;
-import com.example.rhythme_backend.repository.posts.MakerPostTagRepository;
-import com.example.rhythme_backend.repository.posts.SingerPostRepository;
-import com.example.rhythme_backend.repository.posts.SingerPostTagRepository;
+import com.example.rhythme_backend.repository.HashTagRepository;
+import com.example.rhythme_backend.repository.MemberRepository;
+import com.example.rhythme_backend.repository.RefreshTokenRepository;
 import com.example.rhythme_backend.service.googleLogin.Constant;
 import com.example.rhythme_backend.service.googleLogin.GoogleOauth;
 import com.example.rhythme_backend.service.kakaoLogin.KakaoOauth;
 import com.example.rhythme_backend.util.Message;
 import com.example.rhythme_backend.util.RefreshToken;
+import com.example.rhythme_backend.util.Validation;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -35,6 +29,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -52,15 +47,9 @@ public class MemberService {
     private final HttpServletResponse response;
     private final KakaoOauth kakaoOauth;
     private final HashTagRepository hashTagRepository;
-//    private final FollowRepository followRepository;
-//    private final MakerLikeRepository makerLikeRepository;
-//    private final SingerLikeRepository singerLikeRepository;
-//    private final MakerPostTagRepository makerPostTagRepository;
-//    private final SingerPostTagRepository singerPostTagRepository;
-//    private final TagRepository tagRepository;
-//    private final MakerPostRepository makerPostRepository;
-//    private final SingerPostRepository singerPostRepository;
-    
+    private final Validation validation;
+
+
     @Transactional
     public ResponseEntity<?> signupMember(SignupRequestDto requestDto) {
 
@@ -97,25 +86,26 @@ public class MemberService {
 //        if (equals(singerPostRepository.findById(member.getId()))) {
 //            singerPostRepository.deleteAllByMember(member);
 //        }
-
+//
 //        String deleteEmail = requestDto.getEmail();
 //        Member deleteMember = getPresentEmail(deleteEmail);
 //        Long deleteMemberId = deleteMember.getId();
 //        Member resignMember = getDeleteMember(deleteMemberId);
-
+//
 //        if (null == resignMember) {
 //            return new ResponseEntity<>(Message.fail("MEMBER_NOT_FOUND", "해당 멤버가 없습니다."), HttpStatus.NOT_FOUND);
 //        }
 //        refreshTokenRepository.delete(deleteToken);
 //        memberRepository.delete(resignMember);
+//          }
 //        }
 
-        if (memberRepository.existsByEmail(requestDto.getEmail())) {
-            return new ResponseEntity<>(Message.fail("DUPLICATED_EMAIL","중복된 이메일입니다."),HttpStatus.BAD_REQUEST);
+        if (null != validation.getPresentEmail(requestDto.getEmail())) {
+            return new ResponseEntity<>(Message.fail("DUPLICATED_EMAIL", "중복된 이메일입니다."), HttpStatus.BAD_REQUEST);
         }
 
         String defaultIntro = "리드미에 여러분을 소개해주세요!";
-        Member memberSave = Member.builder()
+        Member member = Member.builder()
                 .deleteCheck("N")
                 .email(requestDto.getEmail())
                 .imageUrl(requestDto.getImgUrl())
@@ -124,8 +114,9 @@ public class MemberService {
                 .introduce(defaultIntro)
                 .password(passwordEncoder.encode(requestDto.getPassword()))
                 .build();
-        memberRepository.save(memberSave);
-        hashTagSave(requestDto.getHashtag(),memberSave);
+        memberRepository.save(member);
+        hashTagSave(requestDto.getHashtag(), member);
+
         return new ResponseEntity<>(Message.success("회원가입에 성공했습니다."), HttpStatus.OK);
     }
 
@@ -160,7 +151,7 @@ public class MemberService {
         }
 
         TokenDto tokenDto = tokenProvider.generateTokenDto(member);
-        tokenToHeaders(tokenDto,response);
+        validation.tokenToHeaders(tokenDto,response);
         return new ResponseEntity<>(Message.success("성공적으로 로그인 되었습니다."),HttpStatus.OK);
     }
 
@@ -195,7 +186,6 @@ public class MemberService {
     }
 
     public ResponseEntity<?> logoutMember(LogoutRequestDto requestDto, HttpServletRequest request) {
-
         String[] BearerSplit = request.getHeader("Authorization").split(" ");
         String accessToken = BearerSplit[1];
         if (!tokenProvider.validateToken(accessToken)) {
@@ -255,6 +245,7 @@ public class MemberService {
 
         Member member = getPresentEmail(kakaoUser.getEmail());
         return tokenProvider.generateTokenDto(member);
+
     }
 
     //google
@@ -314,6 +305,7 @@ public class MemberService {
 
                 Member googleMember = getPresentEmail(googleLoginUser.getEmail());
                 return tokenProvider.generateTokenDto(googleMember);
+
     }
 
 
@@ -330,7 +322,7 @@ public class MemberService {
     public ResponseEntity<?> refreshToken(HttpServletRequest request, HttpServletResponse response) {
 
         tokenProvider.validateToken(request.getHeader("Refresh-Token"));
-        Member requestingMember = validateMember(request);
+        Member requestingMember = validation.validateMember(request);
         long accessTokenExpire = Long.parseLong(request.getHeader("Access-Token-Expire-Time"));
         long now = (new Date().getTime());
 
@@ -344,7 +336,7 @@ public class MemberService {
         }
         if (Objects.equals(refreshTokenConfirm.getValue(), request.getHeader("Refresh-Token"))) {
             TokenDto tokenDto = tokenProvider.generateAccessTokenDto(requestingMember);
-            accessTokenToHeaders(tokenDto, response);
+            validation.accessTokenToHeaders(tokenDto, response);
             return new ResponseEntity<>(Message.success("ACCESS_TOKEN_REISSUE"), HttpStatus.OK);
         } else {
             tokenProvider.deleteRefreshToken(requestingMember);
@@ -386,26 +378,22 @@ public class MemberService {
         return tokenProvider.getMemberFromAuthentication();
     }
 
+//    @Transactional(readOnly = true)
+//    public ResponseEntity<?> getPresentNickname(String nickname) {
+//       if (memberRepository.existsByNickname(nickname)) {
+//           return new ResponseEntity<>(Message.fail("DUPLICATED_NICKNAME","사용 불가능한 닉네임입니다."),HttpStatus.NOT_FOUND);
+//       }
+//        return new ResponseEntity<>(Message.success("사용 가능한 닉네임입니다."),HttpStatus.OK);
+//
+//    }
+
     public Member getDeleteMember(Long id) {
         Optional<Member> optionalMember = memberRepository.findById(id);
         return optionalMember.orElse(null);
     }
-
     public RefreshToken getDeleteToken(Member member) {
         Optional<RefreshToken> optionalMember = refreshTokenRepository.findByMember(member);
         return optionalMember.orElse(null);
-    }
-
-
-    public void tokenToHeaders(TokenDto tokenDto, HttpServletResponse response) {
-        response.addHeader("Authorization", "Bearer " + tokenDto.getAccessToken());
-        response.addHeader("Refresh-Token", tokenDto.getRefreshToken());
-        response.addHeader("Access-Token-Expire-Time", tokenDto.getAccessTokenExpiresIn().toString());
-    }
-
-    public void accessTokenToHeaders(TokenDto tokenDto, HttpServletResponse response) {
-        response.addHeader("Authorization", "Bearer " + tokenDto.getAccessToken());
-        response.addHeader("Access-Token-Expire-Time", tokenDto.getAccessTokenExpiresIn().toString());
     }
 
 }

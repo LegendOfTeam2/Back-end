@@ -1,5 +1,6 @@
 package com.example.rhythme_backend.domain;
 
+import com.example.rhythme_backend.dto.requestDto.profile.ModifyProfileRequestDto;
 import com.example.rhythme_backend.util.Timestamped;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
@@ -8,8 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -67,6 +68,19 @@ public class Member extends Timestamped {
     public void updateImageUrl(String imageUrl){
         this.imageUrl = imageUrl;
     }
-    public void updateIntroduce(String introduce) {this.introduce = introduce;}
+    public void updateIntroduce(String introduce){
+        this.introduce = introduce;}
+
+    public void update(ModifyProfileRequestDto modifyProfileRequestDto) {
+        this.nickname = modifyProfileRequestDto.getNickname();
+        this.imageUrl = modifyProfileRequestDto.getImageUrl();
+        this.introduce = modifyProfileRequestDto.getIntroduce();
+    }
+
+    public void save(ModifyProfileRequestDto modifyProfileRequestDto) {
+        this.nickname = modifyProfileRequestDto.getNickname();
+        this.imageUrl = modifyProfileRequestDto.getImageUrl();
+        this.introduce = modifyProfileRequestDto.getIntroduce();
+    }
 
 }

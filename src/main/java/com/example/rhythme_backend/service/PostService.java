@@ -340,8 +340,6 @@ public class PostService{
     }
 
 
-    //
-
     // Nickname으로 아이디 찾은 Optional 처리 로직.
     public Member validateByNickname(String nickname){
         Member member;
@@ -360,6 +358,7 @@ public class PostService{
 //    public SingerPost findSingerPostByPostId(Long postId){
 //        return singerPostRepository.findById(postId).orElseGet(SingerPost::new);
 //    }
+
 
     // URL엔티티에 저장 로직
     public ImageUrl imageUrlSave(PostCreateRequestDto postCreateRequestDto){
@@ -428,12 +427,17 @@ public class PostService{
         singerPostTagRepository.deleteBySingerPostId(singerPost);
         singerPostTagSave(patchRequestDto.getTags(), singerPost);
     }
-
+    //Position 으로 FK 값 찾기
+    public MakerPost findMakerPostByPostId(Long postId){
+        return makerPostRepository.findById(postId).orElseGet(MakerPost::new);
+    }
+    public SingerPost findSingerPostByPostId(Long postId){
+        return singerPostRepository.findById(postId).orElseGet(SingerPost::new);
+    }
 
     public void imageUrlDelete(){
 //        imageUrlRepository.deleteByPostId();
     }
-
 
     public void mediaUrlDelete(){
 
