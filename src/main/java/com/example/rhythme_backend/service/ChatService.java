@@ -2,6 +2,8 @@ package com.example.rhythme_backend.service;
 
 
 import com.example.rhythme_backend.domain.chat.ChatRoom;
+import com.example.rhythme_backend.repository.chat.ChatMessageRepository;
+import com.example.rhythme_backend.repository.chat.ChatRoomRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,8 @@ import java.util.*;
 @RequiredArgsConstructor
 public class ChatService {
 
+    private final ChatRoomRepository chatRoomRepository;
+    private final ChatMessageRepository chatMessageRepository;
     private Map<String, ChatRoom> chatRooms;
 
     @PostConstruct // 최초 한번만 Bean 주입하는 어노테이션 반복 주입할 필요없다
@@ -41,6 +45,7 @@ public class ChatService {
     public ChatRoom createRoom(String name) {
         ChatRoom chatRoom = ChatRoom.create(name);
         chatRooms.put(chatRoom.getRoomId(), chatRoom);
+        chatRoomRepository.save(chatRoom);
         return chatRoom;
     }
 }
