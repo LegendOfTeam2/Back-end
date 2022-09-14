@@ -298,9 +298,6 @@ public class PostService{
         }
     }
 
-
-
-
     //=======================게시판 삭제 로직
     @Transactional
     public  ResponseEntity<?> deletePost(PostDeleteRequestDto postDeleteRequestDto) {
@@ -312,23 +309,15 @@ public class PostService{
         if(position.equals("Maker")) {
             MakerPost makerPost = makerPostRepository.findById(postId).orElseGet(MakerPost::new);
             s3Service.delete(makerPost.getImageUrl().getImageUrl());
-            List<MakerPostTag> makerPostTags = makerPostTagRepository.findAllByMakerPostId(makerPost);
             makerPostTagRepository.deleteByMakerPostId(makerPost);
             makerPostRepository.delete(makerPost);
-            for (int i = 0; i < makerPostTags.size(); i++) {
-                tagRepository.deleteById(makerPostTags.get(i).getTagId().getId());
-            }
             result = new ResponseEntity<>(Message.success("Maker 게시글이 삭제되었습니다"), HttpStatus.OK);
         }
         else if (position.equals("Singer")) {
             SingerPost singerPost = singerPostRepository.findById(postId).orElseGet(SingerPost::new);
             s3Service.delete(singerPost.getImageUrl().getImageUrl());
-            List<SingerPostTag> singerPostTags = singerPostTagRepository.findAllBySingerPostId(singerPost);
             singerPostTagRepository.deleteBySingerPostId(singerPost);
             singerPostRepository.delete(singerPost);
-            for (int i = 0; i < singerPostTags.size(); i++) {
-                tagRepository.deleteById(singerPostTags.get(i).getTagId().getId());
-            }
             result = new ResponseEntity<>(Message.success("Singer 게시글이 삭제되었습니다."),HttpStatus.OK);
         }
         return result;
