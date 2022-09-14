@@ -9,7 +9,6 @@ import com.example.rhythme_backend.domain.post.MakerPost;
 import com.example.rhythme_backend.domain.post.SingerPost;
 import com.example.rhythme_backend.dto.requestDto.post.PostCreateRequestDto;
 import com.example.rhythme_backend.dto.requestDto.profile.ModifyProfileRequestDto;
-import com.example.rhythme_backend.dto.responseDto.profile.ModifyProfileResponseDto;
 import com.example.rhythme_backend.dto.responseDto.profile.ProfileResponseDto;
 import com.example.rhythme_backend.dto.responseDto.profile.ProfileUploadPostResponseDto;
 import com.example.rhythme_backend.repository.FollowRepository;
@@ -80,7 +79,6 @@ public class ProfileService {
         Member member = memberRepository.findByNickname(nickname).orElseThrow(
             () -> new IllegalArgumentException("닉네임이 일치하지 않습니다"));
         member.update(requestDto);
-            memberRepository.save(member);
         hashTagRepository.deleteByMember(member);
         for(String a : requestDto.getHashtag()){
             HashTag hashTag = HashTag.builder()
