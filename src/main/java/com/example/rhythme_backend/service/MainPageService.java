@@ -54,7 +54,6 @@ public class MainPageService {
         List<BestSongResponseDto> bestSongResponseDtoList = new ArrayList<>();
         List<MakerPost> makerPostList = makerPostRepository.findTopByOrderByLikesDesc();
         List<SingerPost> singerPostList = singerPostRepository.findTopByOrderByLikesDesc();
-
         if (makerPostList.size() == 0 && singerPostList.size() == 0) {
             return new ResponseEntity<>(Message.fail("POST_NOT_FOUND","해당되는 게시글이 없습니다."),HttpStatus.NOT_FOUND);
         }
