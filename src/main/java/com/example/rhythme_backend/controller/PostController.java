@@ -33,7 +33,7 @@ public class PostController {
     }
 
     //글 수정 API
-    @PatchMapping("/auth/post")
+    @PutMapping("/auth/post")
     public ResponseEntity<?> patchPost(@RequestBody PostPatchRequestDto postPatchRequestDto) {
         return postService.patchPost(postPatchRequestDto);
     }

@@ -26,6 +26,7 @@ import com.example.rhythme_backend.repository.posts.SingerPostTagRepository;
 import com.example.rhythme_backend.util.Message;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -263,38 +264,39 @@ public class PostService{
                             .build()),HttpStatus.OK);
         } else if(position.equals("Singer")){
             updateUrl(postPatchRequestDto);
-           SingerPost singerPost = singerPostRepository.findById(postId).orElse(new SingerPost());
-           singerPost.updateSingerPost(postPatchRequestDto);
-           updateSingerPostTag(singerPost,postPatchRequestDto);
-           result = new ResponseEntity<>(Message.success(
-                   PostPatchResponseDto.builder()
-                           .postId(postId)
-                           .position("Singer")
-                           .title(postPatchRequestDto.getTitle())
-                           .content(postPatchRequestDto.getContent())
-                           .nickname(postPatchRequestDto.getNickname())
-                           .lyrics(postPatchRequestDto.getLyrics())
-                           .imageUrl(postPatchRequestDto.getImageUrl())
-                           .mediaUrl(postPatchRequestDto.getMediaUrl())
-                           .tags(postPatchRequestDto.getTags())
-                           .collaborate(postPatchRequestDto.getCollaborate())
-                           .createdAt(singerPost.getCreatedAt())
-                           .modifiedAt(singerPost.getModifiedAt())
-                           .build()),HttpStatus.OK);
+            SingerPost singerPost = singerPostRepository.findById(postId).orElse(new SingerPost());
+            singerPost.updateSingerPost(postPatchRequestDto);
+            updateSingerPostTag(singerPost,postPatchRequestDto);
+            result = new ResponseEntity<>(Message.success(
+                    PostPatchResponseDto.builder()
+                            .postId(postId)
+                            .position("Singer")
+                            .title(postPatchRequestDto.getTitle())
+                            .content(postPatchRequestDto.getContent())
+                            .nickname(postPatchRequestDto.getNickname())
+                            .lyrics(postPatchRequestDto.getLyrics())
+                            .imageUrl(postPatchRequestDto.getImageUrl())
+                            .mediaUrl(postPatchRequestDto.getMediaUrl())
+                            .tags(postPatchRequestDto.getTags())
+                            .collaborate(postPatchRequestDto.getCollaborate())
+                            .createdAt(singerPost.getCreatedAt())
+                            .modifiedAt(singerPost.getModifiedAt())
+                            .build()),HttpStatus.OK);
         }
         return result;
     }
 
     //imageUrl 과 mediaUrl 수정.
+    @Transactional
     public void updateUrl(PostPatchRequestDto postPatchRequestDto){
         if(postPatchRequestDto.getPosition().equals("Maker")){
-           MakerPost makerPost = findMakerPostByPostId(postPatchRequestDto.getPostId());
+           MakerPost makerPost = makerPostRepository.findById(postPatchRequestDto.getPostId()).orElseGet(MakerPost::new);
            ImageUrl imageUrl = makerPost.getImageUrl();
            MediaUrl mediaUrl = makerPost.getMediaUrl();
            imageUrl.updateUrl(postPatchRequestDto.getImageUrl());
            mediaUrl.updateUrl(postPatchRequestDto.getMediaUrl());
         }else if(postPatchRequestDto.getPosition().equals("Signer")){
-            SingerPost singerPost = findSingerPostByPostId(postPatchRequestDto.getPostId());
+            SingerPost singerPost = singerPostRepository.findById(postPatchRequestDto.getPostId()).orElseGet(SingerPost::new);
             ImageUrl imageUrl = singerPost.getImageUrl();
             MediaUrl mediaUrl = singerPost.getMediaUrl();
             imageUrl.updateUrl(postPatchRequestDto.getImageUrl());
@@ -352,13 +354,13 @@ public class PostService{
         }
         return member;
     }
-    //Position 으로 FK 값 찾기
-    public MakerPost findMakerPostByPostId(Long postId){
-        return makerPostRepository.findById(postId).orElseGet(MakerPost::new);
-    }
-    public SingerPost findSingerPostByPostId(Long postId){
-        return singerPostRepository.findById(postId).orElseGet(SingerPost::new);
-    }
+//    //Position 으로 FK 값 찾기
+//    public MakerPost findMakerPostByPostId(Long postId){
+//        return makerPostRepository.findById(postId).orElseGet(MakerPost::new);
+//    }
+//    public SingerPost findSingerPostByPostId(Long postId){
+//        return singerPostRepository.findById(postId).orElseGet(SingerPost::new);
+//    }
 
     // URL엔티티에 저장 로직
     public ImageUrl imageUrlSave(PostCreateRequestDto postCreateRequestDto){
@@ -416,20 +418,18 @@ public class PostService{
     }
 
 
+    @Transactional
     public void updateMakerPostTag(MakerPost makerPost, PostPatchRequestDto patchRequestDto) {
-        List<MakerPostTag> makerPostTags = makerPostTagRepository.findAllByMakerPostId(makerPost);
-        for (int i = 0; i < makerPostTags.size(); i++) {
-            tagRepository.deleteById(makerPostTags.get(i).getTagId().getId());
-        }
         makerPostTagRepository.deleteByMakerPostId(makerPost);
-        makerPostTagSave(patchRequestDto.getTags(), makerPost);
+        makerPostTagSave(patchRequestDto.getTags(),makerPost);
     }
 
+    @Transactional
     public void updateSingerPostTag(SingerPost singerPost, PostPatchRequestDto patchRequestDto) {
-        List<SingerPostTag> singerPostTags = singerPostTagRepository.findAllBySingerPostId(singerPost);
-        for(int i =0; i< singerPostTags.size(); i++){
-            tagRepository.deleteById(singerPostTags.get(i).getTagId().getId());
-        }
+//        List<SingerPostTag> singerPostTags = singerPostTagRepository.findAllBySingerPostId(singerPost);
+//        for (SingerPostTag singerPostTag : singerPostTags) {
+//            tagRepository.deleteById(singerPostTag.getTagId().getId());
+//        }
         singerPostTagRepository.deleteBySingerPostId(singerPost);
         singerPostTagSave(patchRequestDto.getTags(), singerPost);
     }

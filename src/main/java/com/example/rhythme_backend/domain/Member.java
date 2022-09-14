@@ -51,25 +51,19 @@ public class Member extends Timestamped {
 
 //    @Column
 //    @JsonIgnore
-//    String notEmail;
+//    String notExist;
 //
-//    public Member(String notEmail) {
-//        this.notEmail = notEmail;
+//    public Member(String notExist) {
+//        this.notExist = notExist;
 //    }
 
     public boolean validatePassword(PasswordEncoder passwordEncoder, String password) {
         return passwordEncoder.matches(password, this.password);
     }
 
-
     public void updateFollowers(Long followers) {
         this.followers = followers;
     }
-
-    public void updateDeleteCheck (String deleteCheck) {
-        this.deleteCheck = deleteCheck;
-    }
-
     public void updateImageUrl(String imageUrl){
         this.imageUrl = imageUrl;
     }

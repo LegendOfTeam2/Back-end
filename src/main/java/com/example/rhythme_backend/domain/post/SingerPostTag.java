@@ -21,7 +21,7 @@ public class SingerPostTag {
     @JoinColumn(name = "singer_post_id")
     private SingerPost singerPostId;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "tag_id")
     private Tag tagId;
 

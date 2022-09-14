@@ -3,11 +3,11 @@ package com.example.rhythme_backend.domain;
 import com.example.rhythme_backend.domain.post.MakerPostTag;
 import com.example.rhythme_backend.domain.post.SingerPostTag;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.*;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
 import java.util.List;
 
 @Entity
@@ -24,10 +24,10 @@ public class Tag {
     @Column(nullable = false)
     private String tag;
 
-    @OneToMany(mappedBy = "makerPostId")
+    @OneToMany(mappedBy = "makerPostId",cascade = CascadeType.REMOVE)
     private List<MakerPostTag> makerPostTags;
 
-    @OneToMany(mappedBy = "singerPostId")
+    @OneToMany(mappedBy = "singerPostId",cascade = CascadeType.REMOVE)
     private List<SingerPostTag> singerPostTags;
 
 }
