@@ -221,7 +221,6 @@ public class PostService{
 
             result = new ResponseEntity<>(Message.success(responseDto),HttpStatus.OK);
 
-
             return result;
         }
         return result;

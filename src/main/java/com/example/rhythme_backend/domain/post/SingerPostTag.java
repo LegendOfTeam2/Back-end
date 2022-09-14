@@ -1,6 +1,5 @@
 package com.example.rhythme_backend.domain.post;
 
-import com.example.rhythme_backend.domain.Member;
 import com.example.rhythme_backend.domain.Tag;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

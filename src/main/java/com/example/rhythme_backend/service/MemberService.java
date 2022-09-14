@@ -47,6 +47,14 @@ public class MemberService {
     private final HttpServletResponse response;
     private final KakaoOauth kakaoOauth;
     private final HashTagRepository hashTagRepository;
+//    private final FollowRepository followRepository;
+//    private final MakerLikeRepository makerLikeRepository;
+//    private final SingerLikeRepository singerLikeRepository;
+//    private final MakerPostTagRepository makerPostTagRepository;
+//    private final SingerPostTagRepository singerPostTagRepository;
+//    private final TagRepository tagRepository;
+//    private final MakerPostRepository makerPostRepository;
+//    private final SingerPostRepository singerPostRepository;
     private final Validation validation;
 
 

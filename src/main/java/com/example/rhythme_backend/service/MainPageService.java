@@ -8,9 +8,11 @@ import com.example.rhythme_backend.domain.post.MakerPost;
 import com.example.rhythme_backend.domain.post.MakerPostTag;
 import com.example.rhythme_backend.domain.post.SingerPost;
 import com.example.rhythme_backend.domain.post.SingerPostTag;
+import com.example.rhythme_backend.dto.requestDto.MyImageRequestDto;
 import com.example.rhythme_backend.dto.responseDto.DetailResponseDto;
 import com.example.rhythme_backend.dto.responseDto.MyImageResponseDto;
 import com.example.rhythme_backend.dto.responseDto.mainpage.*;
+import com.example.rhythme_backend.jwt.TokenProvider;
 import com.example.rhythme_backend.repository.FollowRepository;
 import com.example.rhythme_backend.repository.MemberRepository;
 import com.example.rhythme_backend.repository.like.MakerLikeRepository;
@@ -21,6 +23,7 @@ import com.example.rhythme_backend.repository.posts.SingerPostRepository;
 import com.example.rhythme_backend.repository.posts.SingerPostTagRepository;
 import com.example.rhythme_backend.util.Message;
 import com.example.rhythme_backend.util.Validation;
+import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,6 +47,7 @@ public class MainPageService {
     private final MakerPostTagRepository makerPostTagRepository;
     private final SingerPostTagRepository singerPostTagRepository;
     private final Validation validation;
+    private final TokenProvider tokenProvider;
 
 
     public ResponseEntity<?> bestSong() {
@@ -249,14 +253,20 @@ public class MainPageService {
         return new ResponseEntity<>(Message.success(myArtistResponseDtoList),HttpStatus.OK);
     }
 
-    public ResponseEntity<?> getMyImage(HttpServletRequest request) {
-        Member member = validation.validateMember(request);
+    public ResponseEntity<?> getMyImage(HttpServletRequest request, MyImageRequestDto requestDto) {
+        String[] BearerSplit = request.getHeader("Authorization").split(" ");
+        String accessToken = BearerSplit[1];
+        if (!tokenProvider.validateToken(accessToken)) {
+            return new ResponseEntity<>(Message.fail("INVALID_TOKEN", "토큰이 유효하지 않습니다."),HttpStatus.UNAUTHORIZED);
+        }
+        Member member = memberRepository.findByNickname(requestDto.getNickname()).orElseGet(Member::new);
         Member optionalMember = memberRepository.findByNickname(member.getNickname()).orElseGet(Member::new);
         MyImageResponseDto myImageResponseDto = MyImageResponseDto.builder()
                 .imgUrl(optionalMember.getImageUrl())
                 .build();
         return new ResponseEntity<>(Message.success(myImageResponseDto),HttpStatus.OK);
     }
+
     public ResponseEntity<?> getDetailPage(Long postId, String position) {
         MakerPost makerPost = makerPostRepository.findById(postId).orElseGet(MakerPost::new);
         SingerPost singerPost = singerPostRepository.findById(postId).orElseGet(SingerPost::new);
