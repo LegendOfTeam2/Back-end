@@ -25,6 +25,7 @@ import com.example.rhythme_backend.util.RefreshToken;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -41,6 +42,7 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
@@ -58,12 +60,10 @@ public class MemberService {
 //    private final TagRepository tagRepository;
 //    private final MakerPostRepository makerPostRepository;
 //    private final SingerPostRepository singerPostRepository;
-
     
     @Transactional
     public ResponseEntity<?> signupMember(SignupRequestDto requestDto) {
-
-        if (null != getPresentEmail(requestDto.getEmail())) {
+        if (memberRepository.existsByEmail(requestDto.getEmail())) {
             return new ResponseEntity<>(Message.fail("DUPLICATED_EMAIL","중복된 이메일입니다."),HttpStatus.BAD_REQUEST);
         }
 
@@ -86,8 +86,7 @@ public class MemberService {
 
     @Transactional
     public ResponseEntity<?> emailCheck(EmailCheckRequestDto requestDto) {
-
-        if (null != getPresentEmail(requestDto.getEmail())) {
+        if (memberRepository.existsByEmail(requestDto.getEmail())) {
             return new ResponseEntity<>(Message.fail("DUPLICATED_EMAIL","사용 불가능한 이메일입니다."), HttpStatus.OK);
         }
         return new ResponseEntity<>(Message.success("사용 가능한 이메일입니다."), HttpStatus.OK);
@@ -96,7 +95,10 @@ public class MemberService {
 
     @Transactional
     public ResponseEntity<?> nicknameCheck(NicknameCheckRequestDto requestDto) {
-        return getPresentNickname(requestDto.getNickname());
+        if (memberRepository.existsByNickname(requestDto.getNickname())) {
+            return new ResponseEntity<>(Message.fail("DUPLICATED_NICKNAME","사용 불가능한 닉네임입니다."),HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(Message.success("사용 가능한 닉네임입니다."),HttpStatus.OK);
     }
 
 
@@ -217,7 +219,7 @@ public class MemberService {
         }
 
         String logoutNickname = requestDto.getNickname();
-        Member logoutMember = presentNickname(logoutNickname);
+        Member logoutMember = getPresentNickname(logoutNickname);
         Long logoutMemberId = logoutMember.getId();
         Member logout = getDeleteMember(logoutMemberId);
         tokenProvider.deleteRefreshToken(logout);
@@ -372,21 +374,25 @@ public class MemberService {
         return optionalMember.orElse(null);
     }
 
-    //수정해야 함 (통합)
+//    리펙토링 할 때 사용하기 (삭제ㄴㄴ)
+//    @Transactional(readOnly = true)
+//    public Member getPresentEmail(String email) {
+//        Optional<Member> optionalMember = memberRepository.findByEmail(email);
+//        return optionalMember.orElseGet(()->new Member("notEmail"));
+//    }
+
     @Transactional(readOnly = true)
-    public Member presentNickname(String nickname) {
+    public ResponseEntity<?> emailDupCheck(String email) {
+        memberRepository.existsByEmail(email);
+        return new ResponseEntity<>(Message.fail("DUPLICATED_EMAIL","중복된 이메일입니다."),HttpStatus.BAD_REQUEST);
+    }
+
+    @Transactional(readOnly = true)
+    public Member getPresentNickname(String nickname) {
         Optional<Member> optionalMember = memberRepository.findByNickname(nickname);
         return optionalMember.orElse(null);
     }
 
-    @Transactional(readOnly = true)
-    public ResponseEntity<?> getPresentNickname(String nickname) {
-       if (memberRepository.existsByNickname(nickname)) {
-           return new ResponseEntity<>(Message.fail("DUPLICATED_NICKNAME","사용 불가능한 닉네임입니다."),HttpStatus.NOT_FOUND);
-       }
-        return new ResponseEntity<>(Message.success("사용 가능한 닉네임입니다."),HttpStatus.OK);
-    }
-    //////------------
     @Transactional
     public Member validateMember(HttpServletRequest request) {
         if (!tokenProvider.validateToken(request.getHeader("Refresh-Token"))) {
@@ -416,14 +422,5 @@ public class MemberService {
         response.addHeader("Authorization", "Bearer " + tokenDto.getAccessToken());
         response.addHeader("Access-Token-Expire-Time", tokenDto.getAccessTokenExpiresIn().toString());
     }
-
-//    public String getSubject(String token) {
-//        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getSubject();
-//    }
-
-//    @Transactional
-//    public Member validateMembers(HttpServletRequest request) {
-//        return tokenProvider.getMemberFromAuthentication();
-//    }
 
 }

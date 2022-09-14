@@ -13,9 +13,9 @@ import java.util.Optional;
 public interface SingerPostRepository extends JpaRepository<SingerPost,Long> {
     @Override
     Optional<SingerPost> findById(Long id);
-    List<SingerPost> findTop10ByOrderByCreatedAtDesc();
+    List<SingerPost> findTop30ByOrderByCreatedAtDesc();
     List<SingerPost> findAllByMember(Member member, Pageable pageable);
-    List<SingerPost> findTop10ByOrderByLikesDesc();
+    List<SingerPost> findTop30ByOrderByLikesDesc();
     List<SingerPost> findTopByOrderByLikesDesc();
     List<SingerPost> findByTitleContainingOrContentContainingOrderByCreatedAtDesc(String title, String content);
     List<SingerPost> findAllByOrderByCreatedAt();

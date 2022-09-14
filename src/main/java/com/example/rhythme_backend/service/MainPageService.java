@@ -5,7 +5,10 @@ import com.example.rhythme_backend.domain.Member;
 import com.example.rhythme_backend.domain.like.MakerLike;
 import com.example.rhythme_backend.domain.like.SingerLike;
 import com.example.rhythme_backend.domain.post.MakerPost;
+import com.example.rhythme_backend.domain.post.MakerPostTag;
 import com.example.rhythme_backend.domain.post.SingerPost;
+import com.example.rhythme_backend.domain.post.SingerPostTag;
+import com.example.rhythme_backend.dto.responseDto.DetailResponseDto;
 import com.example.rhythme_backend.dto.responseDto.MyImageResponseDto;
 import com.example.rhythme_backend.dto.responseDto.mainpage.*;
 import com.example.rhythme_backend.jwt.TokenProvider;
@@ -14,7 +17,9 @@ import com.example.rhythme_backend.repository.MemberRepository;
 import com.example.rhythme_backend.repository.like.MakerLikeRepository;
 import com.example.rhythme_backend.repository.like.SingerLikeRepository;
 import com.example.rhythme_backend.repository.posts.MakerPostRepository;
+import com.example.rhythme_backend.repository.posts.MakerPostTagRepository;
 import com.example.rhythme_backend.repository.posts.SingerPostRepository;
+import com.example.rhythme_backend.repository.posts.SingerPostTagRepository;
 import com.example.rhythme_backend.util.Message;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,7 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +42,8 @@ public class MainPageService {
     private final FollowRepository followRepository;
     private final TokenProvider tokenProvider;
     private final SingerLikeRepository singerLikeRepository;
+    private final MakerPostTagRepository makerPostTagRepository;
+    private final SingerPostTagRepository singerPostTagRepository;
 
     public ResponseEntity<?> bestSong() {
         List<BestSongResponseDto> bestSongResponseDtoList = new ArrayList<>();
@@ -115,7 +121,7 @@ public class MainPageService {
     }
 
     public ResponseEntity<?> recentMaker() {
-        List<MakerPost> makerPostList = makerPostRepository.findAllByOrderByCreatedAtDesc();
+        List<MakerPost> makerPostList = makerPostRepository.findTop30ByOrderByCreatedAtDesc();
         List<RecentMakerResponseDto> recentMakerResponseDtoList = new ArrayList<>();
         for (MakerPost makerPost : makerPostList) {
             recentMakerResponseDtoList.add(RecentMakerResponseDto.builder()
@@ -134,7 +140,7 @@ public class MainPageService {
     }
 
     public ResponseEntity<?> recentSinger() {
-        List<SingerPost> singerPostList = singerPostRepository.findTop10ByOrderByCreatedAtDesc();
+        List<SingerPost> singerPostList = singerPostRepository.findTop30ByOrderByCreatedAtDesc();
         List<RecentSingerResponseDto> recentSingerResponseDtoList = new ArrayList<>();
         for (SingerPost singerPost : singerPostList) {
             recentSingerResponseDtoList.add(RecentSingerResponseDto.builder()
@@ -153,7 +159,7 @@ public class MainPageService {
     }
 
     public ResponseEntity<?> bestMaker() {
-        List<MakerPost> makerPostList = makerPostRepository.findAllByOrderByLikesDesc();
+        List<MakerPost> makerPostList = makerPostRepository.findTop30ByOrderByLikesDesc();
         List<BestMakerResponseDto> bestMakerResponseDtoList = new ArrayList<>();
         for (MakerPost makerPost : makerPostList) {
             bestMakerResponseDtoList.add(BestMakerResponseDto.builder()
@@ -172,7 +178,7 @@ public class MainPageService {
     }
 
     public ResponseEntity<?> bestSinger() {
-        List<SingerPost> singerPostList = singerPostRepository.findTop10ByOrderByLikesDesc();
+        List<SingerPost> singerPostList = singerPostRepository.findTop30ByOrderByLikesDesc();
         List<BestSingerResponseDto> bestSingerResponseDtoList = new ArrayList<>();
         for (SingerPost singerPost : singerPostList) {
             bestSingerResponseDtoList.add(BestSingerResponseDto.builder()
@@ -191,7 +197,7 @@ public class MainPageService {
     }
 
     public ResponseEntity<?> MostLikeArtist() {
-        List<Member> memberList = memberRepository.findTop10ByOrderByFollowersDesc();
+        List<Member> memberList = memberRepository.findTop30ByOrderByFollowersDesc();
         List<PowerArtistResponseDto> powerArtistResponseDtoList = new ArrayList<>();
         for (Member member : memberList) {
             powerArtistResponseDtoList.add(PowerArtistResponseDto.builder()
@@ -251,12 +257,67 @@ public class MainPageService {
         return new ResponseEntity<>(Message.success(myImageResponseDto),HttpStatus.OK);
     }
 
+    public ResponseEntity<?> getDetailPage(Long postId, String position) {
+        MakerPost makerPost = makerPostRepository.findById(postId).orElseGet(MakerPost::new);
+        SingerPost singerPost = singerPostRepository.findById(postId).orElseGet(SingerPost::new);
+        List<String> tagResponseList = new ArrayList<>();
 
+        if(position.equals("Maker")) {
+            List<MakerPostTag> makerTagList = makerPostTagRepository.findAllByMakerPostId(makerPost);
+            for (MakerPostTag tag: makerTagList) {
+                tagResponseList.add(tag.getTagId().getTag());
+            }
+            DetailResponseDto detailResponseDto = DetailResponseDto.builder()
+                    .postId(makerPost.getId())
+                    .position("Maker")
+                    .memberImageUrl(makerPost.getMember().getImageUrl())
+                    .title(makerPost.getTitle())
+                    .content(makerPost.getContent())
+                    .nickname(makerPost.getMember().getNickname())
+                    .lyrics(makerPost.getLyrics())
+                    .imageUrl(makerPost.getImageUrl().getImageUrl())
+                    .mediaUrl(makerPost.getMediaUrl().getMediaUrl())
+                    .createdAt(makerPost.getCreatedAt())
+                    .modifiedAt(makerPost.getModifiedAt())
+                    .likes(makerPost.getLikes())
+                    .collaborate(makerPost.getCollaborate())
+                    .tags(tagResponseList)
+                    .build();
+
+            return new ResponseEntity<>(Message.success(detailResponseDto),HttpStatus.OK);
+        }
+        List<SingerPostTag> singerPostTagList = singerPostTagRepository.findAllBySingerPostId(singerPost);
+        for (SingerPostTag tag: singerPostTagList) {
+            tagResponseList.add(tag.getTagId().getTag());
+        }
+        if(position.equals("Singer")) {
+            DetailResponseDto detailResponseDto = DetailResponseDto.builder()
+                    .postId(singerPost.getId())
+                    .position("Singer")
+                    .memberImageUrl(singerPost.getMember().getImageUrl())
+                    .title(singerPost.getTitle())
+                    .content(singerPost.getContent())
+                    .nickname(singerPost.getMember().getNickname())
+                    .lyrics(singerPost.getLyrics())
+                    .imageUrl(singerPost.getImageUrl().getImageUrl())
+                    .mediaUrl(singerPost.getMediaUrl().getMediaUrl())
+                    .createdAt(singerPost.getCreatedAt())
+                    .modifiedAt(singerPost.getModifiedAt())
+                    .likes(singerPost.getLikes())
+                    .collaborate(singerPost.getCollaborate())
+                    .tags(tagResponseList)
+                    .build();
+
+            return new ResponseEntity<>(Message.success(detailResponseDto),HttpStatus.OK);
+        }
+        return new ResponseEntity<>(Message.fail("POSITION_NOT_FOUND","리드미에서 지원하지 않는 포지션입니다."),HttpStatus.OK);
+    }
+    
     public Member validateMember(HttpServletRequest request) {
         if (!tokenProvider.validateToken(request.getHeader("Authorization").substring(7))) {
             return null;
         }
         return tokenProvider.getMemberFromAuthentication();
     }
-
+    
 }

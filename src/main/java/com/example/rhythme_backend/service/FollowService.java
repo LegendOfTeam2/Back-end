@@ -12,8 +12,10 @@ import com.example.rhythme_backend.util.ResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transaction;
 import java.util.Optional;
 
 @Service
@@ -24,6 +26,7 @@ public class FollowService {
     private final TokenProvider tokenProvider;
     private final MemberRepository memberRepository;
 
+    @Transactional
     public ResponseDto<?> upDownFollow(String nickname, HttpServletRequest request) {
         Member follower = validateMember(request);
         checkAccessToken(request, follower);
@@ -36,7 +39,6 @@ public class FollowService {
             followRepository.save(follow);
             Long followers = followRepository.countAllByFollowingId(following.getId());
             following.updateFollowers(followers);
-            memberRepository.save(following);
             return ResponseDto.success(true);
         } else {
             followRepository.deleteById(findFollowing.get().getId());

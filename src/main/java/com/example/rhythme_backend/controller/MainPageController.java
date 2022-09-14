@@ -4,6 +4,8 @@ import com.example.rhythme_backend.service.MainPageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -62,6 +64,11 @@ public class MainPageController {
     @GetMapping("/auth/myimage")
     public ResponseEntity<?> getMyImage(HttpServletRequest request) {
         return mainPageService.getMyImage(request);
+    }
+
+    @GetMapping("api/post/{postId}")
+    public ResponseEntity<?> detailPage(@PathVariable Long postId, @RequestParam String position) {
+        return mainPageService.getDetailPage(postId,position);
     }
 
 }
