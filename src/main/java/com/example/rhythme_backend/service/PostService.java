@@ -341,24 +341,7 @@ public class PostService{
 
     //
 
-    // Nickname으로 아이디 찾은 Optional 처리 로직.
-    public Member validateByNickname(String nickname){
-        Member member;
-        Optional<Member> memberRepositoryByNickname = memberRepository.findByNickname(nickname);
-        if(memberRepositoryByNickname.isPresent()){
-            member = memberRepositoryByNickname.get();
-        }else{
-            throw new NullPointerException("찾는 닉네임 정보가 없습니다.");
-        }
-        return member;
-    }
-    //Position 으로 FK 값 찾기
-    public MakerPost findMakerPostByPostId(Long postId){
-        return makerPostRepository.findById(postId).orElseGet(MakerPost::new);
-    }
-    public SingerPost findSingerPostByPostId(Long postId){
-        return singerPostRepository.findById(postId).orElseGet(SingerPost::new);
-    }
+
 
     // URL엔티티에 저장 로직
     public ImageUrl imageUrlSave(PostCreateRequestDto postCreateRequestDto){
@@ -433,7 +416,25 @@ public class PostService{
         singerPostTagRepository.deleteBySingerPostId(singerPost);
         singerPostTagSave(patchRequestDto.getTags(), singerPost);
     }
+    //Position 으로 FK 값 찾기
+    public MakerPost findMakerPostByPostId(Long postId){
+        return makerPostRepository.findById(postId).orElseGet(MakerPost::new);
+    }
+    public SingerPost findSingerPostByPostId(Long postId){
+        return singerPostRepository.findById(postId).orElseGet(SingerPost::new);
+    }
 
+    // Nickname으로 아이디 찾은 Optional 처리 로직.
+    public Member validateByNickname(String nickname){
+        Member member;
+        Optional<Member> memberRepositoryByNickname = memberRepository.findByNickname(nickname);
+        if(memberRepositoryByNickname.isPresent()){
+            member = memberRepositoryByNickname.get();
+        }else{
+            throw new NullPointerException("찾는 닉네임 정보가 없습니다.");
+        }
+        return member;
+    }
 
     public void imageUrlDelete(){
 //        imageUrlRepository.deleteByPostId();
