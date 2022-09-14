@@ -26,7 +26,6 @@ import com.example.rhythme_backend.repository.posts.SingerPostTagRepository;
 import com.example.rhythme_backend.util.Message;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -295,7 +294,7 @@ public class PostService{
            MediaUrl mediaUrl = makerPost.getMediaUrl();
            imageUrl.updateUrl(postPatchRequestDto.getImageUrl());
            mediaUrl.updateUrl(postPatchRequestDto.getMediaUrl());
-        }else if(postPatchRequestDto.getPosition().equals("Signer")){
+        }else if(postPatchRequestDto.getPosition().equals("Singer")){
             SingerPost singerPost = singerPostRepository.findById(postPatchRequestDto.getPostId()).orElseGet(SingerPost::new);
             ImageUrl imageUrl = singerPost.getImageUrl();
             MediaUrl mediaUrl = singerPost.getMediaUrl();
