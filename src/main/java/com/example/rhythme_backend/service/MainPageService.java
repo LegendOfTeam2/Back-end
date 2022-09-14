@@ -271,7 +271,6 @@ public class MainPageService {
         MakerPost makerPost = makerPostRepository.findById(postId).orElseGet(MakerPost::new);
         SingerPost singerPost = singerPostRepository.findById(postId).orElseGet(SingerPost::new);
         List<String> tagResponseList = new ArrayList<>();
-
         if(position.equals("Maker")) {
             List<MakerPostTag> makerTagList = makerPostTagRepository.findAllByMakerPostId(makerPost);
             for (MakerPostTag tag: makerTagList) {
