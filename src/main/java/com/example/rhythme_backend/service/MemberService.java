@@ -2,28 +2,22 @@ package com.example.rhythme_backend.service;
 
 import com.example.rhythme_backend.domain.HashTag;
 import com.example.rhythme_backend.domain.Member;
-import com.example.rhythme_backend.domain.post.MakerPost;
-import com.example.rhythme_backend.domain.post.SingerPost;
 import com.example.rhythme_backend.dto.TokenDto;
 import com.example.rhythme_backend.dto.requestDto.member.*;
 import com.example.rhythme_backend.dto.responseDto.ResignResponseDto;
 import com.example.rhythme_backend.exception.CustomException;
 import com.example.rhythme_backend.exception.ErrorCode;
 import com.example.rhythme_backend.jwt.TokenProvider;
-import com.example.rhythme_backend.repository.*;
-import com.example.rhythme_backend.repository.like.MakerLikeRepository;
-import com.example.rhythme_backend.repository.like.SingerLikeRepository;
-import com.example.rhythme_backend.repository.posts.MakerPostRepository;
-import com.example.rhythme_backend.repository.posts.MakerPostTagRepository;
-import com.example.rhythme_backend.repository.posts.SingerPostRepository;
-import com.example.rhythme_backend.repository.posts.SingerPostTagRepository;
+import com.example.rhythme_backend.repository.HashTagRepository;
+import com.example.rhythme_backend.repository.MemberRepository;
+import com.example.rhythme_backend.repository.RefreshTokenRepository;
 import com.example.rhythme_backend.service.googleLogin.Constant;
 import com.example.rhythme_backend.service.googleLogin.GoogleOauth;
 import com.example.rhythme_backend.service.kakaoLogin.KakaoOauth;
 import com.example.rhythme_backend.util.Message;
 import com.example.rhythme_backend.util.RefreshToken;
+import com.example.rhythme_backend.util.Validation;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -35,6 +29,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -52,17 +47,9 @@ public class MemberService {
     private final HttpServletResponse response;
     private final KakaoOauth kakaoOauth;
     private final HashTagRepository hashTagRepository;
-//    private final FollowRepository followRepository;
-//    private final MakerLikeRepository makerLikeRepository;
-//    private final SingerLikeRepository singerLikeRepository;
-//    private final MakerPostTagRepository makerPostTagRepository;
-//    private final SingerPostTagRepository singerPostTagRepository;
-//    private final TagRepository tagRepository;
-//    private final MakerPostRepository makerPostRepository;
-//    private final SingerPostRepository singerPostRepository;
-    
-    @Transactional
-    public ResponseEntity<?> signupMember(SignupRequestDto requestDto) {
+    private final Validation validation;
+//    @Transactional
+//    public ResponseEntity<?> signupMember(SignupRequestDto requestDto) {
 
 //        Member member = memberRepository.findByEmail(requestDto.getEmail()).orElseGet(Member::new);
 //        if ("Y".equals(member.getDeleteCheck())) {
@@ -110,7 +97,15 @@ public class MemberService {
 //        memberRepository.delete(resignMember);
 //        }
 
-        if (memberRepository.existsByEmail(requestDto.getEmail())) {
+//        if (memberRepository.existsByEmail(requestDto.getEmail())) {
+
+
+
+    @Transactional
+    public ResponseEntity<?> signupMember(SignupRequestDto requestDto) {
+
+        if (null != validation.getPresentEmail(requestDto.getEmail())) {
+
             return new ResponseEntity<>(Message.fail("DUPLICATED_EMAIL","중복된 이메일입니다."),HttpStatus.BAD_REQUEST);
         }
 
@@ -130,14 +125,16 @@ public class MemberService {
     }
 
 
+
     @Transactional
     public ResponseEntity<?> emailCheck(EmailCheckRequestDto requestDto) {
         if (memberRepository.existsByEmail(requestDto.getEmail())) {
-            return new ResponseEntity<>(Message.fail("DUPLICATED_EMAIL","사용 불가능한 이메일입니다."), HttpStatus.OK);
+            if (null != validation.getPresentEmail(requestDto.getEmail())) {
+                return new ResponseEntity<>(Message.fail("DUPLICATED_EMAIL", "사용 불가능한 이메일입니다."), HttpStatus.OK);
+            }
         }
-        return new ResponseEntity<>(Message.success("사용 가능한 이메일입니다."), HttpStatus.OK);
-    }
-
+            return new ResponseEntity<>(Message.success("사용 가능한 이메일입니다."), HttpStatus.OK);
+        }
 
     @Transactional
     public ResponseEntity<?> nicknameCheck(NicknameCheckRequestDto requestDto) {
@@ -150,7 +147,7 @@ public class MemberService {
 
     @Transactional
     public ResponseEntity<?> loginMember(LoginRequestDto requestDto, HttpServletResponse response) {
-        Member member = getPresentEmail(requestDto.getEmail());
+        Member member = validation.getPresentEmail(requestDto.getEmail());
         if (null == member) {
             return new ResponseEntity<>(Message.fail("EMAIL_NOT_FOUND","존재하지 않는 이메일입니다."),HttpStatus.NOT_FOUND);
         }
@@ -160,7 +157,7 @@ public class MemberService {
         }
 
         TokenDto tokenDto = tokenProvider.generateTokenDto(member);
-        tokenToHeaders(tokenDto,response);
+        validation.tokenToHeaders(tokenDto,response);
         return new ResponseEntity<>(Message.success("성공적으로 로그인 되었습니다."),HttpStatus.OK);
     }
 
@@ -179,7 +176,7 @@ public class MemberService {
 
         RefreshToken deleteToken = getDeleteToken(member);
         String deleteEmail = requestDto.getEmail();
-        Member deleteMember = getPresentEmail(deleteEmail);
+        Member deleteMember = validation.getPresentEmail(deleteEmail);
         Long deleteMemberId = deleteMember.getId();
         Member resignMember = getDeleteMember(deleteMemberId);
         if (null == resignMember) {
@@ -252,7 +249,6 @@ public class MemberService {
         UserDetails kakaouserDetails = new UserDetailsImpl(kakaoUser);
         Authentication authentication = new UsernamePasswordAuthenticationToken(kakaouserDetails, null, kakaouserDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
         Member member = getPresentEmail(kakaoUser.getEmail());
         return tokenProvider.generateTokenDto(member);
     }
@@ -311,7 +307,6 @@ public class MemberService {
                 UserDetails googleUserDetails = new UserDetailsImpl(googleLoginUser);
                 Authentication authentication = new UsernamePasswordAuthenticationToken(googleUserDetails, null, googleUserDetails.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-
                 Member googleMember = getPresentEmail(googleLoginUser.getEmail());
                 return tokenProvider.generateTokenDto(googleMember);
     }
@@ -330,7 +325,7 @@ public class MemberService {
     public ResponseEntity<?> refreshToken(HttpServletRequest request, HttpServletResponse response) {
 
         tokenProvider.validateToken(request.getHeader("Refresh-Token"));
-        Member requestingMember = validateMember(request);
+        Member requestingMember = validation.validateMember(request);
         long accessTokenExpire = Long.parseLong(request.getHeader("Access-Token-Expire-Time"));
         long now = (new Date().getTime());
 
@@ -344,7 +339,7 @@ public class MemberService {
         }
         if (Objects.equals(refreshTokenConfirm.getValue(), request.getHeader("Refresh-Token"))) {
             TokenDto tokenDto = tokenProvider.generateAccessTokenDto(requestingMember);
-            accessTokenToHeaders(tokenDto, response);
+            validation.accessTokenToHeaders(tokenDto, response);
             return new ResponseEntity<>(Message.success("ACCESS_TOKEN_REISSUE"), HttpStatus.OK);
         } else {
             tokenProvider.deleteRefreshToken(requestingMember);
@@ -366,6 +361,7 @@ public class MemberService {
 //        return optionalMember.orElseGet(()->new Member("notExist"));
 //    }
 
+    //수정해야 함 (통합)
     @Transactional(readOnly = true)
     public ResponseEntity<?> emailDupCheck(String email) {
         memberRepository.existsByEmail(email);
@@ -377,7 +373,6 @@ public class MemberService {
         Optional<Member> optionalMember = memberRepository.findByNickname(nickname);
         return optionalMember.orElse(null);
     }
-
     @Transactional
     public Member validateMember(HttpServletRequest request) {
         if (!tokenProvider.validateToken(request.getHeader("Refresh-Token"))) {
@@ -390,7 +385,6 @@ public class MemberService {
         Optional<Member> optionalMember = memberRepository.findById(id);
         return optionalMember.orElse(null);
     }
-
     public RefreshToken getDeleteToken(Member member) {
         Optional<RefreshToken> optionalMember = refreshTokenRepository.findByMember(member);
         return optionalMember.orElse(null);

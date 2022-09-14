@@ -11,7 +11,6 @@ import com.example.rhythme_backend.domain.post.SingerPostTag;
 import com.example.rhythme_backend.dto.responseDto.DetailResponseDto;
 import com.example.rhythme_backend.dto.responseDto.MyImageResponseDto;
 import com.example.rhythme_backend.dto.responseDto.mainpage.*;
-import com.example.rhythme_backend.jwt.TokenProvider;
 import com.example.rhythme_backend.repository.FollowRepository;
 import com.example.rhythme_backend.repository.MemberRepository;
 import com.example.rhythme_backend.repository.like.MakerLikeRepository;
@@ -21,6 +20,7 @@ import com.example.rhythme_backend.repository.posts.MakerPostTagRepository;
 import com.example.rhythme_backend.repository.posts.SingerPostRepository;
 import com.example.rhythme_backend.repository.posts.SingerPostTagRepository;
 import com.example.rhythme_backend.util.Message;
+import com.example.rhythme_backend.util.Validation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,10 +40,10 @@ public class MainPageService {
     private final MemberRepository memberRepository;
     private final MakerLikeRepository makerLikeRepository;
     private final FollowRepository followRepository;
-    private final TokenProvider tokenProvider;
     private final SingerLikeRepository singerLikeRepository;
     private final MakerPostTagRepository makerPostTagRepository;
     private final SingerPostTagRepository singerPostTagRepository;
+    private final Validation validation;
 
     public ResponseEntity<?> bestSong() {
         List<BestSongResponseDto> bestSongResponseDtoList = new ArrayList<>();
@@ -211,7 +211,7 @@ public class MainPageService {
 
     @Transactional(readOnly = true)
     public ResponseEntity<?> makerLikeList(HttpServletRequest request) {
-        Member member = validateMember(request);
+        Member member = validation.validateMember(request);
         List<MakerLike> makerLikeList = makerLikeRepository.findAllByMemberIdOrderByMakerPost(member);
         List<MyMakerResponseDto> myMakerResponseDtoList = new ArrayList<>();
         for (MakerLike makerLike : makerLikeList) {
@@ -224,7 +224,7 @@ public class MainPageService {
 
     @Transactional(readOnly = true)
     public ResponseEntity<?> singerLikeList(HttpServletRequest request) {
-        Member member = validateMember(request);
+        Member member = validation.validateMember(request);
         List<SingerLike> singerLikeList = singerLikeRepository.findAllByMemberIdOrderBySingerPost(member);
         List<MySingerResponseDto> mySingerResponseDtoList = new ArrayList<>();
         for (SingerLike singerLike : singerLikeList) {
@@ -237,7 +237,7 @@ public class MainPageService {
 
     @Transactional(readOnly = true)
     public ResponseEntity<?> followList(HttpServletRequest request) {
-        Member member = validateMember(request);
+        Member member = validation.validateMember(request);
         List<Follow> followList = followRepository.findAllByFollowerOrderByFollowing(member);
         List<MyArtistResponseDto> myArtistResponseDtoList = new ArrayList<>();
         for (Follow follow : followList) {
@@ -249,7 +249,7 @@ public class MainPageService {
     }
 
     public ResponseEntity<?> getMyImage(HttpServletRequest request) {
-        Member member = validateMember(request);
+        Member member = validation.validateMember(request);
         Member optionalMember = memberRepository.findByNickname(member.getNickname()).orElseGet(Member::new);
         MyImageResponseDto myImageResponseDto = MyImageResponseDto.builder()
                 .imgUrl(optionalMember.getImageUrl())
@@ -312,12 +312,6 @@ public class MainPageService {
         }
         return new ResponseEntity<>(Message.fail("POSITION_NOT_FOUND","리드미에서 지원하지 않는 포지션입니다."),HttpStatus.OK);
     }
-    
-    public Member validateMember(HttpServletRequest request) {
-        if (!tokenProvider.validateToken(request.getHeader("Authorization").substring(7))) {
-            return null;
-        }
-        return tokenProvider.getMemberFromAuthentication();
-    }
-    
+
+
 }
