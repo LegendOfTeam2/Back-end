@@ -293,7 +293,7 @@ public class PostService{
            MediaUrl mediaUrl = makerPost.getMediaUrl();
            imageUrl.updateUrl(postPatchRequestDto.getImageUrl());
            mediaUrl.updateUrl(postPatchRequestDto.getMediaUrl());
-        }else if(postPatchRequestDto.getPosition().equals("Signer")){
+        }else if(postPatchRequestDto.getPosition().equals("Singer")){
             SingerPost singerPost = findSingerPostByPostId(postPatchRequestDto.getPostId());
             ImageUrl imageUrl = singerPost.getImageUrl();
             MediaUrl mediaUrl = singerPost.getMediaUrl();
