@@ -89,7 +89,7 @@ public class ProfileService {
                     .build();
             hashTagRepository.save(hashTag);
         }
-    return new ResponseEntity<>(Message.success(ModifyProfileResponseDto.builder()
+    return new ResponseEntity<>(Message.success(ModifyProfileRequestDto.builder()
             .nickname(requestDto.getNickname())
             .imageUrl(requestDto.getImageUrl())
             .introduce(requestDto.getIntroduce())
