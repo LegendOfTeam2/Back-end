@@ -7,10 +7,7 @@ import com.example.rhythme_backend.util.Message;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -23,9 +20,7 @@ public class ProfilePageController {
 
     @GetMapping("/profile/{nickname}")
     public ResponseEntity<?> profileGetOne(@PathVariable String nickname){
-        return new ResponseEntity<>(Message.success(
-                profileService.profileGetOne(nickname)
-        ), HttpStatus.OK);
+        return new ResponseEntity<>(Message.success(profileService.profileGetOne(nickname)), HttpStatus.OK);
     }
 
     @GetMapping("/post/upload/{nickname}")
@@ -43,9 +38,7 @@ public class ProfilePageController {
     }
 
     @PutMapping("/profile/{nickname}")
-    public ResponseEntity<?> profileModify(ModifyProfileRequestDto modifyProfileRequestDto){
-        return new ResponseEntity<>(Message.success(
-                profileService.profileModifiy(modifyProfileRequestDto)
-        ),HttpStatus.OK);
+    public ResponseEntity<?> profileChange(@PathVariable String nickname,@RequestBody ModifyProfileRequestDto requestDto){
+        return profileService.profileModify(nickname,requestDto);
     }
 }

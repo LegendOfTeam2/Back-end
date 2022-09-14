@@ -11,9 +11,7 @@ public interface MakerPostRepository extends JpaRepository<MakerPost,Long> {
     @Override
     Optional<MakerPost> findById(Long id);
 
-
     List<MakerPost> findAllByMember(Member member);
-
 
     List<MakerPost> findByTitleContainingOrContentContainingOrderByCreatedAtDesc(String title, String content);
     List<MakerPost> findTopByOrderByLikesDesc();

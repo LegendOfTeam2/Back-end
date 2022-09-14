@@ -4,10 +4,12 @@ import com.example.rhythme_backend.domain.HashTag;
 import com.example.rhythme_backend.domain.Member;
 import com.example.rhythme_backend.domain.like.MakerLike;
 import com.example.rhythme_backend.domain.like.SingerLike;
+import com.example.rhythme_backend.domain.media.ImageUrl;
 import com.example.rhythme_backend.domain.post.MakerPost;
 import com.example.rhythme_backend.domain.post.SingerPost;
+import com.example.rhythme_backend.dto.requestDto.post.PostCreateRequestDto;
 import com.example.rhythme_backend.dto.requestDto.profile.ModifyProfileRequestDto;
-import com.example.rhythme_backend.dto.responseDto.profile.ProfileModifyResponseDto;
+import com.example.rhythme_backend.dto.responseDto.profile.ModifyProfileResponseDto;
 import com.example.rhythme_backend.dto.responseDto.profile.ProfileResponseDto;
 import com.example.rhythme_backend.dto.responseDto.profile.ProfileUploadPostResponseDto;
 import com.example.rhythme_backend.repository.FollowRepository;
@@ -15,15 +17,22 @@ import com.example.rhythme_backend.repository.HashTagRepository;
 import com.example.rhythme_backend.repository.MemberRepository;
 import com.example.rhythme_backend.repository.like.MakerLikeRepository;
 import com.example.rhythme_backend.repository.like.SingerLikeRepository;
+import com.example.rhythme_backend.repository.media.ImageUrlRepository;
 import com.example.rhythme_backend.repository.posts.MakerPostRepository;
 import com.example.rhythme_backend.repository.posts.SingerPostRepository;
+import com.example.rhythme_backend.util.Message;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class ProfileService {
     private final MemberRepository memberRepository;
@@ -36,7 +45,7 @@ public class ProfileService {
 
     private final SingerLikeRepository singerLikeRepository;
 
-
+    private final ImageUrlRepository imageUrlRepository;
     private final FollowRepository followRepository;
 
 
@@ -66,27 +75,28 @@ public class ProfileService {
 
     }
 
-
-    public ProfileModifyResponseDto profileModifiy(ModifyProfileRequestDto modifyProfileRequestDto){
-        Member member = memberRepository.findByNickname(modifyProfileRequestDto.getNickname()).orElseGet(Member::new);
-        member.updateImageUrl(modifyProfileRequestDto.getImageUrl());
-        member.updateIntroduce(modifyProfileRequestDto.getIntroduce());
+@Transactional
+    public ResponseEntity<?> profileModify(String nickname , ModifyProfileRequestDto requestDto) {
+        Member member = memberRepository.findByNickname(nickname).orElseThrow(
+            () -> new IllegalArgumentException("닉네임이 일치하지 않습니다"));
+        member.update(requestDto);
+            memberRepository.save(member);
         hashTagRepository.deleteByMember(member);
-        for(String a : modifyProfileRequestDto.getHashtag()){
+        for(String a : requestDto.getHashtag()){
             HashTag hashTag = HashTag.builder()
                     .hashtag(a)
                     .member(member)
                     .build();
             hashTagRepository.save(hashTag);
         }
-        return ProfileModifyResponseDto.builder()
-                .hashtag(modifyProfileRequestDto.getHashtag())
-                .imageUrl(modifyProfileRequestDto.getImageUrl())
-                .nickname(modifyProfileRequestDto.getNickname())
-                .introduce(modifyProfileRequestDto.getIntroduce())
-                .build();
-    }
-
+    return new ResponseEntity<>(Message.success(ModifyProfileResponseDto.builder()
+            .nickname(requestDto.getNickname())
+            .imageUrl(requestDto.getImageUrl())
+            .introduce(requestDto.getIntroduce())
+            .hashtag(requestDto.getHashtag())
+            .build()),
+            HttpStatus.OK);
+}
 
     public List<ProfileUploadPostResponseDto> profileGetMyUpload(String nickname) {
         Member member = memberRepository.findByNickname(nickname).orElseGet(Member::new);
@@ -168,6 +178,15 @@ public class ProfileService {
 
         return answer;
     }
+    public ImageUrl imageUrlSave(PostCreateRequestDto postCreateRequestDto){
+        ImageUrl imageUrl =  ImageUrl.builder()
+                .postId(null)
+                .position(postCreateRequestDto.getPosition())
+                .imageUrl(postCreateRequestDto.getImageUrl())
+                .build();
 
+        imageUrlRepository.save(imageUrl);
+        return imageUrl;
+    }
 
 }
