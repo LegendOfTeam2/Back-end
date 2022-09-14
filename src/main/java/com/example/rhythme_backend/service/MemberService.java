@@ -110,7 +110,7 @@ public class MemberService {
 //        refreshTokenRepository.delete(deleteToken);
 //        memberRepository.delete(resignMember);
 //          }
-//        }
+//      }
 
         if (null != validation.getPresentEmail(requestDto.getEmail())) {
             return new ResponseEntity<>(Message.fail("DUPLICATED_EMAIL", "중복된 이메일입니다."), HttpStatus.BAD_REQUEST);
