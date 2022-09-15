@@ -36,7 +36,7 @@ public class LikeService {
 
     @Transactional
     public ResponseDto<?> upDownSingerLike(Long postId, HttpServletRequest request) {
-        Member member = validation.validateMember(request);
+        Member member = validation.validateMemberToAccess(request);
         validation.checkAccessToken(request, member);
         SingerPost singerPost = getCurrentSingerPost(postId);
         checkSingerPost(singerPost);
@@ -60,7 +60,7 @@ public class LikeService {
 
     @Transactional
     public ResponseDto<?> upDownMakerLike(Long postId, HttpServletRequest request) {
-        Member member = validation.validateMember(request);
+        Member member = validation.validateMemberToAccess(request);
         validation.checkAccessToken(request, member);
         MakerPost makerPost = getCurrentMakerPost(postId);
         checkMakerPost(makerPost);
