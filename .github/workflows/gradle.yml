@@ -1,4 +1,4 @@
-name: rhythmeuser
+name: rhythme_user
 
 on:
   push:
