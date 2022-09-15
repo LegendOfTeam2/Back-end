@@ -51,13 +51,18 @@ public class ProfileService {
 
     private final HashTagRepository hashTagRepository;
 
-
+//    private Long makerPostCnt;
+//    private Long singerPostCnt;
+//    private Long allPostCnt;
     public ProfileResponseDto profileGetOne(String nickname){
         //팔로워 팔로잉은 따로 API 있음
         Member member = memberRepository.findByNickname(nickname).orElseGet(Member::new);
         Long follower = followRepository.countByFollower(member);
         Long following = followRepository.countByFollowing(member);
         Long makerPostCnt = makerPostRepository.countByMember(member);
+        Long singerPostCnt = singerPostRepository.countByMember(member);
+        Long allPostCnt = makerPostCnt + singerPostCnt;
+        System.out.println(allPostCnt);
         List<HashTag> HashTagList = hashTagRepository.findAllByMember(member);
         List<String> stringList = new ArrayList<>();
         for(HashTag a : HashTagList){
@@ -68,7 +73,9 @@ public class ProfileService {
                 .hashtag(stringList)
                 .nickname(nickname)
                 .imageUrl(member.getImageUrl())
-                .myPostConunt(makerPostCnt)
+                .makerPostCnt(makerPostCnt)
+                .singerPostCnt(singerPostCnt)
+                .allPostCnt(allPostCnt)
                 .follower(follower)
                 .following(following)
                 .build();
