@@ -31,5 +31,4 @@ public class LikeController {
     public ResponseDto<?> MakerLike(@PathVariable Long postId, HttpServletRequest request){
         return likeService.upDownMakerLike(postId, request);
     }
-
 }

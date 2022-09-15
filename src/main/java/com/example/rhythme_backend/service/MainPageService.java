@@ -216,7 +216,7 @@ public class MainPageService {
 
     @Transactional(readOnly = true)
     public ResponseEntity<?> makerLikeList(HttpServletRequest request) {
-        Member member = validation.validateMember(request);
+        Member member = validation.validateMemberToAccess(request);
         List<MakerLike> makerLikeList = makerLikeRepository.findAllByMemberIdOrderByMakerPost(member);
         List<MyMakerResponseDto> myMakerResponseDtoList = new ArrayList<>();
         for (MakerLike makerLike : makerLikeList) {
@@ -229,7 +229,7 @@ public class MainPageService {
 
     @Transactional(readOnly = true)
     public ResponseEntity<?> singerLikeList(HttpServletRequest request) {
-        Member member = validation.validateMember(request);
+        Member member = validation.validateMemberToAccess(request);
         List<SingerLike> singerLikeList = singerLikeRepository.findAllByMemberIdOrderBySingerPost(member);
         List<MySingerResponseDto> mySingerResponseDtoList = new ArrayList<>();
         for (SingerLike singerLike : singerLikeList) {
@@ -242,7 +242,7 @@ public class MainPageService {
 
     @Transactional(readOnly = true)
     public ResponseEntity<?> followList(HttpServletRequest request) {
-        Member member = validation.validateMember(request);
+        Member member = validation.validateMemberToAccess(request);
         List<Follow> followList = followRepository.findAllByFollowerOrderByFollowing(member);
         List<MyArtistResponseDto> myArtistResponseDtoList = new ArrayList<>();
         for (Follow follow : followList) {

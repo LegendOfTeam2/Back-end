@@ -41,6 +41,14 @@ public class Validation {
         return tokenProvider.getMemberFromAuthentication();
     }
 
+    @Transactional
+    public Member validateMemberToAccess(HttpServletRequest request) {
+        if (!tokenProvider.validateToken(request.getHeader("Authorization").substring(7))) {
+            return null;
+        }
+        return tokenProvider.getMemberFromAuthentication();
+    }
+
     public void tokenToHeaders(TokenDto tokenDto, HttpServletResponse response) {
         response.addHeader("Authorization", "Bearer " + tokenDto.getAccessToken());
         response.addHeader("Refresh-Token", tokenDto.getRefreshToken());

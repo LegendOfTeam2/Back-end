@@ -51,9 +51,6 @@ public class ProfileService {
 
     private final HashTagRepository hashTagRepository;
 
-//    private Long makerPostCnt;
-//    private Long singerPostCnt;
-//    private Long allPostCnt;
     public ProfileResponseDto profileGetOne(String nickname){
         //팔로워 팔로잉은 따로 API 있음
         Member member = memberRepository.findByNickname(nickname).orElseGet(Member::new);

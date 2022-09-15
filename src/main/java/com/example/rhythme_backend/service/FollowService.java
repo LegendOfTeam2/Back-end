@@ -39,11 +39,13 @@ public class FollowService {
             followRepository.save(follow);
             Long followers = followRepository.countAllByFollowingId(following.getId());
             following.updateFollowers(followers);
+            memberRepository.save(following);
             return ResponseDto.success(true);
         } else {
             followRepository.deleteById(findFollowing.get().getId());
             Long followers = followRepository.countAllByFollowingId(following.getId());
-            follower.updateFollowers(followers);
+            following.updateFollowers(followers);
+            memberRepository.save(following);
             return ResponseDto.success(false);
         }
     }

@@ -33,9 +33,7 @@ public class ProfilePageController {
 
     @GetMapping("/post/like/{nickname}")
     public ResponseEntity<?> profileGetMyLike(@PathVariable String nickname){
-        return new ResponseEntity<>(Message.success(
-                profileService.profileGetMyLike(nickname)
-        ),HttpStatus.OK);
+        return new ResponseEntity<>(Message.success(profileService.profileGetMyLike(nickname)),HttpStatus.OK);
     }
 
     @PutMapping("/profile/{nickname}")

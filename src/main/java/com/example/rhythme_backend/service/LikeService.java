@@ -47,11 +47,13 @@ public class LikeService {
             singerLikeRepository.save(singerLike);
             Long likes = singerLikeRepository.countAllBySingerPostId(postId);
             singerPost.singerUpdateLikes(likes);
+            singerPostRepository.save(singerPost);
             return ResponseDto.success(true);
         } else {
             singerLikeRepository.deleteById(findSingerLike.getId());
             Long likes = singerLikeRepository.countAllBySingerPostId(postId);
             singerPost.singerUpdateLikes(likes);
+            singerPostRepository.save(singerPost);
             return ResponseDto.success(false);
         }
     }
@@ -71,11 +73,13 @@ public class LikeService {
             makerLikeRepository.save(makerLike);
             Long likes = makerLikeRepository.countAllByMakerPostId(postId);
             makerPost.makerUpdateLikes(likes);
+            makerPostRepository.save(makerPost);
             return ResponseDto.success(true);
         } else {
             makerLikeRepository.deleteById(findMakerLike.getId());
             Long likes = makerLikeRepository.countAllByMakerPostId(postId);
             makerPost.makerUpdateLikes(likes);
+            makerPostRepository.save(makerPost);
             return ResponseDto.success(false);
         }
     }

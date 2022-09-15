@@ -301,8 +301,6 @@ public class PostService{
     //=======================게시판 삭제 로직
     @Transactional
     public  ResponseEntity<?> deletePost(Long postId,String position) {
-
-
         ResponseEntity<?> result = new ResponseEntity<>("", HttpStatus.OK);
 
         if(position.equals("Maker")) {
