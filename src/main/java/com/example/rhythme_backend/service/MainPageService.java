@@ -220,7 +220,7 @@ public class MainPageService {
         List<MyMakerResponseDto> myMakerResponseDtoList = new ArrayList<>();
         for (MakerLike makerLike : makerLikeList) {
             myMakerResponseDtoList.add(MyMakerResponseDto.builder()
-                            .makerId(makerLike.getMakerPost().getId())
+                            .postId(makerLike.getMakerPost().getId())
                             .build());
         }
         return new ResponseEntity<>(Message.success(myMakerResponseDtoList),HttpStatus.OK);
@@ -233,7 +233,7 @@ public class MainPageService {
         List<MySingerResponseDto> mySingerResponseDtoList = new ArrayList<>();
         for (SingerLike singerLike : singerLikeList) {
             mySingerResponseDtoList.add(MySingerResponseDto.builder()
-                            .singerId(singerLike.getSingerPost().getId())
+                            .postId(singerLike.getSingerPost().getId())
                             .build());
         }
         return new ResponseEntity<>(Message.success(mySingerResponseDtoList),HttpStatus.OK);
