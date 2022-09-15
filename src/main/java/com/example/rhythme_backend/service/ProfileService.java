@@ -114,8 +114,6 @@ public class ProfileService {
                     .createdAt(a.getCreatedAt())
                     .modifiedAt(a.getModifiedAt())
                     .build());
-            return answer;
-
         }
         for (SingerPost a : singerPostList) {
             answer.add(ProfileUploadPostResponseDto.builder()
@@ -130,7 +128,6 @@ public class ProfileService {
                     .createdAt(a.getCreatedAt())
                     .modifiedAt(a.getModifiedAt())
                     .build());
-            return answer;
         }
         return answer;
     }
@@ -154,8 +151,6 @@ public class ProfileService {
                     .createdAt(exportFromA.getCreatedAt())
                     .modifiedAt(exportFromA.getModifiedAt())
                     .build());
-            return answer;
-
         }
         for (SingerLike a : singerLikeList) {
             SingerPost exportFromA = a.getSingerPost();
@@ -171,7 +166,6 @@ public class ProfileService {
                     .createdAt(exportFromA.getCreatedAt())
                     .modifiedAt(exportFromA.getModifiedAt())
                     .build());
-            return answer;
         }
 
         return answer;
