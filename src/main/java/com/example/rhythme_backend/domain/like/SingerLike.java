@@ -21,11 +21,11 @@ public class SingerLike {
     private Long id;
 
     // 유저
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
     @JoinColumn(name = "member_id")
     private Member memberId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
     @JoinColumn(name = "singerpost_id")
     @JsonIgnore
     private SingerPost singerPost;

@@ -1,7 +1,6 @@
 package com.example.rhythme_backend.controller;
 
 import com.example.rhythme_backend.dto.requestDto.post.PostCreateRequestDto;
-import com.example.rhythme_backend.dto.requestDto.post.PostDeleteRequestDto;
 import com.example.rhythme_backend.dto.requestDto.post.PostPatchRequestDto;
 import com.example.rhythme_backend.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -39,9 +38,9 @@ public class PostController {
     }
 
     // 글삭제 API
-    @DeleteMapping("/auth/post")
-    public ResponseEntity<?> deletePost(@RequestBody PostDeleteRequestDto postDeleteRequestDto) {
-        return postService.deletePost(postDeleteRequestDto);
+    @DeleteMapping("/auth/post/{postId}")
+    public ResponseEntity<?> deletePost(@PathVariable Long postId, @RequestParam String position) {
+        return postService.deletePost(postId,position);
     }
 
     @GetMapping("/allpost/search")
