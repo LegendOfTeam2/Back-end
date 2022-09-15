@@ -7,6 +7,6 @@ import lombok.Getter;
 @Builder
 public class MySingerResponseDto {
 
-    private Long singerId;
+    private Long postId;
 
 }

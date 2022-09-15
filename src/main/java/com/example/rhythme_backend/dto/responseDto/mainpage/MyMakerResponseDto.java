@@ -7,6 +7,6 @@ import lombok.Getter;
 @Getter
 public class MyMakerResponseDto {
 
-    private Long makerId;
+    private Long postId;
 
 }

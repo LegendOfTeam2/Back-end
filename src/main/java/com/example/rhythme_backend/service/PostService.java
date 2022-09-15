@@ -10,7 +10,6 @@ import com.example.rhythme_backend.domain.post.MakerPostTag;
 import com.example.rhythme_backend.domain.post.SingerPost;
 import com.example.rhythme_backend.domain.post.SingerPostTag;
 import com.example.rhythme_backend.dto.requestDto.post.PostCreateRequestDto;
-import com.example.rhythme_backend.dto.requestDto.post.PostDeleteRequestDto;
 import com.example.rhythme_backend.dto.requestDto.post.PostPatchRequestDto;
 import com.example.rhythme_backend.dto.responseDto.post.*;
 import com.example.rhythme_backend.repository.MemberRepository;
@@ -301,16 +300,16 @@ public class PostService{
 
     //=======================게시판 삭제 로직
     @Transactional
-    public  ResponseEntity<?> deletePost(PostDeleteRequestDto postDeleteRequestDto) {
-        ResponseEntity<?> result = new ResponseEntity<>("", HttpStatus.OK);
+    public  ResponseEntity<?> deletePost(Long postId,String position) {
 
-        String position = postDeleteRequestDto.getPosition();
-        Long postId = postDeleteRequestDto.getPostId();
+
+        ResponseEntity<?> result = new ResponseEntity<>("", HttpStatus.OK);
 
         if(position.equals("Maker")) {
             MakerPost makerPost = makerPostRepository.findById(postId).orElseGet(MakerPost::new);
             s3Service.delete(makerPost.getImageUrl().getImageUrl());
             makerPostTagRepository.deleteByMakerPostId(makerPost);
+            makerLikeRepository.deleteByMakerPostId(makerPost.getId());
             makerPostRepository.delete(makerPost);
             result = new ResponseEntity<>(Message.success("Maker 게시글이 삭제되었습니다"), HttpStatus.OK);
         }
@@ -318,6 +317,7 @@ public class PostService{
             SingerPost singerPost = singerPostRepository.findById(postId).orElseGet(SingerPost::new);
             s3Service.delete(singerPost.getImageUrl().getImageUrl());
             singerPostTagRepository.deleteBySingerPostId(singerPost);
+            singerLikeRepository.deleteBySingerPostId(singerPost.getId());
             singerPostRepository.delete(singerPost);
             result = new ResponseEntity<>(Message.success("Singer 게시글이 삭제되었습니다."),HttpStatus.OK);
         }

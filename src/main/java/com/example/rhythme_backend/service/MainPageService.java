@@ -55,7 +55,6 @@ public class MainPageService {
         List<BestSongResponseDto> bestSongResponseDtoList = new ArrayList<>();
         List<MakerPost> makerPostList = makerPostRepository.findTopByOrderByLikesDesc();
         List<SingerPost> singerPostList = singerPostRepository.findTopByOrderByLikesDesc();
-
         if (makerPostList.size() == 0 && singerPostList.size() == 0) {
             return new ResponseEntity<>(Message.fail("POST_NOT_FOUND","해당되는 게시글이 없습니다."),HttpStatus.NOT_FOUND);
         }
@@ -222,7 +221,7 @@ public class MainPageService {
         List<MyMakerResponseDto> myMakerResponseDtoList = new ArrayList<>();
         for (MakerLike makerLike : makerLikeList) {
             myMakerResponseDtoList.add(MyMakerResponseDto.builder()
-                            .makerId(makerLike.getMakerPost().getId())
+                            .postId(makerLike.getMakerPost().getId())
                             .build());
         }
         return new ResponseEntity<>(Message.success(myMakerResponseDtoList),HttpStatus.OK);
@@ -235,7 +234,7 @@ public class MainPageService {
         List<MySingerResponseDto> mySingerResponseDtoList = new ArrayList<>();
         for (SingerLike singerLike : singerLikeList) {
             mySingerResponseDtoList.add(MySingerResponseDto.builder()
-                            .singerId(singerLike.getSingerPost().getId())
+                            .postId(singerLike.getSingerPost().getId())
                             .build());
         }
         return new ResponseEntity<>(Message.success(mySingerResponseDtoList),HttpStatus.OK);

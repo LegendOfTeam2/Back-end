@@ -26,7 +26,7 @@ public class MakerLike {
     private Member memberId;
 
     // 게시글
-    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "makerpost_id")
     @JsonIgnore
     private MakerPost makerPost;
