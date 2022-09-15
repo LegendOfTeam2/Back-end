@@ -16,7 +16,7 @@ import com.example.rhythme_backend.repository.RefreshTokenRepository;
 import com.example.rhythme_backend.service.googleLogin.Constant;
 import com.example.rhythme_backend.service.googleLogin.GoogleOauth;
 import com.example.rhythme_backend.service.kakaoLogin.KakaoOauth;
-import com.example.rhythme_backend.util.Message;
+import com.example.rhythme_backend.domain.Message;
 import com.example.rhythme_backend.util.RefreshToken;
 import com.example.rhythme_backend.util.Validation;
 import com.fasterxml.jackson.core.JsonProcessingException;

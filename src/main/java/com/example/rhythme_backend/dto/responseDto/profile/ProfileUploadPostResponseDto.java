@@ -1,12 +1,17 @@
 package com.example.rhythme_backend.dto.responseDto.profile;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Builder
+@RequiredArgsConstructor
+@AllArgsConstructor
 public class ProfileUploadPostResponseDto{
     private Long postId;
     private String position;

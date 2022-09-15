@@ -2,6 +2,7 @@ package com.example.rhythme_backend.service;
 
 import com.example.rhythme_backend.domain.HashTag;
 import com.example.rhythme_backend.domain.Member;
+import com.example.rhythme_backend.domain.Message;
 import com.example.rhythme_backend.domain.like.MakerLike;
 import com.example.rhythme_backend.domain.like.SingerLike;
 import com.example.rhythme_backend.domain.media.ImageUrl;
@@ -9,7 +10,6 @@ import com.example.rhythme_backend.domain.post.MakerPost;
 import com.example.rhythme_backend.domain.post.SingerPost;
 import com.example.rhythme_backend.dto.requestDto.post.PostCreateRequestDto;
 import com.example.rhythme_backend.dto.requestDto.profile.ModifyProfileRequestDto;
-import com.example.rhythme_backend.dto.responseDto.profile.ModifyProfileResponseDto;
 import com.example.rhythme_backend.dto.responseDto.profile.ProfileResponseDto;
 import com.example.rhythme_backend.dto.responseDto.profile.ProfileUploadPostResponseDto;
 import com.example.rhythme_backend.repository.FollowRepository;
@@ -20,7 +20,7 @@ import com.example.rhythme_backend.repository.like.SingerLikeRepository;
 import com.example.rhythme_backend.repository.media.ImageUrlRepository;
 import com.example.rhythme_backend.repository.posts.MakerPostRepository;
 import com.example.rhythme_backend.repository.posts.SingerPostRepository;
-import com.example.rhythme_backend.util.Message;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -80,7 +80,6 @@ public class ProfileService {
         Member member = memberRepository.findByNickname(nickname).orElseThrow(
             () -> new IllegalArgumentException("닉네임이 일치하지 않습니다"));
         member.update(requestDto);
-            memberRepository.save(member);
         hashTagRepository.deleteByMember(member);
         for(String a : requestDto.getHashtag()){
             HashTag hashTag = HashTag.builder()
@@ -116,8 +115,6 @@ public class ProfileService {
                     .createdAt(a.getCreatedAt())
                     .modifiedAt(a.getModifiedAt())
                     .build());
-            return answer;
-
         }
         for (SingerPost a : singerPostList) {
             answer.add(ProfileUploadPostResponseDto.builder()
@@ -132,7 +129,6 @@ public class ProfileService {
                     .createdAt(a.getCreatedAt())
                     .modifiedAt(a.getModifiedAt())
                     .build());
-            return answer;
         }
         return answer;
     }
@@ -156,8 +152,6 @@ public class ProfileService {
                     .createdAt(exportFromA.getCreatedAt())
                     .modifiedAt(exportFromA.getModifiedAt())
                     .build());
-            return answer;
-
         }
         for (SingerLike a : singerLikeList) {
             SingerPost exportFromA = a.getSingerPost();
@@ -173,7 +167,6 @@ public class ProfileService {
                     .createdAt(exportFromA.getCreatedAt())
                     .modifiedAt(exportFromA.getModifiedAt())
                     .build());
-            return answer;
         }
 
         return answer;
