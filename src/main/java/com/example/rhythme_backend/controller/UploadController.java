@@ -1,7 +1,7 @@
 package com.example.rhythme_backend.controller;
 
 import com.example.rhythme_backend.service.S3Service;
-import com.example.rhythme_backend.util.Message;
+import com.example.rhythme_backend.domain.Message;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
