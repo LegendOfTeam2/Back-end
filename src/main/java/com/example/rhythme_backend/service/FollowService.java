@@ -70,6 +70,7 @@ public class FollowService {
 //        for(Follow follow : followList) {
 //            followedResponseDtoList.add(new FollowedResponseDto(follw))
 //        }
+    
 //    }
 
     public Member isPresentMemberFollow(String  nickname) {
