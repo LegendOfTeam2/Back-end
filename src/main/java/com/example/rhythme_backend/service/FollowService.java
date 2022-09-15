@@ -28,7 +28,7 @@ public class FollowService {
 
     @Transactional
     public ResponseDto<?> upDownFollow(String nickname, HttpServletRequest request) {
-        Member follower = validation.validateMember(request);
+        Member follower = validation.validateMemberToAccess(request);
         validation.checkAccessToken(request, follower);
         Member following = isPresentMemberFollow(nickname);
         Optional<Follow> findFollowing = followRepository.findByFollowerAndFollowing(follower, following);
