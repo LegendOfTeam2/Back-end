@@ -334,7 +334,7 @@ public class MemberService {
 
     public ResponseEntity<?> refreshToken(HttpServletRequest request, HttpServletResponse response) {
         tokenProvider.validateToken(request.getHeader("Refresh-Token"));
-        Member requestingMember = validation.validateMember(request);
+        Member requestingMember = validation.validateMemberToRefresh(request);
         long accessTokenExpire = Long.parseLong(request.getHeader("Access-Token-Expire-Time"));
         long now = (new Date().getTime());
 

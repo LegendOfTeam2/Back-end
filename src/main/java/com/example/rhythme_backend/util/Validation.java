@@ -34,7 +34,7 @@ public class Validation {
     }
 
     @Transactional
-    public Member validateMember(HttpServletRequest request) {
+    public Member validateMemberToRefresh(HttpServletRequest request) {
         if (!tokenProvider.validateToken(request.getHeader("Refresh-Token"))) {
             return null;
         }

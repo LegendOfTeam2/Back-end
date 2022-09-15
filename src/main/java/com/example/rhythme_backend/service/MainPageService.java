@@ -247,6 +247,7 @@ public class MainPageService {
         List<MyArtistResponseDto> myArtistResponseDtoList = new ArrayList<>();
         for (Follow follow : followList) {
             myArtistResponseDtoList.add(MyArtistResponseDto.builder()
+                            .nickname(follow.getFollowing().getNickname())
                             .followingId(follow.getFollowing().getId())
                             .build());
         }

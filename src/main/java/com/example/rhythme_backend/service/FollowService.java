@@ -37,6 +37,8 @@ public class FollowService {
             FollowRequestDto followRequestDto = new FollowRequestDto(follower, following);
             Follow follow = new Follow(followRequestDto);
             followRepository.save(follow);
+            System.out.println("follow"+follow);
+            System.out.println("following"+following);
             Long followers = followRepository.countAllByFollowingId(following.getId());
             following.updateFollowers(followers);
             memberRepository.save(following);
