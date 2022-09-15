@@ -59,7 +59,6 @@ public class ProfileService {
         Long makerPostCnt = makerPostRepository.countByMember(member);
         Long singerPostCnt = singerPostRepository.countByMember(member);
         Long allPostCnt = makerPostCnt + singerPostCnt;
-        System.out.println(allPostCnt);
         List<HashTag> HashTagList = hashTagRepository.findAllByMember(member);
         List<String> stringList = new ArrayList<>();
         for(HashTag a : HashTagList){
@@ -69,6 +68,7 @@ public class ProfileService {
         return ProfileResponseDto.builder()
                 .hashtag(stringList)
                 .nickname(nickname)
+                .introduce(member.getIntroduce())
                 .imageUrl(member.getImageUrl())
                 .makerPostCnt(makerPostCnt)
                 .singerPostCnt(singerPostCnt)

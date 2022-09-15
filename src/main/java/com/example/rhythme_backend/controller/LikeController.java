@@ -24,7 +24,7 @@ public class LikeController {
         if(position.equals("Maker")){
             return likeService.upDownMakerLike(postId,request);
         }
-        return ResponseDto.success("잘못된 접근입니다");
+        return ResponseDto.success(true);
         }
 
     @PostMapping("/auth/makerpost/{postId}/like")
