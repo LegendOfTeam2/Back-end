@@ -42,12 +42,12 @@ public class MakerPost extends Timestamped {
     private String lyrics;
 
     @JoinColumn(name = "image_url")
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER,cascade = CascadeType.REMOVE)
     private ImageUrl imageUrl;
 
 
     @JoinColumn(name = "media_url")
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER,cascade = CascadeType.REMOVE)
     private MediaUrl mediaUrl;
 
     @Column(nullable = false)

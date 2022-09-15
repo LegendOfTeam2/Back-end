@@ -20,10 +20,11 @@ import com.example.rhythme_backend.repository.like.SingerLikeRepository;
 import com.example.rhythme_backend.repository.posts.MakerPostRepository;
 import com.example.rhythme_backend.repository.posts.MakerPostTagRepository;
 import com.example.rhythme_backend.repository.posts.SingerPostRepository;
+
 import com.example.rhythme_backend.repository.posts.SingerPostTagRepository;
-import com.example.rhythme_backend.util.Message;
+
 import com.example.rhythme_backend.util.Validation;
-import io.jsonwebtoken.Jwts;
+import com.example.rhythme_backend.domain.Message;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -271,7 +272,6 @@ public class MainPageService {
         MakerPost makerPost = makerPostRepository.findById(postId).orElseGet(MakerPost::new);
         SingerPost singerPost = singerPostRepository.findById(postId).orElseGet(SingerPost::new);
         List<String> tagResponseList = new ArrayList<>();
-
         if(position.equals("Maker")) {
             List<MakerPostTag> makerTagList = makerPostTagRepository.findAllByMakerPostId(makerPost);
             for (MakerPostTag tag: makerTagList) {

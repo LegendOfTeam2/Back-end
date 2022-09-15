@@ -1,4 +1,4 @@
-package com.example.rhythme_backend.util;
+package com.example.rhythme_backend.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

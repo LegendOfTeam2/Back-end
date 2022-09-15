@@ -4,7 +4,7 @@ import com.example.rhythme_backend.dto.TokenDto;
 import com.example.rhythme_backend.dto.requestDto.member.*;
 import com.example.rhythme_backend.service.googleLogin.Constant;
 import com.example.rhythme_backend.service.MemberService;
-import com.example.rhythme_backend.util.Message;
+import com.example.rhythme_backend.domain.Message;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +24,6 @@ public class MemberController {
 
     @PostMapping("/member/signup")
     public ResponseEntity<?> signupMember(@RequestBody SignupRequestDto requestDto) {
-        log.info("컨트롤러"+requestDto.getEmail());
         return memberService.signupMember(requestDto);
     }
 
