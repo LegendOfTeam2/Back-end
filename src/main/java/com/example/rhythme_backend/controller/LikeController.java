@@ -3,9 +3,9 @@ package com.example.rhythme_backend.controller;
 import com.example.rhythme_backend.service.LikeService;
 import com.example.rhythme_backend.util.ResponseDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,9 +15,9 @@ import javax.servlet.http.HttpServletRequest;
 public class LikeController {
     private final LikeService likeService;
 
-    @PostMapping("/auth/post/{postId}/like")
+    @GetMapping("/auth/post/{postId}/like/{position}")
     public ResponseDto<?> SingerLike(@PathVariable Long postId, HttpServletRequest request,
-                                    @RequestParam String position){
+                                    @PathVariable String position){
         if(position.equals("Singer")){
             return likeService.upDownSingerLike(postId,request);
         }
