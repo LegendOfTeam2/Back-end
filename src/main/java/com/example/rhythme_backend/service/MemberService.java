@@ -224,7 +224,7 @@ public class MemberService {
         String accessToken = kakaoOauth.getAccessToken(code);
         // 2. 토큰으로 카카오 API 호출
         KakaoUserInfoDto kakaoUserInfo = kakaoOauth.getKakaoUserInfo(accessToken);
-        // DB 에 중복된 Kakao Id 가 있는지 확인
+        // DB 에 중복된 KakaoId 가 있는지 확인
         Long kakaoId = kakaoUserInfo.getKakaoid();
         Member kakaoUser = memberRepository.findByKakaoId(kakaoId)
                 .orElse(null);
