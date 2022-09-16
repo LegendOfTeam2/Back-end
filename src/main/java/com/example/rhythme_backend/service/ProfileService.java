@@ -64,7 +64,6 @@ public class ProfileService {
         for(HashTag a : HashTagList){
             stringList.add(a.getHashtag());
         }
-
         return ProfileResponseDto.builder()
                 .hashtag(stringList)
                 .nickname(nickname)
