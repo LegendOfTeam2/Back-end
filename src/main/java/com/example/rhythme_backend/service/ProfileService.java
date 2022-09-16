@@ -76,7 +76,6 @@ public class ProfileService {
                 .follower(follower)
                 .following(following)
                 .build();
-
     }
 
 @Transactional
