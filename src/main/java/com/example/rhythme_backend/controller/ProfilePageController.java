@@ -44,4 +44,5 @@ public class ProfilePageController {
     public ResponseEntity<?> profileChange(@PathVariable String nickname,@RequestBody ModifyProfileRequestDto requestDto){
         return profileService.profileModify(nickname,requestDto);
     }
+
 }
