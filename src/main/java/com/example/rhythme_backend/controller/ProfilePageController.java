@@ -30,15 +30,14 @@ public class ProfilePageController {
     public ResponseEntity<?> profileGetMyUpload(@PathVariable String nickname,
                                                 @PageableDefault(size = 3 , sort ="id", direction = Sort.Direction.DESC)
                                                 Pageable pageable) {
-        return new ResponseEntity<>(Message.success(profileService.profileGetMyUpload(nickname,pageable)),HttpStatus.OK
-        );
+        return profileService.profileGetMyUpload(nickname, pageable);
     }
 
     @GetMapping("/post/like/{nickname}")
     public ResponseEntity<?> profileGetMyLike(@PathVariable String nickname,
                                               @PageableDefault(size = 3 , sort ="id", direction = Sort.Direction.DESC)
                                               Pageable pageable) {
-        return new ResponseEntity<>(Message.success(profileService.profileGetMyLike(nickname,pageable)),HttpStatus.OK);
+        return profileService.profileGetMyLike(nickname,pageable);
     }
 
     @PutMapping("/profile/{nickname}")

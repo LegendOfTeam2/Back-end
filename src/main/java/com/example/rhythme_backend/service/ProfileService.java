@@ -29,7 +29,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -99,10 +100,10 @@ public class ProfileService {
             HttpStatus.OK);
 }
 
-    public List<ProfileUploadPostResponseDto> profileGetMyUpload(String nickname, Pageable pageable) {
+    public ResponseEntity<?> profileGetMyUpload(String nickname, Pageable pageable) {
         Member member = memberRepository.findByNickname(nickname).orElseGet(Member::new);
-        Page<MakerPost> makerPostList = makerPostRepository.findAllByMember(member,pageable);
-        Page<SingerPost> singerPostList = singerPostRepository.findAllByMember(member,pageable);
+        Page<MakerPost> makerPostList = makerPostRepository.findAllByMember(member, pageable);
+        Page<SingerPost> singerPostList = singerPostRepository.findAllByMember(member, pageable);
         List<ProfileUploadPostResponseDto> answer = new ArrayList<>();
         for (MakerPost a : makerPostList) {
             answer.add(ProfileUploadPostResponseDto.builder()
@@ -132,10 +133,10 @@ public class ProfileService {
                     .modifiedAt(a.getModifiedAt())
                     .build());
         }
-        return answer;
+        return new ResponseEntity<>(Message.success(answer),HttpStatus.OK);
     }
 
-    public List<ProfileUploadPostResponseDto> profileGetMyLike(String nickname,Pageable pageable){
+    public ResponseEntity<?> profileGetMyLike(String nickname,Pageable pageable){
         List<ProfileUploadPostResponseDto> answer = new ArrayList<>();
         Member member = memberRepository.findByNickname(nickname).orElseGet(Member::new);
         Page<MakerLike> makerLikeList = makerLikeRepository.findByMemberId(member,pageable);
@@ -171,7 +172,7 @@ public class ProfileService {
                     .build());
         }
 
-        return answer;
+        return new ResponseEntity<>(Message.success(answer),HttpStatus.OK);
     }
     public ImageUrl imageUrlSave(PostCreateRequestDto postCreateRequestDto){
         ImageUrl imageUrl =  ImageUrl.builder()
