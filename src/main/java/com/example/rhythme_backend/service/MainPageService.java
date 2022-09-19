@@ -2,6 +2,7 @@ package com.example.rhythme_backend.service;
 
 import com.example.rhythme_backend.domain.Follow;
 import com.example.rhythme_backend.domain.Member;
+import com.example.rhythme_backend.domain.Message;
 import com.example.rhythme_backend.domain.like.MakerLike;
 import com.example.rhythme_backend.domain.like.SingerLike;
 import com.example.rhythme_backend.domain.post.*;
@@ -16,15 +17,12 @@ import com.example.rhythme_backend.repository.MemberRepository;
 import com.example.rhythme_backend.repository.like.MakerLikeRepository;
 import com.example.rhythme_backend.repository.like.SingerLikeRepository;
 import com.example.rhythme_backend.repository.posts.*;
-
 import com.example.rhythme_backend.util.Validation;
-import com.example.rhythme_backend.domain.Message;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -388,9 +386,9 @@ public class MainPageService {
            return new ResponseEntity<>(Message.fail("MEMBER_NOT_FOUND","허가되지 않은 접근입니다."),HttpStatus.BAD_REQUEST);
         }
         if (position.equals("Maker")) {
-            makerPlayListRepository.deleteByMakerPost(makerPost);
+            makerPlayListRepository.deleteAllByMakerPost(makerPost);
         } else if (position.equals("Singer")) {
-            singerPlayListRepository.deleteBySingerPost(singerPost);
+            singerPlayListRepository.deleteAllBySingerPost(singerPost);
         }
         return new ResponseEntity<>(Message.success("플레이리스트에서 삭제되었습니다."),HttpStatus.OK);
     }
