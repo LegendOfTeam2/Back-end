@@ -4,24 +4,18 @@ import com.example.rhythme_backend.domain.Follow;
 import com.example.rhythme_backend.domain.Member;
 import com.example.rhythme_backend.domain.like.MakerLike;
 import com.example.rhythme_backend.domain.like.SingerLike;
-import com.example.rhythme_backend.domain.post.MakerPost;
-import com.example.rhythme_backend.domain.post.MakerPostTag;
-import com.example.rhythme_backend.domain.post.SingerPost;
-import com.example.rhythme_backend.domain.post.SingerPostTag;
+import com.example.rhythme_backend.domain.post.*;
 import com.example.rhythme_backend.dto.requestDto.MyImageRequestDto;
 import com.example.rhythme_backend.dto.responseDto.DetailResponseDto;
 import com.example.rhythme_backend.dto.responseDto.MyImageResponseDto;
+import com.example.rhythme_backend.dto.responseDto.PlayListResponseDto;
 import com.example.rhythme_backend.dto.responseDto.mainpage.*;
 import com.example.rhythme_backend.jwt.TokenProvider;
 import com.example.rhythme_backend.repository.FollowRepository;
 import com.example.rhythme_backend.repository.MemberRepository;
 import com.example.rhythme_backend.repository.like.MakerLikeRepository;
 import com.example.rhythme_backend.repository.like.SingerLikeRepository;
-import com.example.rhythme_backend.repository.posts.MakerPostRepository;
-import com.example.rhythme_backend.repository.posts.MakerPostTagRepository;
-import com.example.rhythme_backend.repository.posts.SingerPostRepository;
-
-import com.example.rhythme_backend.repository.posts.SingerPostTagRepository;
+import com.example.rhythme_backend.repository.posts.*;
 
 import com.example.rhythme_backend.util.Validation;
 import com.example.rhythme_backend.domain.Message;
@@ -30,6 +24,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -47,6 +42,8 @@ public class MainPageService {
     private final SingerLikeRepository singerLikeRepository;
     private final MakerPostTagRepository makerPostTagRepository;
     private final SingerPostTagRepository singerPostTagRepository;
+    private final MakerPlayListRepository makerPlayListRepository;
+    private final SingerPlayListRepository singerPlayListRepository;
     private final Validation validation;
     private final TokenProvider tokenProvider;
 
@@ -71,6 +68,7 @@ public class MainPageService {
                                 .mediaUrl(singerPost.getMediaUrl())
                                 .nickname(singerPost.getMember().getNickname())
                                 .content(singerPost.getContent())
+                                .profileImage(singerPost.getMember().getImageUrl())
                                 .build());
             }
             return new ResponseEntity<>(Message.success(bestSongResponseDtoList), HttpStatus.OK);
@@ -88,6 +86,7 @@ public class MainPageService {
                                 .mediaUrl(makerPost.getMediaUrl())
                                 .nickname(makerPost.getMember().getNickname())
                                 .content(makerPost.getContent())
+                                .profileImage(makerPost.getMember().getImageUrl())
                                 .build());
             }
             return new ResponseEntity<>(Message.success(bestSongResponseDtoList), HttpStatus.OK);
@@ -104,6 +103,7 @@ public class MainPageService {
                                 .likes(makerPost.getLikes())
                                 .mediaUrl(makerPost.getMediaUrl())
                                 .nickname(makerPost.getMember().getNickname())
+                                .profileImage(makerPost.getMember().getImageUrl())
                                 .content(makerPost.getContent())
                                 .build());
             }
@@ -111,16 +111,17 @@ public class MainPageService {
         }
         for (SingerPost singerPost : singerPostList) {
             bestSongResponseDtoList.add(BestSongResponseDto.builder()
-                            .postId(singerPost.getId())
-                            .position("Singer")
-                            .collaborate(singerPost.getCollaborate())
-                            .imageUrl(singerPost.getImageUrl())
-                            .title(singerPost.getTitle())
-                            .likes(singerPost.getLikes())
-                            .mediaUrl(singerPost.getMediaUrl())
-                            .nickname(singerPost.getMember().getNickname())
-                            .content(singerPost.getContent())
-                            .build());
+                                .postId(singerPost.getId())
+                                .position("Singer")
+                                .collaborate(singerPost.getCollaborate())
+                                .imageUrl(singerPost.getImageUrl())
+                                .title(singerPost.getTitle())
+                                .likes(singerPost.getLikes())
+                                .mediaUrl(singerPost.getMediaUrl())
+                                .nickname(singerPost.getMember().getNickname())
+                                .profileImage(singerPost.getMember().getImageUrl())
+                                .content(singerPost.getContent())
+                                .build());
         }
             return new ResponseEntity<>(Message.success(bestSongResponseDtoList), HttpStatus.OK);
     }
@@ -323,8 +324,75 @@ public class MainPageService {
         return new ResponseEntity<>(Message.fail("POSITION_NOT_FOUND","리드미에서 지원하지 않는 포지션입니다."),HttpStatus.OK);
     }
 
-//    public ResponseEntity<?> postPlaylist(Long postId,HttpServletRequest request) {
-//
-//    }
+    public ResponseEntity<?> savePlaylist(Long postId, HttpServletRequest request, String position) {
+        Member member = validation.validateMemberToAccess(request);
+        MakerPost makerPost = makerPostRepository.findById(postId).orElseGet(MakerPost::new);
+        SingerPost singerPost = singerPostRepository.findById(postId).orElseGet(SingerPost::new);
+
+        if (position.equals("Maker")) {
+            MakerPlayList makerPlayList = MakerPlayList.builder()
+                    .member(member)
+                    .makerPost(makerPost)
+                    .build();
+            makerPlayListRepository.save(makerPlayList);
+
+        } else if (position.equals("Singer")) {
+            SingerPlayList singerPlayList = SingerPlayList.builder()
+                    .member(member)
+                    .singerPost(singerPost)
+                    .build();
+            singerPlayListRepository.save(singerPlayList);
+        }
+        return new ResponseEntity<>(Message.success("플레이리스트에 저장되었습니다."),HttpStatus.OK);
+
+    }
+
+    public ResponseEntity<?> getPlayList(HttpServletRequest request) {
+        Member member = validation.validateMemberToAccess(request);
+        List<PlayListResponseDto> playListResponseDtoList = new ArrayList<>();
+        List<MakerPlayList> makerPlayLists = makerPlayListRepository.findByMember(member);
+        List<SingerPlayList> singerPlayLists = singerPlayListRepository.findByMember(member);
+        for (MakerPlayList makerPlayList : makerPlayLists) {
+            playListResponseDtoList.add(PlayListResponseDto.builder()
+                            .postId(makerPlayList.getMakerPost().getId())
+                            .title(makerPlayList.getMakerPost().getTitle())
+                            .mediaUrl(makerPlayList.getMakerPost().getMediaUrl().getMediaUrl())
+                            .imageUrl(makerPlayList.getMakerPost().getImageUrl().getImageUrl())
+                            .collaborate(makerPlayList.getMakerPost().getCollaborate())
+                            .lyrics(makerPlayList.getMakerPost().getLyrics())
+                            .nickname(member.getNickname())
+                            .follower(member.getFollowers())
+                            .build());
+        }
+        for (SingerPlayList singerPlayList : singerPlayLists) {
+            playListResponseDtoList.add(PlayListResponseDto.builder()
+                            .postId(singerPlayList.getSingerPost().getId())
+                            .title(singerPlayList.getSingerPost().getTitle())
+                            .mediaUrl(singerPlayList.getSingerPost().getMediaUrl().getMediaUrl())
+                            .imageUrl(singerPlayList.getSingerPost().getImageUrl().getImageUrl())
+                            .collaborate(singerPlayList.getSingerPost().getCollaborate())
+                            .lyrics(singerPlayList.getSingerPost().getLyrics())
+                            .nickname(member.getNickname())
+                            .follower(member.getFollowers())
+                            .build());
+        }
+        return new ResponseEntity<>(Message.success(playListResponseDtoList),HttpStatus.OK);
+    }
+
+    @Transactional
+    public ResponseEntity<?> deletePlayList(Long postId, HttpServletRequest request, String position) {
+        Member member = validation.validateMemberToAccess(request);
+        MakerPost makerPost = makerPostRepository.findById(postId).orElseGet(MakerPost::new);
+        SingerPost singerPost = singerPostRepository.findById(postId).orElseGet(SingerPost::new);
+        if (!memberRepository.existsByNickname(member.getNickname())) {
+           return new ResponseEntity<>(Message.fail("MEMBER_NOT_FOUND","허가되지 않은 접근입니다."),HttpStatus.BAD_REQUEST);
+        }
+        if (position.equals("Maker")) {
+            makerPlayListRepository.deleteByMakerPost(makerPost);
+        } else if (position.equals("Singer")) {
+            singerPlayListRepository.deleteBySingerPost(singerPost);
+        }
+        return new ResponseEntity<>(Message.success("플레이리스트에서 삭제되었습니다."),HttpStatus.OK);
+    }
 
 }

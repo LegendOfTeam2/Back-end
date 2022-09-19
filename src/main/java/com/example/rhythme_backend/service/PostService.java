@@ -20,10 +20,7 @@ import com.example.rhythme_backend.repository.media.ImageUrlRepository;
 import com.example.rhythme_backend.repository.media.MediaUrlRepository;
 import com.example.rhythme_backend.domain.Message;
 
-import com.example.rhythme_backend.repository.posts.MakerPostRepository;
-import com.example.rhythme_backend.repository.posts.MakerPostTagRepository;
-import com.example.rhythme_backend.repository.posts.SingerPostRepository;
-import com.example.rhythme_backend.repository.posts.SingerPostTagRepository;
+import com.example.rhythme_backend.repository.posts.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -49,6 +46,8 @@ public class PostService{
     private final MakerPostTagRepository makerPostTagRepository;
     private final SingerPostTagRepository singerPostTagRepository;
     private final MakerLikeRepository makerLikeRepository;
+    private final MakerPlayListRepository makerPlayListRepository;
+    private final SingerPlayListRepository singerPlayListRepository;
     //AWS S3
     private final S3Service s3Service;
     private final SingerLikeRepository singerLikeRepository;
@@ -183,7 +182,6 @@ public class PostService{
 
 
             result = new ResponseEntity<>(Message.success(responseDto),HttpStatus.OK);
-
             return result;
 
         }else if(postCreateRequestDto.getPosition().equals("Singer")){
@@ -308,6 +306,7 @@ public class PostService{
             s3Service.delete(makerPost.getImageUrl().getImageUrl());
             makerPostTagRepository.deleteByMakerPostId(makerPost);
             makerLikeRepository.deleteByMakerPostId(makerPost.getId());
+            makerPlayListRepository.deleteByMakerPost(makerPost);
             makerPostRepository.delete(makerPost);
             result = new ResponseEntity<>(Message.success("Maker 게시글이 삭제되었습니다"), HttpStatus.OK);
         }
@@ -316,6 +315,7 @@ public class PostService{
             s3Service.delete(singerPost.getImageUrl().getImageUrl());
             singerPostTagRepository.deleteBySingerPostId(singerPost);
             singerLikeRepository.deleteBySingerPostId(singerPost.getId());
+            singerPlayListRepository.deleteBySingerPost(singerPost);
             singerPostRepository.delete(singerPost);
             result = new ResponseEntity<>(Message.success("Singer 게시글이 삭제되었습니다."),HttpStatus.OK);
         }
