@@ -20,7 +20,6 @@ import com.example.rhythme_backend.repository.like.SingerLikeRepository;
 import com.example.rhythme_backend.repository.media.ImageUrlRepository;
 import com.example.rhythme_backend.repository.posts.MakerPostRepository;
 import com.example.rhythme_backend.repository.posts.SingerPostRepository;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -30,8 +29,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -137,11 +135,11 @@ public class ProfileService {
         return answer;
     }
 
-    public List<ProfileUploadPostResponseDto> profileGetMyLike(String nickname){
+    public List<ProfileUploadPostResponseDto> profileGetMyLike(String nickname,Pageable pageable){
         List<ProfileUploadPostResponseDto> answer = new ArrayList<>();
         Member member = memberRepository.findByNickname(nickname).orElseGet(Member::new);
-        List<MakerLike> makerLikeList = makerLikeRepository.findByMemberId(member);
-        List<SingerLike> singerLikeList = singerLikeRepository.findByMemberId(member);
+        Page<MakerLike> makerLikeList = makerLikeRepository.findByMemberId(member,pageable);
+        Page<SingerLike> singerLikeList = singerLikeRepository.findByMemberId(member,pageable);
         for (MakerLike a : makerLikeList) {
             MakerPost exportFromA = a.getMakerPost();
             answer.add(ProfileUploadPostResponseDto.builder()
