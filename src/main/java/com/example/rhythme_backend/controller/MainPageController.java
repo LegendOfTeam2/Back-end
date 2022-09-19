@@ -64,9 +64,24 @@ public class MainPageController {
         return mainPageService.getMyImage(request,requestDto);
     }
 
-    @GetMapping("api/post/{postId}")
+    @GetMapping("/api/post/{postId}")
     public ResponseEntity<?> detailPage(@PathVariable Long postId, @RequestParam String position) {
         return mainPageService.getDetailPage(postId,position);
+    }
+
+    @PostMapping("/auth/playlist/{postId}")
+    public ResponseEntity<?> postPlaylist(@PathVariable Long postId, HttpServletRequest request, @RequestParam String position) {
+        return mainPageService.savePlaylist(postId,request,position);
+    }
+
+    @GetMapping("/auth/playlist")
+    public ResponseEntity<?> getPlayList(HttpServletRequest request) {
+        return mainPageService.getPlayList(request);
+    }
+
+    @DeleteMapping("/auth/playlist/{postId}")
+    public ResponseEntity<?> deletePlayList(@PathVariable Long postId, HttpServletRequest request, @RequestParam String position) {
+        return mainPageService.deletePlayList(postId,request,position);
     }
 
 }
