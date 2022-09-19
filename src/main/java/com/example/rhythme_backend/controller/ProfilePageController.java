@@ -29,7 +29,7 @@ public class ProfilePageController {
     @GetMapping("/post/upload/{nickname}")
     public ResponseEntity<?> profileGetMyUpload(@PathVariable String nickname
                                                 ,
-                                                @PageableDefault(size = 6 , sort ="id", direction = Sort.Direction.DESC)
+                                                @PageableDefault(size = 3 , sort ="id", direction = Sort.Direction.DESC)
                                                     Pageable pageable
                                                 )
     {
