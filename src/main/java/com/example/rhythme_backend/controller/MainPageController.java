@@ -2,6 +2,7 @@ package com.example.rhythme_backend.controller;
 
 import com.example.rhythme_backend.dto.requestDto.MyImageRequestDto;
 import com.example.rhythme_backend.service.MainPageService;
+import com.example.rhythme_backend.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 public class MainPageController {
 
     private final MainPageService mainPageService;
+    private final PostService postService;
 
     @GetMapping("/api/bestsong")
     public ResponseEntity<?> getBestSong() {
@@ -68,5 +70,9 @@ public class MainPageController {
     public ResponseEntity<?> detailPage(@PathVariable Long postId, @RequestParam String position) {
         return mainPageService.getDetailPage(postId,position);
     }
-
+    @GetMapping("/allpost/search")
+    public ResponseEntity<?> searchAllPost(@RequestParam(required = false, defaultValue = "") String searchText,
+                                           @RequestParam String category) {
+        return postService.AllPostSearch(searchText,category);
+    }
 }
