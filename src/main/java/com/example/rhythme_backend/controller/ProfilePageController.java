@@ -27,19 +27,18 @@ public class ProfilePageController {
     }
 
     @GetMapping("/post/upload/{nickname}")
-    public ResponseEntity<?> profileGetMyUpload(@PathVariable String nickname
-                                                ,
+
+    public ResponseEntity<?> profileGetMyUpload(@PathVariable String nickname,
                                                 @PageableDefault(size = 3 , sort ="id", direction = Sort.Direction.DESC)
-                                                    Pageable pageable
-                                                )
-    {
-        return new ResponseEntity<>(Message.success(profileService.profileGetMyUpload(nickname,pageable)),HttpStatus.OK
-        );
+                                                Pageable pageable) {
+        return profileService.profileGetMyUpload(nickname, pageable);
     }
 
     @GetMapping("/post/like/{nickname}")
-    public ResponseEntity<?> profileGetMyLike(@PathVariable String nickname){
-        return new ResponseEntity<>(Message.success(profileService.profileGetMyLike(nickname)),HttpStatus.OK);
+    public ResponseEntity<?> profileGetMyLike(@PathVariable String nickname,
+                                              @PageableDefault(size = 3 , sort ="id", direction = Sort.Direction.DESC)
+                                              Pageable pageable) {
+        return profileService.profileGetMyLike(nickname,pageable);
     }
 
     @PutMapping("/profile/{nickname}")
