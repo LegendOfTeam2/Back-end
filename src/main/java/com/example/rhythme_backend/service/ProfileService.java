@@ -23,6 +23,8 @@ import com.example.rhythme_backend.repository.posts.SingerPostRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -99,10 +101,10 @@ public class ProfileService {
             HttpStatus.OK);
 }
 
-    public List<ProfileUploadPostResponseDto> profileGetMyUpload(String nickname) {
+    public List<ProfileUploadPostResponseDto> profileGetMyUpload(String nickname, Pageable pageable) {
         Member member = memberRepository.findByNickname(nickname).orElseGet(Member::new);
-        List<MakerPost> makerPostList = makerPostRepository.findAllByMember(member);
-        List<SingerPost> singerPostList = singerPostRepository.findAllByMember(member);
+        Page<MakerPost> makerPostList = makerPostRepository.findAllByMember(member,pageable);
+        Page<SingerPost> singerPostList = singerPostRepository.findAllByMember(member,pageable);
         List<ProfileUploadPostResponseDto> answer = new ArrayList<>();
         for (MakerPost a : makerPostList) {
             answer.add(ProfileUploadPostResponseDto.builder()
