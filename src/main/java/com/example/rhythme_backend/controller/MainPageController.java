@@ -69,4 +69,8 @@ public class MainPageController {
         return mainPageService.getDetailPage(postId,position);
     }
 
+    @PostMapping("auth/playlist/{postId}")
+    public ResponseEntity<?> postPlaylist(@PathVariable Long postId,HttpServletRequest request) {
+        return mainPageService.postPlaylist(postId,request);
+    }
 }

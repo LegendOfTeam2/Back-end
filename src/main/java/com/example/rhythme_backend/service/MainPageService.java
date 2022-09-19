@@ -323,4 +323,8 @@ public class MainPageService {
         return new ResponseEntity<>(Message.fail("POSITION_NOT_FOUND","리드미에서 지원하지 않는 포지션입니다."),HttpStatus.OK);
     }
 
+//    public ResponseEntity<?> postPlaylist(Long postId,HttpServletRequest request) {
+//
+//    }
+
 }
