@@ -44,6 +44,11 @@ dependencies {
 	// Spring-Cloud-AWS
 	implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.2'
 
+	// Redis
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	implementation 'org.apache.commons:commons-pool2'
+	implementation 'io.lettuce:lettuce-core'
+
 	tasks.named('test') {	//websocket
 		implementation 'org.springframework.boot:spring-boot-starter-websocket'
 		implementation 'org.webjars:sockjs-client:1.1.2'
