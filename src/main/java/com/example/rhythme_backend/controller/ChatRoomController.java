@@ -11,44 +11,44 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
 @RequiredArgsConstructor
+@RestController
 @RequestMapping("/chat")
 public class ChatRoomController {
+
     private final ChatService chatService;
+    private final ResponseService responseService;
+    private final UserServiceClient userServiceClient;
 
-    // 채팅 리스트 화면
-    @GetMapping("/room")
-    public String rooms(Model model) {
-        return "chat/room";
-    }
 
-    // 모든 채팅방 목록 반환
     @GetMapping("/rooms")
-    @ResponseBody
-    public List<ChatRoom> room() {
-        return chatService.findAllRoom();
+    public ListResult<ChatRoom> rooms() {
+        return responseService.getListResult(chatService.findAllRoom());
     }
 
-    // 채팅방 생성
+
     @PostMapping("/room")
-    @ResponseBody
-    public ChatRoom createRoom(@RequestParam String name) {
-        return chatService.createRoom(name);
+    public SingleResult<ChatRoom> createRoom(@RequestHeader("X-AUTH-TOKEN") String xAuthToken,@RequestBody UserIdDto store) {
+        UserIdDto customer = userServiceClient.getUserId(xAuthToken);
+        return responseService.getSingleResult(chatService.createChatRoom(customer,store));
     }
 
-    // 채팅방 입장 화면
-    @GetMapping("/room/enter/{roomId}")
-    public String roomDetail(Model model, @PathVariable String roomId) {
-        model.addAttribute("roomId", roomId);
-        return "chat/roomdetail";
-    }
 
-    // 특정 채팅방 조회
     @GetMapping("/room/{roomId}")
-    @ResponseBody
-    public ChatRoom roomInfo(@PathVariable String roomId) {
-        return chatService.findById(roomId);
+    public SingleResult<ChatRoom> roomInfo(@PathVariable String roomId) {
+        return responseService.getSingleResult(chatService.findRoomById(roomId));
     }
 
+
+    @GetMapping("/customer")
+    public ListResult<ChatRoom> getRoomsByCustomer(@RequestHeader("X-AUTH-TOKEN") String xAuthToken){
+        UserIdDto customer=userServiceClient.getUserId(xAuthToken);
+        return responseService.getListResult(chatService.getCustomerEnterRooms(customer));
+    }
+
+    @GetMapping("/store")
+    public ListResult<ChatRoom> getRoomsByStore(@RequestHeader("X-AUTH-TOKEN") String xAuthToken){
+        UserIdDto store=userServiceClient.getUserId(xAuthToken);
+        return responseService.getListResult(chatService.getCustomerEnterRooms(store));
+    }
 }

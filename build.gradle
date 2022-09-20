@@ -48,6 +48,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'org.apache.commons:commons-pool2'
 	implementation 'io.lettuce:lettuce-core'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
 
 	tasks.named('test') {	//websocket
 		implementation 'org.springframework.boot:spring-boot-starter-websocket'
