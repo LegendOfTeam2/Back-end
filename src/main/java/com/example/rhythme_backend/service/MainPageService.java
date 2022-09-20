@@ -322,19 +322,24 @@ public class MainPageService {
         return new ResponseEntity<>(Message.fail("POSITION_NOT_FOUND","리드미에서 지원하지 않는 포지션입니다."),HttpStatus.OK);
     }
 
+    @Transactional
     public ResponseEntity<?> savePlaylist(Long postId, HttpServletRequest request, String position) {
         Member member = validation.validateMemberToAccess(request);
         MakerPost makerPost = makerPostRepository.findById(postId).orElseGet(MakerPost::new);
         SingerPost singerPost = singerPostRepository.findById(postId).orElseGet(SingerPost::new);
-
         if (position.equals("Maker")) {
+            if (makerPlayListRepository.existsByMakerPost(makerPost)) {
+                makerPlayListRepository.deleteByMakerPost(makerPost);
+            }
             MakerPlayList makerPlayList = MakerPlayList.builder()
                     .member(member)
                     .makerPost(makerPost)
                     .build();
             makerPlayListRepository.save(makerPlayList);
-
         } else if (position.equals("Singer")) {
+            if (singerPlayListRepository.existsBySingerPost(singerPost)) {
+                singerPlayListRepository.deleteBySingerPost(singerPost);
+            }
             SingerPlayList singerPlayList = SingerPlayList.builder()
                     .member(member)
                     .singerPost(singerPost)
@@ -342,14 +347,13 @@ public class MainPageService {
             singerPlayListRepository.save(singerPlayList);
         }
         return new ResponseEntity<>(Message.success("플레이리스트에 저장되었습니다."),HttpStatus.OK);
-
     }
 
     public ResponseEntity<?> getPlayList(HttpServletRequest request) {
         Member member = validation.validateMemberToAccess(request);
         List<PlayListResponseDto> playListResponseDtoList = new ArrayList<>();
-        List<MakerPlayList> makerPlayLists = makerPlayListRepository.findByMember(member);
-        List<SingerPlayList> singerPlayLists = singerPlayListRepository.findByMember(member);
+        List<MakerPlayList> makerPlayLists = makerPlayListRepository.findByMemberOrderByCreatedAtDesc(member);
+        List<SingerPlayList> singerPlayLists = singerPlayListRepository.findByMemberOrderByCreatedAtDesc(member);
         for (MakerPlayList makerPlayList : makerPlayLists) {
             playListResponseDtoList.add(PlayListResponseDto.builder()
                             .postId(makerPlayList.getMakerPost().getId())
@@ -378,18 +382,13 @@ public class MainPageService {
     }
 
     @Transactional
-    public ResponseEntity<?> deletePlayList(Long postId, HttpServletRequest request, String position) {
+    public ResponseEntity<?> deletePlayList(HttpServletRequest request) {
         Member member = validation.validateMemberToAccess(request);
-        MakerPost makerPost = makerPostRepository.findById(postId).orElseGet(MakerPost::new);
-        SingerPost singerPost = singerPostRepository.findById(postId).orElseGet(SingerPost::new);
         if (!memberRepository.existsByNickname(member.getNickname())) {
            return new ResponseEntity<>(Message.fail("MEMBER_NOT_FOUND","허가되지 않은 접근입니다."),HttpStatus.BAD_REQUEST);
         }
-        if (position.equals("Maker")) {
-            makerPlayListRepository.deleteAllByMakerPost(makerPost);
-        } else if (position.equals("Singer")) {
-            singerPlayListRepository.deleteAllBySingerPost(singerPost);
-        }
+        makerPlayListRepository.deleteAllByMember(member);
+        singerPlayListRepository.deleteAllByMember(member);
         return new ResponseEntity<>(Message.success("플레이리스트에서 삭제되었습니다."),HttpStatus.OK);
     }
 

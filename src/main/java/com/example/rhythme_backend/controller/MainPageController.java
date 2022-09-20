@@ -79,9 +79,9 @@ public class MainPageController {
         return mainPageService.getPlayList(request);
     }
 
-    @DeleteMapping("/auth/playlist/{postId}")
-    public ResponseEntity<?> deletePlayList(@PathVariable Long postId, HttpServletRequest request, @RequestParam String position) {
-        return mainPageService.deletePlayList(postId,request,position);
+    @DeleteMapping("/auth/playlist")
+    public ResponseEntity<?> deletePlayList(HttpServletRequest request) {
+        return mainPageService.deletePlayList(request);
     }
 
 }

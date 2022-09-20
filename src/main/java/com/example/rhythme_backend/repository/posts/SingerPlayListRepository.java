@@ -9,8 +9,9 @@ import java.util.List;
 
 public interface SingerPlayListRepository extends JpaRepository<SingerPlayList,Long> {
 
-    List<SingerPlayList> findByMember(Member member);
-    Long deleteAllBySingerPost(SingerPost singerPost);
+    List<SingerPlayList> findByMemberOrderByCreatedAtDesc(Member member);
+    Long deleteAllByMember(Member member);
     Long deleteBySingerPost(SingerPost singerPost);
+    Boolean existsBySingerPost(SingerPost singerPost);
 
 }

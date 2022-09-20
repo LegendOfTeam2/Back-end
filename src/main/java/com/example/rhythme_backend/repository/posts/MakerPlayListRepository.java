@@ -10,8 +10,9 @@ import java.util.List;
 
 public interface MakerPlayListRepository extends JpaRepository<MakerPlayList,Long> {
 
-    List<MakerPlayList> findByMember(Member member);
-    Long deleteAllByMakerPost(MakerPost makerPost);
+    List<MakerPlayList> findByMemberOrderByCreatedAtDesc(Member member);
+    Long deleteAllByMember(Member member);
     Long deleteByMakerPost(MakerPost makerPost);
+    Boolean existsByMakerPost(MakerPost makerPost);
 
 }

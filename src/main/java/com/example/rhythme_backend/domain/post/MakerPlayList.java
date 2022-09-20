@@ -1,6 +1,7 @@
 package com.example.rhythme_backend.domain.post;
 
 import com.example.rhythme_backend.domain.Member;
+import com.example.rhythme_backend.util.Timestamped;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,7 +14,7 @@ import javax.persistence.*;
 @Getter
 @AllArgsConstructor
 @RequiredArgsConstructor
-public class MakerPlayList {
+public class MakerPlayList extends Timestamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
