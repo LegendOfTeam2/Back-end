@@ -22,8 +22,6 @@ import com.example.rhythme_backend.repository.posts.MakerPostRepository;
 import com.example.rhythme_backend.repository.posts.SingerPostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -100,10 +98,10 @@ public class ProfileService {
             HttpStatus.OK);
 }
 
-    public ResponseEntity<?> profileGetMyUpload(String nickname, Pageable pageable) {
+    public ResponseEntity<?> profileGetMyUpload(String nickname) {
         Member member = memberRepository.findByNickname(nickname).orElseGet(Member::new);
-        Page<MakerPost> makerPostList = makerPostRepository.findAllByMember(member, pageable);
-        Page<SingerPost> singerPostList = singerPostRepository.findAllByMember(member, pageable);
+        List<MakerPost> makerPostList = makerPostRepository.findAllByMemberOrderByIdDesc(member);
+        List<SingerPost> singerPostList = singerPostRepository.findAllByMemberOrderByIdDesc(member);
         List<ProfileUploadPostResponseDto> answer = new ArrayList<>();
         for (MakerPost a : makerPostList) {
             answer.add(ProfileUploadPostResponseDto.builder()
@@ -136,11 +134,11 @@ public class ProfileService {
         return new ResponseEntity<>(Message.success(answer),HttpStatus.OK);
     }
 
-    public ResponseEntity<?> profileGetMyLike(String nickname,Pageable pageable){
+    public ResponseEntity<?> profileGetMyLike(String nickname){
         List<ProfileUploadPostResponseDto> answer = new ArrayList<>();
         Member member = memberRepository.findByNickname(nickname).orElseGet(Member::new);
-        Page<MakerLike> makerLikeList = makerLikeRepository.findByMemberId(member,pageable);
-        Page<SingerLike> singerLikeList = singerLikeRepository.findByMemberId(member,pageable);
+        List<MakerLike> makerLikeList = makerLikeRepository.findByMemberIdOrderByMakerPostDesc(member);
+        List<SingerLike> singerLikeList = singerLikeRepository.findByMemberIdOrderBySingerPostDesc(member);
         for (MakerLike a : makerLikeList) {
             MakerPost exportFromA = a.getMakerPost();
             answer.add(ProfileUploadPostResponseDto.builder()
