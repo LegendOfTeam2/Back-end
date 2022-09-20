@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface ChatRoomRepository extends JpaRepository<ChatRoom,String> {
 
-    List<ChatRoom> findChatRoomsByCustomer(UserIdDto customer);
-    List<ChatRoom> findChatRoomsByStore(UserIdDto store);
+    List<ChatRoom> findChatRoomsByCustomer(String senderNickName);
+    List<ChatRoom> findChatRoomsByStore(String sendToNickName);
 }

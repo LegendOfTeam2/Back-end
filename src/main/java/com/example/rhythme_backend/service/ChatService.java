@@ -2,11 +2,10 @@ package com.example.rhythme_backend.service;
 
 
 import com.example.rhythme_backend.domain.chat.ChatRoom;
-import com.example.rhythme_backend.repository.chat.ChatMessageRepository;
 import com.example.rhythme_backend.repository.chat.ChatRoomRepository;
 import com.example.rhythme_backend.service.redis.RedisSubscriber;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
@@ -52,9 +51,9 @@ public class ChatService {
     /**
      * 채팅방 생성 : 서버간 채팅방 공유를 위해 redis hash에 저장한다.
      */
-    public ChatRoom createChatRoom(UserIdDto customer, UserIdDto store) {
-        String name=customer.getName()+"와 "+store.getName();
-        ChatRoom chatRoom = ChatRoom.create(name,customer,store);
+    public ChatRoom createChatRoom(String senderNickName, String sendToNickName) {
+        String name=senderNickName+"와 "+sendToNickName;
+        ChatRoom chatRoom = ChatRoom.create(name,senderNickName,sendToNickName);
         opsHashChatRoom.put(CHAT_ROOMS, chatRoom.getId(), chatRoom);
         chatRoomRepository.save(chatRoom);
         return chatRoom;
@@ -73,11 +72,11 @@ public class ChatService {
     public ChannelTopic getTopic(String roomId) {
         return topics.get(roomId);
     }
-    public List<ChatRoom> getCustomerEnterRooms(UserIdDto customer){
-        return chatRoomRepository.findChatRoomsByCustomer(customer);
+    public List<ChatRoom> getCustomerEnterRooms(String senderNickName){
+        return chatRoomRepository.findChatRoomsByCustomer(senderNickName);
     }
-    public List<ChatRoom> getStoreEnterRooms(UserIdDto store){
-        return chatRoomRepository.findChatRoomsByStore(store);
+    public List<ChatRoom> getStoreEnterRooms(String sendToNickName){
+        return chatRoomRepository.findChatRoomsByStore(sendToNickName);
     }
 
     public void deleteById(ChatRoom chatRoom){
