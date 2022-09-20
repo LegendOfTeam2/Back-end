@@ -33,7 +33,7 @@ public class ChatRoom implements Serializable {
     private String store;
 
     @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL)
-    private List<ChatMessage> chatMessages = new ArrayList<>();
+    private List<ChatMessage> chatMessages;
 
     public static ChatRoom create(String name,String senderNickName,String sendToNickName) {
         ChatRoom chatRoom = new ChatRoom();

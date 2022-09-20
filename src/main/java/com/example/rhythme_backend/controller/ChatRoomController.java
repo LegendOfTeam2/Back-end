@@ -51,6 +51,8 @@ public class ChatRoomController {
         return new ResponseEntity<>(Message.success(chatService.getCustomerEnterRooms(senderNickName)),HttpStatus.OK );
     }
 
+    // 채팅방 입장  ((((보류)))))
+
     // 초대 받은 사람 별 채팅방 조회
     @GetMapping("/store")
     public ResponseEntity<?> getRoomsByStore(@RequestBody String sendToNickName){

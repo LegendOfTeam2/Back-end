@@ -1,6 +1,9 @@
 package com.example.rhythme_backend.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import lombok.RequiredArgsConstructor;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +21,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @RequiredArgsConstructor
 @AutoConfiguration
 @EnableRedisRepositories
+
 public class RedisConfig {
         @Value("${redis.host}")
         private String redisHost;
@@ -33,7 +37,10 @@ public class RedisConfig {
             return new LettuceConnectionFactory(redisHost, redisPort);
         }
 
-        /***
+
+
+
+        /*
          * Redis 서버와 통신
          * StringRedisTemplate를 사용하여 Key, value를 모두 문자열로 저장
          */
@@ -51,13 +58,13 @@ public class RedisConfig {
 //    /**
 //     * redis pub/sub 메시지를 처리하는 listener 설정
 //     */
-//    @Bean
-//    public RedisMessageListenerContainer redisMessageListener(RedisConnectionFactory connectionFactory) {
-//        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-//        container.setConnectionFactory(connectionFactory);
-//        return container;
-//    }
-//
+    @Bean
+    public RedisMessageListenerContainer redisMessageListener(RedisConnectionFactory connectionFactory) {
+        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+        container.setConnectionFactory(connectionFactory);
+        return container;
+    }
+
 //    /**
 //     * 어플리케이션에서 사용할 redisTemplate 설정
 //     */
