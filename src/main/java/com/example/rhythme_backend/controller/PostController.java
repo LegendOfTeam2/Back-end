@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
@@ -28,19 +30,19 @@ public class PostController {
 
     // 글 쓰기 API
     @PostMapping("/post")
-    public ResponseEntity<?> createPost(@RequestBody PostCreateRequestDto postCreateRequestDto) {
-        return postService.createPost(postCreateRequestDto);
+    public ResponseEntity<?> createPost(@RequestBody PostCreateRequestDto requestDto, HttpServletRequest request) {
+        return postService.createPost(requestDto,request);
     }
 
     //글 수정 API
     @PutMapping("/post")
-    public ResponseEntity<?> patchPost(@RequestBody PostPatchRequestDto postPatchRequestDto) {
-        return postService.patchPost(postPatchRequestDto);
+    public ResponseEntity<?> patchPost(@RequestBody PostPatchRequestDto requestDto,HttpServletRequest request) {
+        return postService.patchPost(requestDto,request);
     }
 
     // 글삭제 API
     @DeleteMapping("/post/{postId}")
-    public ResponseEntity<?> deletePost(@PathVariable Long postId, @RequestParam String position) {
-        return postService.deletePost(postId,position);
+    public ResponseEntity<?> deletePost(@PathVariable Long postId, @RequestParam String position,HttpServletRequest request) {
+        return postService.deletePost(postId,position,request);
     }
 }
