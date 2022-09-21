@@ -362,8 +362,8 @@ public class MainPageService {
                             .imageUrl(makerPlayList.getMakerPost().getImageUrl().getImageUrl())
                             .collaborate(makerPlayList.getMakerPost().getCollaborate())
                             .lyrics(makerPlayList.getMakerPost().getLyrics())
-                            .nickname(member.getNickname())
-                            .follower(member.getFollowers())
+                            .nickname(makerPlayList.getMakerPost().getMember().getNickname())
+                            .follower(makerPlayList.getMakerPost().getMember().getFollowers())
                             .createdAt(makerPlayList.getCreatedAt())
                             .build());
         }
@@ -375,8 +375,8 @@ public class MainPageService {
                             .imageUrl(singerPlayList.getSingerPost().getImageUrl().getImageUrl())
                             .collaborate(singerPlayList.getSingerPost().getCollaborate())
                             .lyrics(singerPlayList.getSingerPost().getLyrics())
-                            .nickname(member.getNickname())
-                            .follower(member.getFollowers())
+                            .nickname(singerPlayList.getSingerPost().getMember().getNickname())
+                            .follower(singerPlayList.getSingerPost().getMember().getFollowers())
                             .createdAt(singerPlayList.getCreatedAt())
                             .build());
         }
