@@ -56,8 +56,7 @@ public class MemberService {
 //    private final MakerPostRepository makerPostRepository;
 //    private final SingerPostRepository singerPostRepository;
     private final Validation validation;
-
-
+    
 
     @Transactional
     public ResponseEntity<?> signupMember(SignupRequestDto requestDto) {

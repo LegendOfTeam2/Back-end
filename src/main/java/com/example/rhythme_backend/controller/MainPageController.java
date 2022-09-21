@@ -84,6 +84,7 @@ public class MainPageController {
     public ResponseEntity<?> deletePlayList(HttpServletRequest request) {
         return mainPageService.deletePlayList(request);
     }
+
     @GetMapping("/allpost/search")
     public ResponseEntity<?> searchAllPost(@RequestParam(required = false, defaultValue = "") String searchText,
                                            @RequestParam String category) {
