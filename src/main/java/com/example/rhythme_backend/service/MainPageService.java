@@ -354,6 +354,7 @@ public class MainPageService {
         List<PlayListResponseDto> playListResponseDtoList = new ArrayList<>();
         List<MakerPlayList> makerPlayLists = makerPlayListRepository.findByMemberOrderByCreatedAtDesc(member);
         List<SingerPlayList> singerPlayLists = singerPlayListRepository.findByMemberOrderByCreatedAtDesc(member);
+
         for (MakerPlayList makerPlayList : makerPlayLists) {
             playListResponseDtoList.add(PlayListResponseDto.builder()
                             .postId(makerPlayList.getMakerPost().getId())
@@ -364,6 +365,7 @@ public class MainPageService {
                             .lyrics(makerPlayList.getMakerPost().getLyrics())
                             .nickname(member.getNickname())
                             .follower(member.getFollowers())
+                            .createdAt(makerPlayList.getCreatedAt())
                             .build());
         }
         for (SingerPlayList singerPlayList : singerPlayLists) {
@@ -376,6 +378,7 @@ public class MainPageService {
                             .lyrics(singerPlayList.getSingerPost().getLyrics())
                             .nickname(member.getNickname())
                             .follower(member.getFollowers())
+                            .createdAt(singerPlayList.getCreatedAt())
                             .build());
         }
         return new ResponseEntity<>(Message.success(playListResponseDtoList),HttpStatus.OK);
