@@ -46,66 +46,11 @@ public class MemberService {
     private final HttpServletResponse response;
     private final KakaoOauth kakaoOauth;
     private final HashTagRepository hashTagRepository;
-//    private final FollowRepository followRepository;
-//    private final MakerLikeRepository makerLikeRepository;
-//    private final SingerLikeRepository singerLikeRepository;
-//    private final MakerPostTagRepository makerPostTagRepository;
-//    private final SingerPostTagRepository singerPostTagRepository;
-//    private final TagRepository tagRepository;
-//    private final MakerPostRepository makerPostRepository;
-//    private final SingerPostRepository singerPostRepository;
     private final Validation validation;
     
 
     @Transactional
     public ResponseEntity<?> signupMember(SignupRequestDto requestDto) {
-
-//        Member member = memberRepository.findByEmail(requestDto.getEmail()).orElseGet(Member::new);
-//        if ("Y".equals(member.getDeleteCheck())) {
-//        //실제 삭제
-//        if (equals(hashTagRepository.findById(member.getId()))) {
-//            hashTagRepository.deleteAllByMemberId(member);
-//        }
-//        if (equals(followRepository.findById(member.getId()))) {
-//            followRepository.deleteAllByMemberId(member);
-//        }
-//        if (equals(makerLikeRepository.findById(member.getId()))) {
-//            makerLikeRepository.deleteAllByMemberId(member);
-//        }
-//        if (equals(singerLikeRepository.findById(member.getId()))){
-//            singerLikeRepository.deleteAllByMemberId(member);
-//        }
-//        Member makerPostDelete = memberRepository.findById(member.getId()).orElseGet(Member::new);
-//        MakerPost makerPost = makerPostRepository.findById(makerPostDelete.getId()).orElseGet(MakerPost::new);
-//        if (equals(makerPostRepository.findById(makerPostDelete.getId()))) {
-//            makerPostTagRepository.deleteAllByMakerPostId(makerPost);
-//            tagRepository.deleteAllByMakerPostTags(makerPost);
-//        }
-//        Member singerPostDelete = memberRepository.findById(member.getId()).orElseGet(Member::new);
-//        SingerPost singerPost = singerPostRepository.findById(singerPostDelete.getId()).orElseGet(SingerPost::new);
-//        if(equals(singerPostRepository.findById(singerPostDelete.getId()))) {
-//            singerPostTagRepository.deleteAllBySingerPostId(singerPost);
-//            tagRepository.deleteAllBySingerPostTags(singerPost);
-//        }
-//        if (equals(makerPostRepository.findById(member.getId()))) {
-//            makerPostRepository.deleteAllByMember(member);
-//        }
-//        if (equals(singerPostRepository.findById(member.getId()))) {
-//            singerPostRepository.deleteAllByMember(member);
-//        }
-//
-//        String deleteEmail = requestDto.getEmail();
-//        Member deleteMember = getPresentEmail(deleteEmail);
-//        Long deleteMemberId = deleteMember.getId();
-//        Member resignMember = getDeleteMember(deleteMemberId);
-//
-//        if (null == resignMember) {
-//            return new ResponseEntity<>(Message.fail("MEMBER_NOT_FOUND", "해당 멤버가 없습니다."), HttpStatus.NOT_FOUND);
-//        }
-//        refreshTokenRepository.delete(deleteToken);
-//        memberRepository.delete(resignMember);
-//  }
-
 
         if (null != validation.getPresentEmail(requestDto.getEmail())) {
             return new ResponseEntity<>(Message.fail("DUPLICATED_EMAIL", "중복된 이메일입니다."), HttpStatus.BAD_REQUEST);
