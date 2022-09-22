@@ -59,5 +59,10 @@ public class Validation {
         response.addHeader("Authorization", "Bearer " + tokenDto.getAccessToken());
         response.addHeader("Access-Token-Expire-Time", tokenDto.getAccessTokenExpiresIn().toString());
     }
-
+    public Member isPresentMemberFollow(String  nickname) {
+        Optional<Member> optionalMember = memberRepository.findByNickname(nickname);
+        return optionalMember.orElseThrow(
+                () -> new CustomException(ErrorCode.MEMBER_NOT_FOUND)
+        );
+    }
 }

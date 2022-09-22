@@ -1,6 +1,7 @@
 package com.example.rhythme_backend.service;
 
 import com.example.rhythme_backend.domain.Member;
+import com.example.rhythme_backend.domain.Message;
 import com.example.rhythme_backend.domain.like.MakerLike;
 import com.example.rhythme_backend.domain.like.SingerLike;
 import com.example.rhythme_backend.domain.post.MakerPost;
@@ -12,9 +13,10 @@ import com.example.rhythme_backend.repository.like.MakerLikeRepository;
 import com.example.rhythme_backend.repository.like.SingerLikeRepository;
 import com.example.rhythme_backend.repository.posts.MakerPostRepository;
 import com.example.rhythme_backend.repository.posts.SingerPostRepository;
-import com.example.rhythme_backend.util.ResponseDto;
 import com.example.rhythme_backend.util.Validation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +37,7 @@ public class LikeService {
     private final Validation validation;
 
     @Transactional
-    public ResponseDto<?> upDownSingerLike(Long postId, HttpServletRequest request) {
+    public ResponseEntity<?> upDownSingerLike(Long postId, HttpServletRequest request) {
         Member member = validation.validateMemberToAccess(request);
         validation.checkAccessToken(request, member);
         SingerPost singerPost = getCurrentSingerPost(postId);
@@ -48,18 +50,18 @@ public class LikeService {
             Long likes = singerLikeRepository.countAllBySingerPostId(postId);
             singerPost.singerUpdateLikes(likes);
             singerPostRepository.save(singerPost);
-            return ResponseDto.success(true);
+            return new ResponseEntity<>(Message.success("true"), HttpStatus.OK);
         } else {
             singerLikeRepository.deleteById(findSingerLike.getId());
             Long likes = singerLikeRepository.countAllBySingerPostId(postId);
             singerPost.singerUpdateLikes(likes);
             singerPostRepository.save(singerPost);
-            return ResponseDto.success(false);
+            return new ResponseEntity<>(Message.success("false"), HttpStatus.OK);
         }
     }
 
     @Transactional
-    public ResponseDto<?> upDownMakerLike(Long postId, HttpServletRequest request) {
+    public ResponseEntity<?> upDownMakerLike(Long postId, HttpServletRequest request) {
         Member member = validation.validateMemberToAccess(request);
         validation.checkAccessToken(request, member);
         MakerPost makerPost = getCurrentMakerPost(postId);
@@ -74,13 +76,13 @@ public class LikeService {
             Long likes = makerLikeRepository.countAllByMakerPostId(postId);
             makerPost.makerUpdateLikes(likes);
             makerPostRepository.save(makerPost);
-            return ResponseDto.success(true);
+            return new ResponseEntity<>(Message.success("true"), HttpStatus.OK);
         } else {
             makerLikeRepository.deleteById(findMakerLike.getId());
             Long likes = makerLikeRepository.countAllByMakerPostId(postId);
             makerPost.makerUpdateLikes(likes);
             makerPostRepository.save(makerPost);
-            return ResponseDto.success(false);
+            return new ResponseEntity<>(Message.success("false"), HttpStatus.OK);
         }
     }
 
