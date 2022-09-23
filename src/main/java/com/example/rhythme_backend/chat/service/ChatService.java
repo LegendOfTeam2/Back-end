@@ -36,8 +36,6 @@ public class ChatService {
     private final InvitedUsersRepository invitedUsersRepository;
     private final ChatRoomJpaRepository chatRoomJpaRepository;
     private final ResignChatRoomJpaRepository resignChatRoomJpaRepository;
-    private final PostRepository postRepository;
-    private final LikeRepository likeRepository;
     private final ResignChatMessageJpaRepository resignChatMessageJpaRepository;
 
 
@@ -49,10 +47,8 @@ public class ChatService {
         );
         LocalDateTime createdAt = LocalDateTime.now();
         String formatDate = createdAt.format(DateTimeFormatter.ofPattern("dd,MM,yyyy,HH,mm,ss", Locale.KOREA));
-        Long enterUserCnt = chatMessageRepository.getUserCnt(messageDto.getRoomId());
-        messageDto.setEnterUserCnt(enterUserCnt);
-        messageDto.setSender(user.getNickName());
-        messageDto.setProfileUrl(user.getProfileUrl());
+        messageDto.setSender(user.getNickname());
+        messageDto.setProfileUrl(user.getImageUrl());
         messageDto.setCreatedAt(formatDate);
         messageDto.setUserId(user.getId());
         messageDto.setQuitOwner(false);
@@ -62,7 +58,6 @@ public class ChatService {
             chatRoomRepository.enterChatRoom(messageDto.getRoomId());
             messageDto.setMessage(messageDto.getSender() + "님이 입장하셨습니다.");
             String roomId = messageDto.getRoomId();
-
 
             List<InvitedUsers> invitedUsersList = invitedUsersRepository.findAllByPostId(Long.parseLong(roomId));
             for (InvitedUsers invitedUsers : invitedUsersList) {
@@ -81,54 +76,14 @@ public class ChatService {
             if (invitedUsersRepository.existsByUserIdAndPostId(user.getId(), Long.parseLong(messageDto.getRoomId()))) {
                 invitedUsersRepository.deleteByUserIdAndPostId(user.getId(), Long.parseLong(messageDto.getRoomId()));
             }
-            if (!postRepository.existsById(Long.parseLong(messageDto.getRoomId()))) {
-                ResignChatRoom chatRoom = resignChatRoomJpaRepository.findByRoomId(messageDto.getRoomId());
-                if (chatRoom.getUsername().equals(user.getUsername())) {
-                    messageDto.setQuitOwner(true);
-                    messageDto.setMessage("(방장) " + messageDto.getSender() + "님이 나가셨습니다. " +
-                            "더 이상 대화를 할 수 없으며 채팅방을 나가면 다시 입장할 수 없습니다.");
-                    likeRepository.deleteByPostId(Long.parseLong(messageDto.getRoomId()));
-                    postRepository.deleteById(Long.parseLong(messageDto.getRoomId()));
-                    user.setIsOwner(false);
-                    ChatRoom findChatRoom = chatRoomJpaRepository.findByRoomId(messageDto.getRoomId());
-                    List<ChatMessage> chatMessage = chatMessageJpaRepository.findAllByRoomId(messageDto.getRoomId());
-                    ResignChatRoom resignChatRoom = new ResignChatRoom(findChatRoom);
-                    resignChatRoomJpaRepository.save(resignChatRoom);
-                    for (ChatMessage message : chatMessage) {
-                        ResignChatMessage resignChatMessage = new ResignChatMessage(message);
-                        resignChatMessageJpaRepository.save(resignChatMessage);
-                    }
-                    chatMessageJpaRepository.deleteByRoomId(messageDto.getRoomId());
-                    chatRoomJpaRepository.deleteByRoomId(messageDto.getRoomId());
-                }
-            } else {
-                ChatRoom chatRoom = chatRoomJpaRepository.findByRoomId(messageDto.getRoomId());
-                if (chatRoom.getUsername().equals(user.getUsername())) {
-                    messageDto.setQuitOwner(true);
-                    messageDto.setMessage("(방장) " + messageDto.getSender() + "님이 나가셨습니다. " +
-                            "더 이상 대화를 할 수 없으며 채팅방을 나가면 다시 입장할 수 없습니다.");
-                    likeRepository.deleteByPostId(Long.parseLong(messageDto.getRoomId()));
-                    postRepository.deleteById(Long.parseLong(messageDto.getRoomId()));
-                    user.setIsOwner(false);
-                    ChatRoom findChatRoom = chatRoomJpaRepository.findByRoomId(messageDto.getRoomId());
-                    List<ChatMessage> chatMessage = chatMessageJpaRepository.findAllByRoomId(messageDto.getRoomId());
-                    ResignChatRoom resignChatRoom = new ResignChatRoom(findChatRoom);
-                    resignChatRoomJpaRepository.save(resignChatRoom);
-                    for (ChatMessage message : chatMessage) {
-                        ResignChatMessage resignChatMessage = new ResignChatMessage(message);
-                        resignChatMessageJpaRepository.save(resignChatMessage);
-                    }
-                    chatMessageJpaRepository.deleteByRoomId(messageDto.getRoomId());
-                    chatRoomJpaRepository.deleteByRoomId(messageDto.getRoomId());
-                }
-            }
             chatMessageJpaRepository.deleteByRoomId(messageDto.getRoomId());
         }
         chatMessageRepository.save(messageDto); // 캐시에 저장 했다.
         ChatMessage chatMessage = new ChatMessage(messageDto, createdAt);
         chatMessageJpaRepository.save(chatMessage); // DB 저장
+
         // Websocket 에 발행된 메시지를 redis 로 발행한다(publish)
-        redisPublisher.publish(ChatRoomRepository.getTopic(messageDto.getRoomId()), messageDto);
+        redisPublisher.publish(ChatRoomRepository.getTopic(messageDto.getRoomId()), chatMessage);
     }
 
     //redis에 저장되어있는 message 들 출력
@@ -140,14 +95,14 @@ public class ChatService {
 
     //채팅방에 참여한 사용자 정보 조회
     public List<UserinfoDto> getUserinfo(UserDetailsImpl userDetails, String roomId) {
-        userRepository.findById(userDetails.getUser().getId()).orElseThrow(
-                () -> new UserApiException("존재하지 않는 사용자 입니다.")
+        userRepository.findById(userDetails.getMember().getId()).orElseThrow(
+                () -> new IllegalArgumentException("테스트 에러 메세지")
         );
         List<InvitedUsers> invitedUsers = invitedUsersRepository.findAllByPostId(Long.parseLong(roomId));
         List<UserinfoDto> users = new ArrayList<>();
         for (InvitedUsers invitedUser : invitedUsers) {
-            User user = invitedUser.getUser();
-            users.add(new UserinfoDto(user.getNickName(), user.getProfileUrl(), user.getId()));
+            Member user = invitedUser.getUser();
+            users.add(new UserinfoDto(user.getNickname(), user.getImageUrl(), user.getId()));
         }
         return users;
     }

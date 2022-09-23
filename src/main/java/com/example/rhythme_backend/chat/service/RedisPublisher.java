@@ -1,6 +1,7 @@
 package com.example.rhythme_backend.chat.service;
 
-import com.example.redistest.chat.domain.chat.ChatMessage;
+
+import com.example.rhythme_backend.chat.domain.chat.ChatMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;

@@ -64,8 +64,6 @@ public class ChatRoomRepository {
                 invitedUser.setReadCheck(false);
                 invitedUser.setReadCheckTime(LocalDateTime.now());
             }
-            Post post = postRepository.findById(invitedUser.getPostId()).orElseThrow(
-                    () -> new PostApiException("해당 게시글을 찾을 수 없습니다."));
             ChatMessage chatMessage = chatMessageJpaRepository.findTop1ByRoomIdOrderByCreatedAtDesc(invitedUser.getPostId().toString());
             ChatRoomResponseDto chatRoomResponseDto = new ChatRoomResponseDto();
             if (chatMessage.getMessage().isEmpty()) {
@@ -77,19 +75,10 @@ public class ChatRoomRepository {
             String createdAtString = createdAt.format(DateTimeFormatter.ofPattern("dd,MM,yyyy,HH,mm,ss", Locale.KOREA));
 
             chatRoomResponseDto.setLastMessageTime(createdAtString);
-            chatRoomResponseDto.setPostTime(post.getTime());
-            chatRoomResponseDto.setPostTitle(post.getTitle());
-            if (post.getPostUrls().isEmpty()) {
-                chatRoomResponseDto.setPostUrl(null);
-            } else {
-                chatRoomResponseDto.setPostUrl(post.getPostUrls().get(0));
-            }
-            chatRoomResponseDto.setLetter(post.getIsLetter());
-            chatRoomResponseDto.setPostId(post.getId());
             chatRoomResponseDtoList.add(chatRoomResponseDto);
 
         }
-        return new ChatListMessageDto(chatRoomResponseDtoList, user.getIsOwner());
+        return new ChatListMessageDto(chatRoomResponseDtoList, true);
     }
 
     /**
