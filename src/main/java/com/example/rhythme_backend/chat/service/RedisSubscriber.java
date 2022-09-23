@@ -1,6 +1,6 @@
-package com.example.rhythme_backend.service.redis;
+package com.example.redistest.chat.service;
 
-import com.example.rhythme_backend.domain.chat.ChatMessage;
+import com.example.redistest.chat.domain.chat.ChatMessage;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 public class RedisSubscriber implements MessageListener {
+
     private final ObjectMapper objectMapper;
     private final RedisTemplate redisTemplate;
     private final SimpMessageSendingOperations messagingTemplate;
@@ -29,7 +30,7 @@ public class RedisSubscriber implements MessageListener {
             // ChatMessage 객채로 맵핑
             ChatMessage roomMessage = objectMapper.readValue(publishMessage, ChatMessage.class);
             // Websocket 구독자에게 채팅 메시지 Send
-            messagingTemplate.convertAndSend("/sub/chat/room/" + roomMessage.getChatRoom().getId(), roomMessage);
+            messagingTemplate.convertAndSend("/sub/chat/room/" + roomMessage.getRoomId(), roomMessage);
         } catch (Exception e) {
             log.error(e.getMessage());
         }
