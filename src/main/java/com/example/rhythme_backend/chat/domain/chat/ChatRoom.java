@@ -38,12 +38,15 @@ public class ChatRoom implements Serializable {
         private String roomId;
         @Column(nullable = false)
         private String username;
+        @Column
+        private String receiver;
 
         //채팅방 생성
-        public static ChatRoom create( UserinfoDto userDto) {
+        public static ChatRoom create( UserinfoDto userinfoDto) {
             ChatRoom chatRoom = new ChatRoom();
             chatRoom.roomId = chatRoom.roomId = UUID.randomUUID().toString();
-            chatRoom.username=userDto.getNickname();
+            chatRoom.username=userinfoDto.getSender();
+            chatRoom.receiver=userinfoDto.getReceiver();
             return chatRoom;
         }
 

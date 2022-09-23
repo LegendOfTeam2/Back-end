@@ -40,9 +40,9 @@ public class ChatService {
 
 
     @Transactional
-    public void save(ChatMessageDto messageDto, Long userId) throws JsonProcessingException {
+    public void save(ChatMessageDto messageDto) throws JsonProcessingException {
         // 토큰에서 유저 아이디 가져오기
-        Member user = userRepository.findById(userId).orElseThrow(
+        Member user = userRepository.findByNickname(messageDto.getSender()).orElseThrow(
                 () -> new NullPointerException("존재하지 않는 사용자 입니다!")
         );
         LocalDateTime createdAt = LocalDateTime.now();
@@ -50,8 +50,6 @@ public class ChatService {
         messageDto.setSender(user.getNickname());
         messageDto.setProfileUrl(user.getImageUrl());
         messageDto.setCreatedAt(formatDate);
-        messageDto.setUserId(user.getId());
-        messageDto.setQuitOwner(false);
 
         //받아온 메세지의 타입이 ENTER 일때
         if (ChatMessage.MessageType.ENTER.equals(messageDto.getType())) {
@@ -59,22 +57,22 @@ public class ChatService {
             messageDto.setMessage(messageDto.getSender() + "님이 입장하셨습니다.");
             String roomId = messageDto.getRoomId();
 
-            List<InvitedUsers> invitedUsersList = invitedUsersRepository.findAllByPostId(Long.parseLong(roomId));
+            List<InvitedUsers> invitedUsersList = invitedUsersRepository.findAllByRoomId(roomId);
             for (InvitedUsers invitedUsers : invitedUsersList) {
                 if (invitedUsers.getUser().equals(user)) {
                     invitedUsers.setReadCheck(true);
                 }
             }
             // 이미 그방에 초대되어 있다면 중복으로 저장을 하지 않게 한다.
-            if (!invitedUsersRepository.existsByUserIdAndPostId(user.getId(), Long.parseLong(roomId))) {
-                InvitedUsers invitedUsers = new InvitedUsers(Long.parseLong(roomId), user);
+            if (!invitedUsersRepository.existsByUserAndRoomId(user.getNickname(), messageDto.getRoomId())) {
+                InvitedUsers invitedUsers = new InvitedUsers(roomId, user);
                 invitedUsersRepository.save(invitedUsers);
             }
             //받아온 메세지 타입이 QUIT 일때
         } else if (ChatMessage.MessageType.QUIT.equals(messageDto.getType())) {
             messageDto.setMessage(messageDto.getSender() + "님이 나가셨습니다.");
-            if (invitedUsersRepository.existsByUserIdAndPostId(user.getId(), Long.parseLong(messageDto.getRoomId()))) {
-                invitedUsersRepository.deleteByUserIdAndPostId(user.getId(), Long.parseLong(messageDto.getRoomId()));
+            if (invitedUsersRepository.existsByUserAndRoomId(user.getNickname(), messageDto.getRoomId())) {
+                invitedUsersRepository.deleteByUserAndRoomId(user.getNickname(), messageDto.getRoomId());
             }
             chatMessageJpaRepository.deleteByRoomId(messageDto.getRoomId());
         }
@@ -94,18 +92,18 @@ public class ChatService {
 
 
     //채팅방에 참여한 사용자 정보 조회
-    public List<UserinfoDto> getUserinfo(UserDetailsImpl userDetails, String roomId) {
-        userRepository.findById(userDetails.getMember().getId()).orElseThrow(
-                () -> new IllegalArgumentException("테스트 에러 메세지")
-        );
-        List<InvitedUsers> invitedUsers = invitedUsersRepository.findAllByPostId(Long.parseLong(roomId));
-        List<UserinfoDto> users = new ArrayList<>();
-        for (InvitedUsers invitedUser : invitedUsers) {
-            Member user = invitedUser.getUser();
-            users.add(new UserinfoDto(user.getNickname(), user.getImageUrl(), user.getId()));
-        }
-        return users;
-    }
+//    public List<UserinfoDto> getUserinfo(UserDetailsImpl userDetails, String roomId) {
+//        userRepository.findById(userDetails.getMember().getId()).orElseThrow(
+//                () -> new IllegalArgumentException("테스트 에러 메세지")
+//        );
+//        List<InvitedUsers> invitedUsers = invitedUsersRepository.findAllByPostId(Long.parseLong(roomId));
+//        List<UserinfoDto> users = new ArrayList<>();
+//        for (InvitedUsers invitedUser : invitedUsers) {
+//            Member user = invitedUser.getUser();
+//            users.add(new UserinfoDto(user.getNickname(), user.getImageUrl(), user.getId()));
+//        }
+//        return users;
+//    }
 
 
 }
