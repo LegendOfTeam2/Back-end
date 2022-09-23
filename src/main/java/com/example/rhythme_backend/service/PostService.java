@@ -37,7 +37,6 @@ import java.util.List;
 public class PostService{
     private final SingerPostRepository singerPostRepository;
     private final MakerPostRepository makerPostRepository;
-    // 게시글에 달려있는 이미지,태그
     private final TagRepository tagRepository;
     private final ImageUrlRepository imageUrlRepository;
     private final MediaUrlRepository mediaUrlRepository;
@@ -51,6 +50,7 @@ public class PostService{
     private final SingerLikeRepository singerLikeRepository;
     private final Validation validation;
 
+    //============게시물 검색 로직  (makerPost,SingerPost 검색)
     public ResponseEntity<?>  AllPostSearch(String searchText , String category) {
         if (category.equals("Singer")) {
             List<SingerPost> singerPostList = singerPostRepository.findByTitleContainingOrContentContainingOrderByCreatedAtDesc(searchText, searchText);
@@ -97,9 +97,9 @@ public class PostService{
     @Transactional(readOnly = true)
     public ResponseEntity<?> getAllMakerPost(){
         List<MakerPost> makerPostList = makerPostRepository.findAll();
-        List<MakerPostGetResponseDto> makerpostGetResponseDtoList = new ArrayList<>();
+        List<MakerPostGetResponseDto> makerPostGetResponseDtoList = new ArrayList<>();
         for(MakerPost makerPost : makerPostList){
-            makerpostGetResponseDtoList.add(
+            makerPostGetResponseDtoList.add(
                     MakerPostGetResponseDto.builder()
                             .postId(makerPost.getId())
                             .nickname(makerPost.getMember().getNickname())
@@ -112,14 +112,14 @@ public class PostService{
                             .build()
             );
         }
-        return new ResponseEntity<>(Message.success(makerpostGetResponseDtoList),HttpStatus.OK);
+        return new ResponseEntity<>(Message.success(makerPostGetResponseDtoList),HttpStatus.OK);
     }
 
     public ResponseEntity<?> getAllSingerPost() {
         List<SingerPost> singerPostList = singerPostRepository.findAll();
-        List<SingerPostGetResponseDto> singerpostGetResponseDtoList = new ArrayList<>();
+        List<SingerPostGetResponseDto> singerPostGetResponseDtoList = new ArrayList<>();
         for (SingerPost singerPost : singerPostList) {
-            singerpostGetResponseDtoList.add(
+            singerPostGetResponseDtoList.add(
                     SingerPostGetResponseDto.builder()
                             .postId(singerPost.getId())
                             .nickname(singerPost.getMember().getNickname())
@@ -132,7 +132,7 @@ public class PostService{
                             .build()
             );
         }
-            return new ResponseEntity<>(Message.success(singerpostGetResponseDtoList), HttpStatus.OK);
+            return new ResponseEntity<>(Message.success(singerPostGetResponseDtoList), HttpStatus.OK);
         }
 
 
@@ -143,7 +143,6 @@ public class PostService{
         ResponseEntity<?> result = new ResponseEntity<>("",HttpStatus.OK);
         Member member = validation.validateMemberToAccess(request);
         validation.checkAccessToken(request, member);
-//        Member memberWhoCreated = validateByNickname(requestDto.getNickname());
         ImageUrl imageUrl = imageUrlSave(requestDto);
         MediaUrl mediaUrl = mediaUrlSave(requestDto);
 
@@ -368,6 +367,7 @@ public class PostService{
         }
         return tagIds;
     }
+    
     public void makerPostTagSave(List<String> tags,MakerPost makerPost){
         for(String tag : tags){
             Tag tag1 = tagRepository.save(
