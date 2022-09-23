@@ -17,26 +17,20 @@ public class InvitedUsers {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
     @Column
-    private Long postId;
-    @JoinColumn(name="USER_ID")
+    private String roomId;
+    @JoinColumn(name="user")
     @ManyToOne(fetch = FetchType.LAZY)
     private Member user;
-    @Column
-    private Boolean qrCheck;
     @Column
     private Boolean readCheck;
     @Column
     private LocalDateTime readCheckTime;
 
-    public InvitedUsers(Long postId, Member user) {
-        this.postId = postId;
+    public InvitedUsers(String roomId, Member user) {
+        this.roomId = roomId;
         this.user = user;
-        this.qrCheck = false;
         this.readCheck =true;
     }
 
-    public void updateQrCheck() {
-        this.qrCheck = true;
-    }
 
 }

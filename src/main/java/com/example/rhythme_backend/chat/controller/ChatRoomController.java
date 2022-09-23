@@ -1,22 +1,16 @@
 package com.example.rhythme_backend.chat.controller;
 
 
-import com.example.rhythme_backend.chat.domain.chat.ChatRoom;
-import com.example.rhythme_backend.chat.dto.ChatListMessageDto;
 import com.example.rhythme_backend.chat.dto.ChatMessageDto;
 import com.example.rhythme_backend.chat.dto.UserinfoDto;
 import com.example.rhythme_backend.chat.repository.ChatMessageRepository;
 import com.example.rhythme_backend.chat.repository.ChatRoomJpaRepository;
 import com.example.rhythme_backend.chat.repository.ChatRoomRepository;
-import com.example.rhythme_backend.domain.Member;
 import com.example.rhythme_backend.domain.Message;
-import com.example.rhythme_backend.service.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -42,7 +36,7 @@ public class ChatRoomController {
     // 모든 채팅방 목록 반환
 //    @GetMapping("/rooms")
 //    @ResponseBody
-//    public ChatListMessageDto roomList(HttpServletRequest request) {
+//    public ChatRoomListDto roomList(HttpServletRequest request) {
 //        return chatRoomRepository.findAllRoom(request);
 //    }
 //
@@ -62,7 +56,7 @@ public class ChatRoomController {
     }
 
     // 특정 채팅방 입장 채팅 방 메시지 내용을 준다.
-    @PostMapping("/chat/room/{roomId}")
+    @PostMapping("/room/{roomId}")
     @ResponseBody
     public ResponseEntity<?> roomInfo(@PathVariable String roomId) {
         List<ChatMessageDto> chatMessageDtoList = chatMessageRepository.findAllMessage(roomId);

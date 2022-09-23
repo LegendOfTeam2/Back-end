@@ -1,22 +1,23 @@
 package com.example.rhythme_backend.chat.controller;
 
 
+
 import com.example.rhythme_backend.chat.domain.chat.ChatMessage;
 import com.example.rhythme_backend.chat.dto.ChatMessageDto;
-import com.example.rhythme_backend.chat.dto.UserinfoDto;
 import com.example.rhythme_backend.chat.repository.ChatRoomRepository;
 import com.example.rhythme_backend.chat.service.ChatService;
 import com.example.rhythme_backend.chat.service.RedisPublisher;
-import com.example.rhythme_backend.service.UserDetailsImpl;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.messaging.handler.annotation.Header;
+
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -50,6 +51,9 @@ public class ChatController {
          */
         @MessageMapping({"/chat/message"})
         public void message(ChatMessageDto message) throws JsonProcessingException {
+            LocalDateTime now = LocalDateTime.now();
+            ChatMessage chatMessage =new ChatMessage(message,now);
+            redisPublisher.publish(chatRoomRepository.getTopic(message.getRoomId()),chatMessage);
             chatService.save(message);
         }
 

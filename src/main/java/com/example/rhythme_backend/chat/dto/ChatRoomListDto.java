@@ -9,11 +9,11 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ChatListMessageDto {
+public class ChatRoomListDto {
     private List<ChatRoomResponseDto> messageDto;
     private boolean isOwner;
 
-    public ChatListMessageDto(List<ChatRoomResponseDto> chatRoomResponseDtoList, Boolean isOwner) {
+    public ChatRoomListDto(List<ChatRoomResponseDto> chatRoomResponseDtoList, Boolean isOwner) {
         this.messageDto = chatRoomResponseDtoList;
         this.isOwner = isOwner;
     }

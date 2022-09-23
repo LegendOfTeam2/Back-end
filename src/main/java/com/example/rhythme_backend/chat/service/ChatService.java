@@ -50,7 +50,6 @@ public class ChatService {
         messageDto.setSender(user.getNickname());
         messageDto.setProfileUrl(user.getImageUrl());
         messageDto.setCreatedAt(formatDate);
-        messageDto.setQuitOwner(false);
 
         //받아온 메세지의 타입이 ENTER 일때
         if (ChatMessage.MessageType.ENTER.equals(messageDto.getType())) {
@@ -58,22 +57,22 @@ public class ChatService {
             messageDto.setMessage(messageDto.getSender() + "님이 입장하셨습니다.");
             String roomId = messageDto.getRoomId();
 
-            List<InvitedUsers> invitedUsersList = invitedUsersRepository.findAllByPostId(Long.parseLong(roomId));
+            List<InvitedUsers> invitedUsersList = invitedUsersRepository.findAllByRoomId(roomId);
             for (InvitedUsers invitedUsers : invitedUsersList) {
                 if (invitedUsers.getUser().equals(user)) {
                     invitedUsers.setReadCheck(true);
                 }
             }
             // 이미 그방에 초대되어 있다면 중복으로 저장을 하지 않게 한다.
-            if (!invitedUsersRepository.existsByUserIdAndPostId(user.getId(), Long.parseLong(roomId))) {
-                InvitedUsers invitedUsers = new InvitedUsers(Long.parseLong(roomId), user);
+            if (!invitedUsersRepository.existsByUserAndRoomId(user.getNickname(), messageDto.getRoomId())) {
+                InvitedUsers invitedUsers = new InvitedUsers(roomId, user);
                 invitedUsersRepository.save(invitedUsers);
             }
             //받아온 메세지 타입이 QUIT 일때
         } else if (ChatMessage.MessageType.QUIT.equals(messageDto.getType())) {
             messageDto.setMessage(messageDto.getSender() + "님이 나가셨습니다.");
-            if (invitedUsersRepository.existsByUserIdAndPostId(user.getId(), Long.parseLong(messageDto.getRoomId()))) {
-                invitedUsersRepository.deleteByUserIdAndPostId(user.getId(), Long.parseLong(messageDto.getRoomId()));
+            if (invitedUsersRepository.existsByUserAndRoomId(user.getNickname(), messageDto.getRoomId())) {
+                invitedUsersRepository.deleteByUserAndRoomId(user.getNickname(), messageDto.getRoomId());
             }
             chatMessageJpaRepository.deleteByRoomId(messageDto.getRoomId());
         }

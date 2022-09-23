@@ -41,8 +41,6 @@ public class ResignChatMessage {
         this.sender = chatMessage.getSender();
         this.message = chatMessage.getMessage();
         this.profileUrl = chatMessage.getProfileUrl();
-        this.enterUserCnt = chatMessage.getEnterUserCnt();
         this.createdAt = chatMessage.getCreatedAt();
-        this.fileUrl = chatMessage.getFileUrl();
     }
 }

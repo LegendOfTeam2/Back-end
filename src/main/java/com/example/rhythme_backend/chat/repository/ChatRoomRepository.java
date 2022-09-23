@@ -55,32 +55,27 @@ public class ChatRoomRepository {
 
     //내가 참여한 모든 채팅방 목록 조회
     @Transactional
-    public ChatListMessageDto findAllRoom(HttpServletRequest request) {
+    public ChatRoomListDto findAllRoom(HttpServletRequest request) {
         Member user = validateMember(request);
-        List<InvitedUsers> invitedUsers = invitedUsersRepository.findAllByUserId(user.getId());
+        List<ChatRoom> chatRooms = chatRoomJpaRepository.findByUsername(user.getNickname());
         List<ChatRoomResponseDto> chatRoomResponseDtoList = new ArrayList<>();
-        for (InvitedUsers invitedUser : invitedUsers) {
-            if (invitedUser.getReadCheck()) {
-                invitedUser.setReadCheck(false);
-                invitedUser.setReadCheckTime(LocalDateTime.now());
-            }
-            ChatMessage chatMessage = chatMessageJpaRepository.findTop1ByRoomIdOrderByCreatedAtDesc(invitedUser.getPostId().toString());
+        for (ChatRoom chatRoom : chatRooms) {
+//            ChatMessage chatMessage = chatMessageJpaRepository.findTop1ByRoomIdOrderByCreatedAtDesc(chatRoom.getRoomId());
             ChatRoomResponseDto chatRoomResponseDto = new ChatRoomResponseDto();
-            if (chatMessage.getMessage().isEmpty()) {
-                chatRoomResponseDto.setLastMessage("읽지 않은 메세지가 있습니다.");
-            } else {
-                chatRoomResponseDto.setLastMessage(chatMessage.getMessage());
-            }
-            LocalDateTime createdAt = chatMessage.getCreatedAt();
+//            if (chatMessage == null) {
+//                chatRoomResponseDto.setLastMessage("콜라보 요청이 들어왔습니다.");
+//            } else {
+//                chatRoomResponseDto.setLastMessage(chatMessage.getMessage());
+//            }
+            LocalDateTime createdAt = LocalDateTime.now();
             String createdAtString = createdAt.format(DateTimeFormatter.ofPattern("dd,MM,yyyy,HH,mm,ss", Locale.KOREA));
-
+            chatRoomResponseDto.setRoomId(chatRoom.getRoomId());
             chatRoomResponseDto.setLastMessageTime(createdAtString);
             chatRoomResponseDto.setSender(user.getNickname());
-            chatRoomResponseDto.setReceiver(invitedUsers.get(0).getUser().getNickname());
+            chatRoomResponseDto.setReceiver(chatRoom.getReceiver());
             chatRoomResponseDtoList.add(chatRoomResponseDto);
-
         }
-        return new ChatListMessageDto(chatRoomResponseDtoList, true);
+        return new ChatRoomListDto(chatRoomResponseDtoList, true);
     }
 
     /**
