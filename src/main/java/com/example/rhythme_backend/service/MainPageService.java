@@ -365,7 +365,8 @@ public class MainPageService {
                             .nickname(makerPlayList.getMakerPost().getMember().getNickname())
                             .follower(makerPlayList.getMakerPost().getMember().getFollowers())
                             .createdAt(makerPlayList.getCreatedAt())
-                            .memberImageUrl(makerPlayList.getMember().getImageUrl())
+                            .memberImageUrl(makerPlayList.getMakerPost().getMember().getImageUrl())
+                            .position("Maker")
                             .build());
         }
         for (SingerPlayList singerPlayList : singerPlayLists) {
@@ -379,7 +380,8 @@ public class MainPageService {
                             .nickname(singerPlayList.getSingerPost().getMember().getNickname())
                             .follower(singerPlayList.getSingerPost().getMember().getFollowers())
                             .createdAt(singerPlayList.getCreatedAt())
-                            .memberImageUrl(singerPlayList.getMember().getImageUrl())
+                            .memberImageUrl(singerPlayList.getSingerPost().getMember().getImageUrl())
+                            .position("Singer")
                             .build());
         }
         return new ResponseEntity<>(Message.success(playListResponseDtoList),HttpStatus.OK);

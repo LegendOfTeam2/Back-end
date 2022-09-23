@@ -112,16 +112,9 @@ public class MemberService {
     //============ 회원탈퇴 기능
     @Transactional
     public ResponseEntity<?> resignMember(ResignRequestDto requestDto, HttpServletRequest request) {
-        String[] BearerSplit = request.getHeader("Authorization").split(" ");
-        String accessToken = BearerSplit[1];
-        if (!tokenProvider.validateToken(accessToken)) {
-            return new ResponseEntity<>(Message.fail("INVALID_TOKEN", "토큰이 유효하지 않습니다."),HttpStatus.UNAUTHORIZED);
-        }
-        Member member = memberRepository.findByNickname(requestDto.getEmail()).orElse(null);
-        if (member == null) {
-            return new ResponseEntity<>(Message.fail("NICKNAME_NOT_FOUND", "존재하지 않는 닉네임입니다."),HttpStatus.BAD_REQUEST);
-        }
-
+        validation.validateMemberToAccess(request);
+        Member member = memberRepository.findByNickname(requestDto.getEmail()).orElseThrow(
+                ()->new IllegalArgumentException("NICKNAME_NOT_FOUND"));
         RefreshToken deleteToken = getDeleteToken(member);
         String deleteEmail = requestDto.getEmail();
         Member deleteMember = validation.getPresentEmail(deleteEmail);
@@ -140,17 +133,10 @@ public class MemberService {
     }
     //============ 로그아웃 기능
     public ResponseEntity<?> logoutMember(LogoutRequestDto requestDto, HttpServletRequest request) {
-        String[] BearerSplit = request.getHeader("Authorization").split(" ");
-        String accessToken = BearerSplit[1];
-        if (!tokenProvider.validateToken(accessToken)) {
-            return new ResponseEntity<>(Message.fail("INVALID_TOKEN", "토큰이 유효하지 않습니다."),HttpStatus.UNAUTHORIZED);
-        }
-        Member member = memberRepository.findByNickname(requestDto.getNickname()).orElse(null);
-        if (member == null) {
-            return new ResponseEntity<>(Message.fail("NICKNAME_NOT_FOUND", "존재하지 않는 닉네임입니다."),HttpStatus.BAD_REQUEST);
-        }
-
-        String logoutNickname = requestDto.getNickname();
+        validation.validateMemberToAccess(request);
+        Member member = memberRepository.findByNickname(requestDto.getNickname()).orElseThrow(
+                ()-> new IllegalArgumentException("NICKNAME_NOT_FOUND"));
+        String logoutNickname = member.getNickname();
         Member logoutMember = getPresentNickname(logoutNickname);
         Long logoutMemberId = logoutMember.getId();
         Member logout = getDeleteMember(logoutMemberId);
@@ -206,14 +192,10 @@ public class MemberService {
     @Transactional
     public void request(Constant.SocialLoginType socialLoginType) throws IOException {
         String redirectURL;
-        switch (socialLoginType) {
-            case GOOGLE: {
-                //각 소셜 로그인을 요청하면 소셜로그인 페이지로 리다이렉트 해주는 프로세스이다.
-                redirectURL = googleOauth.getOauthRedirectURL();
-            }break;
-            default: {
-                throw new IllegalArgumentException("알 수 없는 소셜 로그인 형식입니다.");
-            }
+        if (socialLoginType == Constant.SocialLoginType.GOOGLE) {//각 소셜 로그인을 요청하면 소셜로그인 페이지로 리다이렉트 해주는 프로세스이다.
+            redirectURL = googleOauth.getOauthRedirectURL();
+        } else {
+            throw new IllegalArgumentException("알 수 없는 소셜 로그인 형식입니다.");
         }
         response.sendRedirect(redirectURL);
     }

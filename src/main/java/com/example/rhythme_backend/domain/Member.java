@@ -50,7 +50,7 @@ public class Member extends Timestamped {
     @Column
     private String deleteCheck;
 
-//    @Column
+//    @Transient
 //    @JsonIgnore
 //    String notExist;
 //
