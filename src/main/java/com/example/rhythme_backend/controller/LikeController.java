@@ -19,7 +19,7 @@ public class LikeController {
     private final LikeService likeService;
 
     @GetMapping("/post/{postId}/like/{position}")
-    public ResponseEntity<?> SingerLike(@PathVariable Long postId, HttpServletRequest request,
+    public ResponseEntity<?> PostLike(@PathVariable Long postId, HttpServletRequest request,
                                         @PathVariable String position){
         if(position.equals("Singer")){
             return likeService.upDownSingerLike(postId,request);
