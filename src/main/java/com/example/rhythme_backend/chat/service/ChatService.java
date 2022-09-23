@@ -1,14 +1,14 @@
 package com.example.rhythme_backend.chat.service;
 
 
+import com.example.rhythme_backend.chat.domain.InvitedUsers;
+import com.example.rhythme_backend.chat.domain.ResignChatMessage;
+import com.example.rhythme_backend.chat.domain.ResignChatRoom;
 import com.example.rhythme_backend.chat.domain.chat.ChatMessage;
 import com.example.rhythme_backend.chat.domain.chat.ChatRoom;
 import com.example.rhythme_backend.chat.dto.ChatMessageDto;
 import com.example.rhythme_backend.chat.dto.UserinfoDto;
-import com.example.rhythme_backend.chat.repository.ChatMessageJpaRepository;
-import com.example.rhythme_backend.chat.repository.ChatMessageRepository;
-import com.example.rhythme_backend.chat.repository.ChatRoomJpaRepository;
-import com.example.rhythme_backend.chat.repository.ChatRoomRepository;
+import com.example.rhythme_backend.chat.repository.*;
 import com.example.rhythme_backend.domain.Member;
 import com.example.rhythme_backend.repository.MemberRepository;
 import com.example.rhythme_backend.service.UserDetailsImpl;

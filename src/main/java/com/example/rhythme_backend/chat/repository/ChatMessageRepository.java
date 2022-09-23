@@ -1,7 +1,7 @@
 package com.example.rhythme_backend.chat.repository;
 
-import com.example.redistest.chat.domain.chat.ChatMessage;
-import com.example.redistest.chat.dto.ChatMessageDto;
+import com.example.rhythme_backend.chat.domain.chat.ChatMessage;
+import com.example.rhythme_backend.chat.dto.ChatMessageDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -29,7 +29,7 @@ public class ChatMessageRepository {
     public static final String USER_COUNT = "USER_COUNT"; // 채팅룸에 입장한 클라이언트수 저장
     public static final String ENTER_INFO = "ENTER_INFO"; // 채팅룸에 입장한 클라이언트의 sessionId와 채팅룸 id를 맵핑한 정보 저장
 
-    private final com.example.redistest.chat.repository.ChatMessageJpaRepository chatMessageJpaRepository;
+    private final ChatMessageJpaRepository chatMessageJpaRepository;
     private final RedisTemplate<String, Object> redisTemplate; // redisTemplate 사용
     private final StringRedisTemplate stringRedisTemplate; // StringRedisTemplate 사용
     private HashOperations<String, String, String> hashOpsEnterInfo; // Redis 의 Hashes 사용
