@@ -7,6 +7,7 @@ import com.example.rhythme_backend.exception.CustomException;
 import com.example.rhythme_backend.exception.ErrorCode;
 import com.example.rhythme_backend.jwt.TokenProvider;
 import com.example.rhythme_backend.repository.MemberRepository;
+import com.example.rhythme_backend.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,7 @@ import java.util.Optional;
 @Component
 public class Validation {
     private final MemberRepository memberRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final TokenProvider tokenProvider;
 
     public void checkAccessToken (HttpServletRequest request, Member member){
@@ -59,12 +61,30 @@ public class Validation {
         response.addHeader("Authorization", "Bearer " + tokenDto.getAccessToken());
         response.addHeader("Access-Token-Expire-Time", tokenDto.getAccessTokenExpiresIn().toString());
     }
+
     public Member isPresentMemberFollow(String  nickname) {
         Optional<Member> optionalMember = memberRepository.findByNickname(nickname);
         return optionalMember.orElseThrow(
                 () -> new CustomException(ErrorCode.MEMBER_NOT_FOUND)
         );
     }
+
+    @Transactional(readOnly = true)
+    public Member getPresentNickname(String nickname) {
+        Optional<Member> optionalMember = memberRepository.findByNickname(nickname);
+        return optionalMember.orElseThrow(()->new IllegalArgumentException("MEMBER_NOT_FOUND"));
+    }
+
+    public Member getDeleteMember(Long id) {
+        Optional<Member> optionalMember = memberRepository.findById(id);
+        return optionalMember.orElseThrow(()-> new IllegalArgumentException("MEMBER_NOT_FOUND"));
+    }
+
+    public RefreshToken getDeleteToken(Member member) {
+        Optional<RefreshToken> optionalMember = refreshTokenRepository.findByMember(member);
+        return optionalMember.orElseThrow(()->new IllegalArgumentException("INVALID_TOKEN"));
+    }
+
 }
 
 
