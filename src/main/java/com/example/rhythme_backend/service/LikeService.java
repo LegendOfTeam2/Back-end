@@ -28,11 +28,8 @@ import java.util.Optional;
 public class LikeService {
 
     private final SingerPostRepository singerPostRepository;
-
     private final MakerPostRepository makerPostRepository;
-
     private final SingerLikeRepository singerLikeRepository;
-
     private final MakerLikeRepository makerLikeRepository;
     private final Validation validation;
 
