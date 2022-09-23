@@ -18,6 +18,7 @@ public class PlayListResponseDto {
     private String lyrics;
     private Long follower;
     private String nickname;
+    private String memberImageUrl;
     @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss", timezone="Asia/Seoul")
     private LocalDateTime createdAt;
 

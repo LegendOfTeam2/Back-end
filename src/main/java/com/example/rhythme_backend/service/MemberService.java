@@ -324,12 +324,11 @@ public class MemberService {
     }
 
 //    @Transactional(readOnly = true)
-//    public ResponseEntity<?> getPresentNickname(String nickname) {
+//    public ResponseEntity<?> getPresentNicknames(String nickname) {
 //       if (memberRepository.existsByNickname(nickname)) {
 //           return new ResponseEntity<>(Message.fail("DUPLICATED_NICKNAME","사용 불가능한 닉네임입니다."),HttpStatus.NOT_FOUND);
 //       }
 //        return new ResponseEntity<>(Message.success("사용 가능한 닉네임입니다."),HttpStatus.OK);
-//
 //    }
 
     public Member getDeleteMember(Long id) {
