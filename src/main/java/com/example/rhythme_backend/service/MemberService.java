@@ -47,17 +47,9 @@ public class MemberService {
     private final HttpServletResponse response;
     private final KakaoOauth kakaoOauth;
     private final HashTagRepository hashTagRepository;
-//    private final FollowRepository followRepository;
-//    private final MakerLikeRepository makerLikeRepository;
-//    private final SingerLikeRepository singerLikeRepository;
-//    private final MakerPostTagRepository makerPostTagRepository;
-//    private final SingerPostTagRepository singerPostTagRepository;
-//    private final TagRepository tagRepository;
-//    private final MakerPostRepository makerPostRepository;
-//    private final SingerPostRepository singerPostRepository;
     private final Validation validation;
-    
 
+    //============ 회원가입
     @Transactional
     public ResponseEntity<?> signupMember(SignupRequestDto requestDto) {
 
@@ -129,7 +121,7 @@ public class MemberService {
     }
 
 
-
+    //============ 이메일 중복 확인
     @Transactional
     public ResponseEntity<?> emailCheck(EmailCheckRequestDto requestDto) {
         if (memberRepository.existsByEmail(requestDto.getEmail())) {
@@ -139,7 +131,7 @@ public class MemberService {
         }
             return new ResponseEntity<>(Message.success("사용 가능한 이메일입니다."), HttpStatus.OK);
         }
-
+    //============ 닉네임 중복 확인
     @Transactional
     public ResponseEntity<?> nicknameCheck(NicknameCheckRequestDto requestDto) {
         if (memberRepository.existsByNickname(requestDto.getNickname())) {
@@ -148,7 +140,7 @@ public class MemberService {
         return new ResponseEntity<>(Message.success("사용 가능한 닉네임입니다."),HttpStatus.OK);
     }
 
-
+    //============ 로그인 기능
     @Transactional
     public ResponseEntity<?> loginMember(LoginRequestDto requestDto, HttpServletResponse response) {
         Member member = validation.getPresentEmail(requestDto.getEmail());
@@ -165,7 +157,7 @@ public class MemberService {
         return new ResponseEntity<>(Message.success("성공적으로 로그인 되었습니다."),HttpStatus.OK);
     }
 
-
+    //============ 회원탈퇴 기능
     @Transactional
     public ResponseEntity<?> resignMember(ResignRequestDto requestDto, HttpServletRequest request) {
         String[] BearerSplit = request.getHeader("Authorization").split(" ");
@@ -194,7 +186,7 @@ public class MemberService {
                         .build()
         ),HttpStatus.OK);
     }
-
+    //============ 로그아웃 기능
     public ResponseEntity<?> logoutMember(LogoutRequestDto requestDto, HttpServletRequest request) {
         String[] BearerSplit = request.getHeader("Authorization").split(" ");
         String accessToken = BearerSplit[1];
@@ -214,7 +206,7 @@ public class MemberService {
         return new ResponseEntity<>(Message.success("로그아웃 되었습니다."),HttpStatus.OK);
     }
 
-
+    //============ 카카오 로그인
     @Transactional
     public TokenDto kakaoLogin(String code) throws JsonProcessingException {
         // 1. "인가 코드"로 "액세스 토큰" 요청
@@ -328,7 +320,7 @@ public class MemberService {
                     .build());
         }
     }
-
+    //============ 리프레쉬토큰 발급
     public ResponseEntity<?> refreshToken(HttpServletRequest request, HttpServletResponse response) {
         tokenProvider.validateToken(request.getHeader("Refresh-Token"));
         Member requestingMember = validation.validateMemberToRefresh(request);
@@ -378,15 +370,6 @@ public class MemberService {
         Optional<Member> optionalMember = memberRepository.findByNickname(nickname);
         return optionalMember.orElse(null);
     }
-
-//    @Transactional(readOnly = true)
-//    public ResponseEntity<?> getPresentNickname(String nickname) {
-//       if (memberRepository.existsByNickname(nickname)) {
-//           return new ResponseEntity<>(Message.fail("DUPLICATED_NICKNAME","사용 불가능한 닉네임입니다."),HttpStatus.NOT_FOUND);
-//       }
-//        return new ResponseEntity<>(Message.success("사용 가능한 닉네임입니다."),HttpStatus.OK);
-//
-//    }
 
     public Member getDeleteMember(Long id) {
         Optional<Member> optionalMember = memberRepository.findById(id);

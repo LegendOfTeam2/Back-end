@@ -17,6 +17,5 @@ public interface SingerPostRepository extends JpaRepository<SingerPost,Long> {
     List<SingerPost> findAllByMemberOrderByIdDesc(Member member);
     List<SingerPost> findTopByOrderByLikesDesc();
     List<SingerPost> findByTitleContainingOrContentContainingOrderByCreatedAtDesc(String title, String content);
-    List<SingerPost> findAllByOrderByCreatedAt();
     Long countByMember(Member member);
 }
