@@ -32,6 +32,7 @@ public class ChatController {
 
 //    /**
 //     * websocket "/pub/chat/message"로 들어오는 메시징을 처리한다.
+//    기존 로직 ..
 //     */
 //    @MessageMapping("/chat/message")
 //    public void message(ChatMessage message) {
@@ -48,33 +49,26 @@ public class ChatController {
          * websocket "/pub/chat/message"로 들어오는 메시징을 처리한다.
          */
         @MessageMapping({"/chat/message"})
-        public void message(ChatMessageDto message, Long pk) throws JsonProcessingException {
-            chatService.save(message, pk);
+        public void message(ChatMessageDto message) throws JsonProcessingException {
+            chatService.save(message);
         }
 
         //이전 채팅 기록 조회
-        @GetMapping("/chat/message/{roomId}")
+        @GetMapping("/auth/chat/message/{roomId}")
         @ResponseBody
         public List<ChatMessageDto> getMessage(@PathVariable String roomId) {
             return chatService.getMessages(roomId);
         }
 
-//        //채팅방에 파일 넣을때 url 빼오기
-//        @PostMapping("/chat/message/file")
-//        @ResponseBody
-//        public String getMessage(@RequestPart(value = "file") MultipartFile file,
-//                                 @AuthenticationPrincipal UserDetailsImpl userDetails) {
-//            return chatService.getFileUrl(file, userDetails);
-//        }
 
         //채팅방에 참여한 사용자 정보 조회
-        @GetMapping("/chat/message/userinfo/{roomId}")
-        @ResponseBody
-        public List<UserinfoDto> getUserInfo(
-                @PathVariable String roomId,
-                @AuthenticationPrincipal UserDetailsImpl userDetails) {
-            return chatService.getUserinfo(userDetails, roomId);
-        }
+//        @GetMapping("/chat/message/userinfo/{roomId}")
+//        @ResponseBody
+//        public List<UserinfoDto> getUserInfo(
+//                @PathVariable String roomId,
+//                @AuthenticationPrincipal UserDetailsImpl userDetails) {
+//            return chatService.getUserinfo(userDetails, roomId);
+//        }
 
 //        //유저 정보 상세 조회 (채팅방 안에서)
 //        @GetMapping("/chat/details/{roomId}/{userId}")
@@ -82,7 +76,6 @@ public class ChatController {
 //        public ResponseEntity<UserDetailDto> getUserDetails(@PathVariable String roomId, @PathVariable Long userId) {
 //            return chatService.getUserDetails(roomId,userId);
 //        }
-
 
 
 

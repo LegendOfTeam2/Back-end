@@ -93,18 +93,18 @@ public class ChatService {
 
 
     //채팅방에 참여한 사용자 정보 조회
-    public List<UserinfoDto> getUserinfo(UserDetailsImpl userDetails, String roomId) {
-        userRepository.findById(userDetails.getMember().getId()).orElseThrow(
-                () -> new IllegalArgumentException("테스트 에러 메세지")
-        );
-        List<InvitedUsers> invitedUsers = invitedUsersRepository.findAllByPostId(Long.parseLong(roomId));
-        List<UserinfoDto> users = new ArrayList<>();
-        for (InvitedUsers invitedUser : invitedUsers) {
-            Member user = invitedUser.getUser();
-            users.add(new UserinfoDto(user.getNickname(), user.getImageUrl(), user.getId()));
-        }
-        return users;
-    }
+//    public List<UserinfoDto> getUserinfo(UserDetailsImpl userDetails, String roomId) {
+//        userRepository.findById(userDetails.getMember().getId()).orElseThrow(
+//                () -> new IllegalArgumentException("테스트 에러 메세지")
+//        );
+//        List<InvitedUsers> invitedUsers = invitedUsersRepository.findAllByPostId(Long.parseLong(roomId));
+//        List<UserinfoDto> users = new ArrayList<>();
+//        for (InvitedUsers invitedUser : invitedUsers) {
+//            Member user = invitedUser.getUser();
+//            users.add(new UserinfoDto(user.getNickname(), user.getImageUrl(), user.getId()));
+//        }
+//        return users;
+//    }
 
 
 }

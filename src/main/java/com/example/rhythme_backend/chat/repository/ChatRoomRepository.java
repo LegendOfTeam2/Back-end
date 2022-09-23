@@ -3,13 +3,11 @@ package com.example.rhythme_backend.chat.repository;
 import com.example.rhythme_backend.chat.domain.InvitedUsers;
 import com.example.rhythme_backend.chat.domain.chat.ChatMessage;
 import com.example.rhythme_backend.chat.domain.chat.ChatRoom;
-import com.example.rhythme_backend.chat.dto.ChatListMessageDto;
-import com.example.rhythme_backend.chat.dto.ChatRoomResponseDto;
-import com.example.rhythme_backend.chat.dto.UserDto;
-import com.example.rhythme_backend.chat.dto.UserinfoDto;
+import com.example.rhythme_backend.chat.dto.*;
 import com.example.rhythme_backend.chat.service.RedisSubscriber;
 import com.example.rhythme_backend.domain.Member;
 import com.example.rhythme_backend.jwt.TokenProvider;
+import com.example.rhythme_backend.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -42,6 +40,8 @@ public class ChatRoomRepository {
     private final ChatMessageJpaRepository chatMessageJpaRepository;
     private final InvitedUsersRepository invitedUsersRepository;
     private final StringRedisTemplate stringRedisTemplate; // StringRedisTemplate 사용
+
+    private final MemberRepository memberRepository;
     private static final String CHAT_ROOMS = "CHAT_ROOM";
     private final RedisTemplate<String, Object> redisTemplate;
     private HashOperations<String, String, ChatRoom> opsHashChatRoom;
@@ -67,7 +67,7 @@ public class ChatRoomRepository {
             ChatMessage chatMessage = chatMessageJpaRepository.findTop1ByRoomIdOrderByCreatedAtDesc(invitedUser.getPostId().toString());
             ChatRoomResponseDto chatRoomResponseDto = new ChatRoomResponseDto();
             if (chatMessage.getMessage().isEmpty()) {
-                chatRoomResponseDto.setLastMessage("파일이 왔어요😲");
+                chatRoomResponseDto.setLastMessage("읽지 않은 메세지가 있습니다.");
             } else {
                 chatRoomResponseDto.setLastMessage(chatMessage.getMessage());
             }
@@ -75,6 +75,8 @@ public class ChatRoomRepository {
             String createdAtString = createdAt.format(DateTimeFormatter.ofPattern("dd,MM,yyyy,HH,mm,ss", Locale.KOREA));
 
             chatRoomResponseDto.setLastMessageTime(createdAtString);
+            chatRoomResponseDto.setSender(user.getNickname());
+            chatRoomResponseDto.setReceiver(invitedUsers.get(0).getUser().getNickname());
             chatRoomResponseDtoList.add(chatRoomResponseDto);
 
         }
@@ -101,14 +103,19 @@ public class ChatRoomRepository {
      * 채팅방 생성 , 게시글 생성시 만들어진 postid를 받아와서 게시글 id로 사용한다.
      */
     @Transactional
-    public ChatRoom createChatRoom( UserinfoDto userDto) {
-        ChatRoom chatRoom = ChatRoom.create(userDto);
+    public ChatCreateResponseDto createChatRoom(UserinfoDto userinfoDto) {
+        ChatRoom chatRoom = ChatRoom.create(userinfoDto);
         opsHashChatRoom.put(CHAT_ROOMS, chatRoom.getRoomId(), chatRoom); // redis 저장
         redisTemplate.expire(CHAT_ROOMS, 48, TimeUnit.HOURS);
         chatRoom = chatRoomJpaRepository.save(chatRoom); // DB 저장
-        return chatRoom;
+        Member receiver = memberRepository.findByNickname(userinfoDto.getReceiver()).orElseGet(Member::new);
+        return  ChatCreateResponseDto.builder()
+                .roomId(chatRoom.getRoomId())
+                .sender(chatRoom.getUsername())
+                .receiver(chatRoom.getReceiver())
+                .receiverProfileUrl(receiver.getImageUrl())
+                .build();
     }
-
     public static ChannelTopic getTopic(String roomId) {
         String topicToString = topics.get(roomId);
         return new ChannelTopic(topicToString);

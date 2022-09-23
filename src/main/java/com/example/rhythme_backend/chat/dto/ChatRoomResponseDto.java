@@ -9,10 +9,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ChatRoomResponseDto {
     private String lastMessage;
-    private String postUrl;
-    private String postTitle;
+    private String roomId;
+    private String sender;
+    private String receiver;
     private String lastMessageTime;
-    private boolean isLetter;
-    private String postTime;
-    private Long postId;
 }

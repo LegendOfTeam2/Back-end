@@ -29,8 +29,7 @@ public class ResignChatMessage {
     private String profileUrl;
     @Column
     private Long enterUserCnt;
-    @Column(nullable = false)
-    private Long userId;
+
     @Column(nullable = false)
     private LocalDateTime createdAt;
     @Column
@@ -43,7 +42,6 @@ public class ResignChatMessage {
         this.message = chatMessage.getMessage();
         this.profileUrl = chatMessage.getProfileUrl();
         this.enterUserCnt = chatMessage.getEnterUserCnt();
-        this.userId = chatMessage.getUserId();
         this.createdAt = chatMessage.getCreatedAt();
         this.fileUrl = chatMessage.getFileUrl();
     }
