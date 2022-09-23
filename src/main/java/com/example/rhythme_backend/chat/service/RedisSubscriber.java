@@ -1,4 +1,4 @@
-package com.example.redistest.chat.service;
+package com.example.rhythme_backend.chat.service;
 
 import com.example.redistest.chat.domain.chat.ChatMessage;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -1,6 +1,5 @@
-package com.example.redistest.chat.repository;
+package com.example.rhythme_backend.chat.repository;
 
-import com.example.redistest.chat.RedisSubscriber;
 import com.example.redistest.chat.domain.chat.ChatMessage;
 import com.example.redistest.chat.domain.chat.ChatRoom;
 import com.example.redistest.chat.dto.ChatListMessageDto;
@@ -19,7 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor

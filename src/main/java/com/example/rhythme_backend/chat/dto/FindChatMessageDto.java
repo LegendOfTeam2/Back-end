@@ -1,6 +1,6 @@
-package com.example.redistest.chat.dto;
+package com.example.rhythme_backend.chat.dto;
 
-import com.example.redistest.chat.domain.chat.ChatMessage;
+import com.example.rhythme_backend.chat.domain.chat.ChatMessage;
 
 import java.time.LocalDateTime;
 

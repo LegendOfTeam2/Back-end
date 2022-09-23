@@ -1,13 +1,15 @@
-package com.example.redistest.chat.domain.chat;
+package com.example.rhythme_backend.chat.domain.chat;
 
 import com.example.redistest.chat.dto.UserinfoDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import java.io.Serializable;
-
 import java.util.UUID;
 
 @Getter

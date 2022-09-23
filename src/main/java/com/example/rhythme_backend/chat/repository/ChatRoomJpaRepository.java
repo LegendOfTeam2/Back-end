@@ -1,4 +1,4 @@
-package com.example.redistest.chat.repository;
+package com.example.rhythme_backend.chat.repository;
 
 import com.example.redistest.chat.domain.chat.ChatRoom;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,4 +1,4 @@
-package com.example.redistest.chat.controller;
+package com.example.rhythme_backend.chat.controller;
 
 import com.example.redistest.chat.domain.chat.ChatRoom;
 import com.example.redistest.chat.dto.UserinfoDto;

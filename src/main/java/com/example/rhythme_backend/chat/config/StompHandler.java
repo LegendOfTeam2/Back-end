@@ -1,5 +1,8 @@
-package com.example.redistest.chat.config;
+package com.example.rhythme_backend.chat.config;
 
+import com.example.rhythme_backend.chat.repository.ChatMessageRepository;
+import com.example.rhythme_backend.chat.service.ChatRoomService;
+import com.example.rhythme_backend.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -13,11 +16,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Component
 public class StompHandler implements ChannelInterceptor {
-//    private final JwtTokenProvider jwtTokenProvider;   나중에 토큰 합치자.
+    private final TokenProvider jwtTokenProvider;
     private final ChatRoomService chatRoomService;
     private final ChatMessageRepository chatMessageRepository;
 
-    private final InvitedUsersRepository invitedUsersRepository;
+//    private final InvitedUsersRepository invitedUsersRepository;
 
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {

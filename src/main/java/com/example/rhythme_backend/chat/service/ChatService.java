@@ -1,14 +1,17 @@
-package com.example.redistest.chat.service;
+package com.example.rhythme_backend.chat.service;
 
-import com.example.redistest.chat.RedisPublisher;
-import com.example.redistest.chat.domain.chat.ChatMessage;
-import com.example.redistest.chat.domain.chat.ChatRoom;
-import com.example.redistest.chat.dto.ChatMessageDto;
-import com.example.redistest.chat.dto.UserinfoDto;
-import com.example.redistest.chat.repository.ChatMessageJpaRepository;
-import com.example.redistest.chat.repository.ChatMessageRepository;
-import com.example.redistest.chat.repository.ChatRoomJpaRepository;
-import com.example.redistest.chat.repository.ChatRoomRepository;
+
+import com.example.rhythme_backend.chat.domain.chat.ChatMessage;
+import com.example.rhythme_backend.chat.domain.chat.ChatRoom;
+import com.example.rhythme_backend.chat.dto.ChatMessageDto;
+import com.example.rhythme_backend.chat.dto.UserinfoDto;
+import com.example.rhythme_backend.chat.repository.ChatMessageJpaRepository;
+import com.example.rhythme_backend.chat.repository.ChatMessageRepository;
+import com.example.rhythme_backend.chat.repository.ChatRoomJpaRepository;
+import com.example.rhythme_backend.chat.repository.ChatRoomRepository;
+import com.example.rhythme_backend.domain.Member;
+import com.example.rhythme_backend.repository.MemberRepository;
+import com.example.rhythme_backend.service.UserDetailsImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,7 +30,7 @@ public class ChatService {
     private final RedisPublisher redisPublisher;
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMessageRepository chatMessageRepository;
-    private final UserRepository userRepository;
+    private final MemberRepository userRepository;
     private final ChatMessageJpaRepository chatMessageJpaRepository;
 
     private final InvitedUsersRepository invitedUsersRepository;
@@ -39,9 +42,9 @@ public class ChatService {
 
 
     @Transactional
-    public void save(ChatMessageDto messageDto, Long pk) throws JsonProcessingException {
+    public void save(ChatMessageDto messageDto, Long userId) throws JsonProcessingException {
         // 토큰에서 유저 아이디 가져오기
-        User user = userRepository.findById(pk).orElseThrow(
+        Member user = userRepository.findById(userId).orElseThrow(
                 () -> new NullPointerException("존재하지 않는 사용자 입니다!")
         );
         LocalDateTime createdAt = LocalDateTime.now();

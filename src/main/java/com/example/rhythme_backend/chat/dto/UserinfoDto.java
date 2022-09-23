@@ -1,4 +1,4 @@
-package com.example.redistest.chat.dto;
+package com.example.rhythme_backend.chat.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

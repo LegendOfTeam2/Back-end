@@ -1,4 +1,4 @@
-package com.example.redistest.chat.domain.chat;
+package com.example.rhythme_backend.chat.domain.chat;
 
 import com.example.redistest.chat.dto.ChatMessageDto;
 import lombok.Getter;

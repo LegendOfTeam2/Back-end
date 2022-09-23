@@ -1,11 +1,14 @@
-package com.example.redistest.chat.controller;
+package com.example.rhythme_backend.chat.controller;
 
-import com.example.redistest.chat.domain.chat.ChatMessage;
-import com.example.redistest.chat.service.RedisPublisher;
-import com.example.redistest.chat.repository.ChatRoomRepository;
+
+import com.example.rhythme_backend.chat.domain.chat.ChatMessage;
+import com.example.rhythme_backend.chat.dto.ChatMessageDto;
+import com.example.rhythme_backend.chat.dto.UserinfoDto;
+import com.example.rhythme_backend.chat.repository.ChatRoomRepository;
+import com.example.rhythme_backend.chat.service.RedisPublisher;
+import com.example.rhythme_backend.service.UserDetailsImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;

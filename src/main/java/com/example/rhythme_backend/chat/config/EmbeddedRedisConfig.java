@@ -1,4 +1,4 @@
-package com.example.redistest.chat.config;
+package com.example.rhythme_backend.chat.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
