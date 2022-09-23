@@ -40,9 +40,9 @@ public class ChatService {
 
 
     @Transactional
-    public void save(ChatMessageDto messageDto, Long userId) throws JsonProcessingException {
+    public void save(ChatMessageDto messageDto) throws JsonProcessingException {
         // 토큰에서 유저 아이디 가져오기
-        Member user = userRepository.findById(userId).orElseThrow(
+        Member user = userRepository.findByNickname(messageDto.getSender()).orElseThrow(
                 () -> new NullPointerException("존재하지 않는 사용자 입니다!")
         );
         LocalDateTime createdAt = LocalDateTime.now();
@@ -50,7 +50,6 @@ public class ChatService {
         messageDto.setSender(user.getNickname());
         messageDto.setProfileUrl(user.getImageUrl());
         messageDto.setCreatedAt(formatDate);
-        messageDto.setUserId(user.getId());
         messageDto.setQuitOwner(false);
 
         //받아온 메세지의 타입이 ENTER 일때

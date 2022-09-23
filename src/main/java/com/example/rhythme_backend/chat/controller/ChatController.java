@@ -48,7 +48,7 @@ public class ChatController {
          * websocket "/pub/chat/message"로 들어오는 메시징을 처리한다.
          */
         @MessageMapping({"/chat/message"})
-        public void message(ChatMessageDto message, @Header("PK") Long pk) throws JsonProcessingException {
+        public void message(ChatMessageDto message, Long pk) throws JsonProcessingException {
             chatService.save(message, pk);
         }
 

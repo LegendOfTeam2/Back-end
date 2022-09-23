@@ -17,7 +17,6 @@ public class ChatMessageDto {
     private String sender; // nickname
     private String profileUrl;
     private Long enterUserCnt;
-    private Long userId;
     private String createdAt;
     private String fileUrl;
     private Boolean quitOwner;
@@ -30,7 +29,6 @@ public class ChatMessageDto {
         this.sender = chatMessage.getSender();
         this.profileUrl = chatMessage.getProfileUrl();
         this.enterUserCnt = chatMessage.getEnterUserCnt();
-        this.userId = chatMessage.getUserId();
         this.createdAt = createdAt;
         this.fileUrl = chatMessage.getFileUrl();
         this.quitOwner = chatMessage.getQuitOwner();

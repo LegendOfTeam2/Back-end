@@ -75,7 +75,7 @@ public class ChatRoomController {
     // 특정 채팅방 입장
     @PostMapping("/room/{postId}")
     @ResponseBody
-    public String roomInfo(@PathVariable Long postId) {
+    public String roomInfo(@PathVariable String postId) {
         return String.valueOf(postId);
     }
 
