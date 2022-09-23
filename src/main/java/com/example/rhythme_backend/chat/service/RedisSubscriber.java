@@ -1,6 +1,7 @@
 package com.example.rhythme_backend.chat.service;
 
-import com.example.redistest.chat.domain.chat.ChatMessage;
+
+import com.example.rhythme_backend.chat.domain.chat.ChatMessage;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -40,12 +40,12 @@ public class ChatRoomController {
 //        return chatRoomRepository.findAllRoom(request);
 //    }
 //
-//    // 채팅방 생성
-//    @PostMapping("/room")
-//    @ResponseBody
-//    public ChatRoom createRoom(@RequestParam UserinfoDto userinfoDto) {
-//        return chatRoomRepository.createChatRoom(userinfoDto);
-//    }
+    // 채팅방 생성
+    @PostMapping("/room")
+    @ResponseBody
+    public ChatRoom createRoom(@RequestBody UserinfoDto userinfoDto) {
+        return chatRoomRepository.createChatRoom(userinfoDto);
+    }
 //    // 채팅방 입장 화면
 //    @GetMapping("/room/enter/{roomId}")
 //    public String roomDetail(Model model, @PathVariable String roomId) {

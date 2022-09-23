@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.context.annotation.Primary;
+import org.springframework.data.redis.connection.*;
+import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -28,6 +30,20 @@ public class RedisConfig {
 
     @Value("${redis.port}")
     private int redisPort;
+
+
+//    @Value("${spring.redis.password}")
+//    private String password;
+
+
+//    @Bean
+//    public RedisConfiguration defaultRedisConfig() {
+//        RedisStandaloneConfiguration config = new RedisStandaloneConfiguration();
+//        config.setHostName(redisHost);
+////        config.setPassword(RedisPassword.of(password));
+//        return config;
+//    }
+
 
     @Bean
     public RedisConnectionFactory connectionFactory() {
