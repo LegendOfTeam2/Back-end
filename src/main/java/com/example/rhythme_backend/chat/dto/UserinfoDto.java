@@ -8,13 +8,11 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class UserinfoDto {
-    private String nickname;
-    private String profileUrl;
-    private Long userId;
+    private String sender;
+    private String receiver;
 
-    public UserinfoDto(String nickname, String profileUrl, Long userId) {
-        this.nickname = nickname;
-        this.profileUrl = profileUrl;
-        this.userId = userId;
+    public UserinfoDto(String sender , String receiver) {
+        this.sender = sender;
+        this.receiver = receiver;
     }
 }

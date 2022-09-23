@@ -31,16 +31,10 @@ public class ChatMessage {
     private String message;
     @Column(nullable = false)
     private String profileUrl;
-    @Column
-    private Long enterUserCnt;
-    @Column(nullable = false)
-    private Long userId ;
+
     @Column(nullable = false)
     private LocalDateTime createdAt;
-    @Column
-    private String fileUrl;
-    @Column
-    private Boolean quitOwner = false;
+
 
 
     public ChatMessage(ChatMessageDto chatMessageDto, LocalDateTime createdAt) {
@@ -49,9 +43,6 @@ public class ChatMessage {
         this.message = chatMessageDto.getMessage();
         this.sender = chatMessageDto.getSender();
         this.profileUrl = chatMessageDto.getProfileUrl();
-        this.enterUserCnt = chatMessageDto.getEnterUserCnt();
-        this.userId = chatMessageDto.getUserId();
         this.createdAt = createdAt;
-        this.fileUrl = chatMessageDto.getFileUrl();
     }
 }
