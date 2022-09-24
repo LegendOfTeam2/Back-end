@@ -53,6 +53,9 @@ public class ChatController {
         public void message(ChatMessageDto message) throws JsonProcessingException {
             LocalDateTime now = LocalDateTime.now();
             ChatMessage chatMessage =new ChatMessage(message,now);
+            // 초반 버전 message 로직
+//            sendingOperations.convertAndSend("/topic/chat/room/"+message.getRoomId(),message);
+
             redisPublisher.publish(chatRoomRepository.getTopic(message.getRoomId()),chatMessage);
             chatService.save(message);
         }
