@@ -58,6 +58,7 @@ public class ChatRoomRepository {
     public ChatRoomListDto findAllRoom(HttpServletRequest request) {
         Member user = validateMember(request);
         List<ChatRoom> chatRooms = chatRoomJpaRepository.findByUsername(user.getNickname());
+        List<ChatRoom> chatRooms1 = chatRoomJpaRepository.findByReceiver(user.getNickname());
         List<ChatRoomResponseDto> chatRoomResponseDtoList = new ArrayList<>();
         for (ChatRoom chatRoom : chatRooms) {
 //            ChatMessage chatMessage = chatMessageJpaRepository.findTop1ByRoomIdOrderByCreatedAtDesc(chatRoom.getRoomId());
@@ -100,8 +101,8 @@ public class ChatRoomRepository {
     @Transactional
     public ChatCreateResponseDto createChatRoom(UserinfoDto userinfoDto) {
         ChatRoom chatRoom = ChatRoom.create(userinfoDto);
-        opsHashChatRoom.put(CHAT_ROOMS, chatRoom.getRoomId(), chatRoom); // redis 저장
-        redisTemplate.expire(CHAT_ROOMS, 48, TimeUnit.HOURS);
+//        opsHashChatRoom.put(CHAT_ROOMS, chatRoom.getRoomId(), chatRoom); // redis 저장
+//        redisTemplate.expire(CHAT_ROOMS, 48, TimeUnit.HOURS);
         chatRoom = chatRoomJpaRepository.save(chatRoom); // DB 저장
         Member receiver = memberRepository.findByNickname(userinfoDto.getReceiver()).orElseGet(Member::new);
         return  ChatCreateResponseDto.builder()

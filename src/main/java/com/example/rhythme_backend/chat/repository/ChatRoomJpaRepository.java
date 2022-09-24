@@ -8,6 +8,7 @@ import java.util.List;
 public interface ChatRoomJpaRepository extends JpaRepository<ChatRoom, Long> {
 
     List<ChatRoom> findByUsername(String username);
+    List<ChatRoom> findByReceiver(String receiver);
     ChatRoom findByRoomId(String roomId);
     void deleteByRoomId(String roomId);
 }
