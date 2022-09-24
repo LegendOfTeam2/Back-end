@@ -114,27 +114,44 @@ public class ChatRoomRepository {
         chatRoomConfirmSender.addAll(chatRoomConfirmReceiver);
         ChatCreateResponseDto answer = new ChatCreateResponseDto();
         String noneAnswer = "이미 생성되어있는 방입니다.";
+        ResponseEntity<?> result = new ResponseEntity<>(HttpStatus.OK);
+        if(chatRoomConfirmSender.size()==0){
+            ChatRoom chatRoom = ChatRoom.create(userinfoDto);
+            opsHashChatRoom.put(CHAT_ROOMS, chatRoom.getRoomId(), chatRoom); // redis 저장
+            redisTemplate.expire(CHAT_ROOMS, 48, TimeUnit.HOURS);
+            chatRoom = chatRoomJpaRepository.save(chatRoom); // DB 저장
+            Member receiver = memberRepository.findByNickname(userinfoDto.getReceiver()).orElseGet(Member::new);
+            answer = ChatCreateResponseDto.builder()
+                    .roomId(chatRoom.getRoomId())
+                    .sender(chatRoom.getUsername())
+                    .receiver(chatRoom.getReceiver())
+                    .receiverProfileUrl(receiver.getImageUrl())
+                    .build();
+            result=  new ResponseEntity<>(Message.success(answer),HttpStatus.OK);
+        }
         for(ChatRoom a : chatRoomConfirmSender){
             if(!a.getReceiver().equals(userinfoDto.getReceiver())&&!a.getReceiver().equals(userinfoDto.getSender())){
                 if(a.getUsername().equals(userinfoDto.getReceiver())) {
                     ChatRoom chatRoom = ChatRoom.create(userinfoDto);
-                    opsHashChatRoom.put(CHAT_ROOMS, chatRoom.getRoomId(), chatRoom); // redis 저장
-                    redisTemplate.expire(CHAT_ROOMS, 48, TimeUnit.HOURS);
+//                    opsHashChatRoom.put(CHAT_ROOMS, chatRoom.getRoomId(), chatRoom); // redis 저장
+//                    redisTemplate.expire(CHAT_ROOMS, 48, TimeUnit.HOURS);
                     chatRoom = chatRoomJpaRepository.save(chatRoom); // DB 저장
                     Member receiver = memberRepository.findByNickname(userinfoDto.getReceiver()).orElseGet(Member::new);
+
                     answer = ChatCreateResponseDto.builder()
                             .roomId(chatRoom.getRoomId())
                             .sender(chatRoom.getUsername())
                             .receiver(chatRoom.getReceiver())
                             .receiverProfileUrl(receiver.getImageUrl())
                             .build();
-                }else{
-                    return new ResponseEntity<>(Message.fail("aa",noneAnswer), HttpStatus.OK);
-                }
-            }
-        }
-            return  new ResponseEntity<>(Message.success(answer),HttpStatus.OK);
 
+                    result=  new ResponseEntity<>(Message.success(answer),HttpStatus.OK);
+                }
+                result= new ResponseEntity<>(Message.fail("duplicated",noneAnswer), HttpStatus.OK);
+            }
+            result= new ResponseEntity<>(Message.fail("duplicated",noneAnswer), HttpStatus.OK);
+        }
+        return  result;
     }
     public static ChannelTopic getTopic(String roomId) {
         String topicToString = topics.get(roomId);

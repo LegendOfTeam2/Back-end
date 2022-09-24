@@ -43,6 +43,7 @@ public class ChatRoom implements Serializable {
         @Column
         private String receiver;
 
+
         //채팅방 생성
         public static ChatRoom create( UserinfoDto userinfoDto) {
             ChatRoom chatRoom = new ChatRoom();
