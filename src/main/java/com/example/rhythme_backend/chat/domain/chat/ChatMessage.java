@@ -4,6 +4,7 @@ import com.example.rhythme_backend.chat.dto.ChatMessageDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.redis.core.RedisHash;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

@@ -6,6 +6,7 @@ import com.example.rhythme_backend.chat.domain.chat.ChatRoom;
 import com.example.rhythme_backend.chat.dto.*;
 import com.example.rhythme_backend.chat.service.RedisSubscriber;
 import com.example.rhythme_backend.domain.Member;
+import com.example.rhythme_backend.domain.Message;
 import com.example.rhythme_backend.jwt.TokenProvider;
 import com.example.rhythme_backend.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,8 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,6 +62,7 @@ public class ChatRoomRepository {
         Member user = validateMember(request);
         List<ChatRoom> chatRooms = chatRoomJpaRepository.findByUsername(user.getNickname());
         List<ChatRoom> chatRooms1 = chatRoomJpaRepository.findByReceiver(user.getNickname());
+        chatRooms.addAll(chatRooms1);
         List<ChatRoomResponseDto> chatRoomResponseDtoList = new ArrayList<>();
         for (ChatRoom chatRoom : chatRooms) {
 //            ChatMessage chatMessage = chatMessageJpaRepository.findTop1ByRoomIdOrderByCreatedAtDesc(chatRoom.getRoomId());
@@ -68,13 +72,18 @@ public class ChatRoomRepository {
 //            } else {
 //                chatRoomResponseDto.setLastMessage(chatMessage.getMessage());
 //            }
+            Member receiver = memberRepository.findByNickname(chatRoom.getReceiver()).orElseGet(Member::new);
+
             LocalDateTime createdAt = LocalDateTime.now();
             String createdAtString = createdAt.format(DateTimeFormatter.ofPattern("dd,MM,yyyy,HH,mm,ss", Locale.KOREA));
             chatRoomResponseDto.setRoomId(chatRoom.getRoomId());
             chatRoomResponseDto.setLastMessageTime(createdAtString);
             chatRoomResponseDto.setSender(user.getNickname());
+            chatRoomResponseDto.setProfileUrl(receiver.getImageUrl());
             chatRoomResponseDto.setReceiver(chatRoom.getReceiver());
             chatRoomResponseDtoList.add(chatRoomResponseDto);
+
+
         }
         return new ChatRoomListDto(chatRoomResponseDtoList, true);
     }
@@ -99,18 +108,33 @@ public class ChatRoomRepository {
      * 채팅방 생성 , 게시글 생성시 만들어진 postid를 받아와서 게시글 id로 사용한다.
      */
     @Transactional
-    public ChatCreateResponseDto createChatRoom(UserinfoDto userinfoDto) {
-        ChatRoom chatRoom = ChatRoom.create(userinfoDto);
-//        opsHashChatRoom.put(CHAT_ROOMS, chatRoom.getRoomId(), chatRoom); // redis 저장
-//        redisTemplate.expire(CHAT_ROOMS, 48, TimeUnit.HOURS);
-        chatRoom = chatRoomJpaRepository.save(chatRoom); // DB 저장
-        Member receiver = memberRepository.findByNickname(userinfoDto.getReceiver()).orElseGet(Member::new);
-        return  ChatCreateResponseDto.builder()
-                .roomId(chatRoom.getRoomId())
-                .sender(chatRoom.getUsername())
-                .receiver(chatRoom.getReceiver())
-                .receiverProfileUrl(receiver.getImageUrl())
-                .build();
+    public ResponseEntity<?> createChatRoom(UserinfoDto userinfoDto) {
+        List<ChatRoom> chatRoomConfirmSender = chatRoomJpaRepository.findByUsername(userinfoDto.getSender());
+        List<ChatRoom> chatRoomConfirmReceiver = chatRoomJpaRepository.findByReceiver(userinfoDto.getSender());
+        chatRoomConfirmSender.addAll(chatRoomConfirmReceiver);
+        ChatCreateResponseDto answer = new ChatCreateResponseDto();
+        String noneAnswer = "이미 생성되어있는 방입니다.";
+        for(ChatRoom a : chatRoomConfirmSender){
+            if(!a.getReceiver().equals(userinfoDto.getReceiver())&&!a.getReceiver().equals(userinfoDto.getSender())){
+                if(a.getUsername().equals(userinfoDto.getReceiver())) {
+                    ChatRoom chatRoom = ChatRoom.create(userinfoDto);
+                    opsHashChatRoom.put(CHAT_ROOMS, chatRoom.getRoomId(), chatRoom); // redis 저장
+                    redisTemplate.expire(CHAT_ROOMS, 48, TimeUnit.HOURS);
+                    chatRoom = chatRoomJpaRepository.save(chatRoom); // DB 저장
+                    Member receiver = memberRepository.findByNickname(userinfoDto.getReceiver()).orElseGet(Member::new);
+                    answer = ChatCreateResponseDto.builder()
+                            .roomId(chatRoom.getRoomId())
+                            .sender(chatRoom.getUsername())
+                            .receiver(chatRoom.getReceiver())
+                            .receiverProfileUrl(receiver.getImageUrl())
+                            .build();
+                }else{
+                    return new ResponseEntity<>(Message.fail("aa",noneAnswer), HttpStatus.OK);
+                }
+            }
+        }
+            return  new ResponseEntity<>(Message.success(answer),HttpStatus.OK);
+
     }
     public static ChannelTopic getTopic(String roomId) {
         String topicToString = topics.get(roomId);

@@ -4,6 +4,8 @@ import com.example.rhythme_backend.chat.dto.UserinfoDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.redis.core.RedisHash;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

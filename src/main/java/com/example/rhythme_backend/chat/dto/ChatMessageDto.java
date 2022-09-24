@@ -5,11 +5,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.redis.core.RedisHash;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@RedisHash
 public class ChatMessageDto {
     private ChatMessage.MessageType type; // 메시지 타입
     private String roomId; // 방번호
