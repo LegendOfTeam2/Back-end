@@ -16,5 +16,4 @@ public class ChatRoomResponseDto {
     private String profileUrl;
     private String receiver;
     private String lastMessageTime;
-    private Boolean duplicateCheck;
 }

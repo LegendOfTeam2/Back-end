@@ -57,17 +57,6 @@ public class ChatService {
             messageDto.setMessage(messageDto.getSender() + "님이 입장하셨습니다.");
             String roomId = messageDto.getRoomId();
 
-            List<InvitedUsers> invitedUsersList = invitedUsersRepository.findAllByRoomId(roomId);
-            for (InvitedUsers invitedUsers : invitedUsersList) {
-                if (invitedUsers.getUser().equals(user)) {
-                    invitedUsers.setReadCheck(true);
-                }
-            }
-            // 이미 그방에 초대되어 있다면 중복으로 저장을 하지 않게 한다.
-            if (!invitedUsersRepository.existsByUserAndRoomId(user.getNickname(), messageDto.getRoomId())) {
-                InvitedUsers invitedUsers = new InvitedUsers(roomId, user);
-                invitedUsersRepository.save(invitedUsers);
-            }
             //받아온 메세지 타입이 QUIT 일때
         } else if (ChatMessage.MessageType.QUIT.equals(messageDto.getType())) {
             messageDto.setMessage(messageDto.getSender() + "님이 나가셨습니다.");

@@ -73,17 +73,14 @@ public class ChatRoomRepository {
 //                chatRoomResponseDto.setLastMessage(chatMessage.getMessage());
 //            }
             Member receiver = memberRepository.findByNickname(chatRoom.getReceiver()).orElseGet(Member::new);
-
             LocalDateTime createdAt = LocalDateTime.now();
             String createdAtString = createdAt.format(DateTimeFormatter.ofPattern("dd,MM,yyyy,HH,mm,ss", Locale.KOREA));
             chatRoomResponseDto.setRoomId(chatRoom.getRoomId());
             chatRoomResponseDto.setLastMessageTime(createdAtString);
-            chatRoomResponseDto.setSender(user.getNickname());
+            chatRoomResponseDto.setSender(chatRoom.getUsername());
             chatRoomResponseDto.setProfileUrl(receiver.getImageUrl());
             chatRoomResponseDto.setReceiver(chatRoom.getReceiver());
             chatRoomResponseDtoList.add(chatRoomResponseDto);
-
-
         }
         return new ChatRoomListDto(chatRoomResponseDtoList, true);
     }
@@ -115,6 +112,7 @@ public class ChatRoomRepository {
         ChatCreateResponseDto answer = new ChatCreateResponseDto();
         String noneAnswer = "이미 생성되어있는 방입니다.";
         ResponseEntity<?> result = new ResponseEntity<>(HttpStatus.OK);
+
         if(chatRoomConfirmSender.size()==0){
             ChatRoom chatRoom = ChatRoom.create(userinfoDto);
             opsHashChatRoom.put(CHAT_ROOMS, chatRoom.getRoomId(), chatRoom); // redis 저장
@@ -130,22 +128,24 @@ public class ChatRoomRepository {
             result=  new ResponseEntity<>(Message.success(answer),HttpStatus.OK);
         }
         for(ChatRoom a : chatRoomConfirmSender){
-            if(!a.getReceiver().equals(userinfoDto.getReceiver())&&!a.getReceiver().equals(userinfoDto.getSender())){
-                if(a.getUsername().equals(userinfoDto.getReceiver())) {
-                    ChatRoom chatRoom = ChatRoom.create(userinfoDto);
-//                    opsHashChatRoom.put(CHAT_ROOMS, chatRoom.getRoomId(), chatRoom); // redis 저장
-//                    redisTemplate.expire(CHAT_ROOMS, 48, TimeUnit.HOURS);
-                    chatRoom = chatRoomJpaRepository.save(chatRoom); // DB 저장
+//            if(!a.getReceiver().equals(userinfoDto.getReceiver())&&!a.getReceiver().equals(userinfoDto.getSender())){
+            if( !chatRoomJpaRepository.existsByUsernameAndReceiver(userinfoDto.getSender(), userinfoDto.getReceiver())){
+                if(!chatRoomJpaRepository.existsByUsernameAndReceiver(userinfoDto.getReceiver(),userinfoDto.getSender())) {
+                    ChatRoom chatRoom1 = ChatRoom.create(userinfoDto);
+                    opsHashChatRoom.put(CHAT_ROOMS, chatRoom1.getRoomId(), chatRoom1); // redis 저장
+                    redisTemplate.expire(CHAT_ROOMS, 48, TimeUnit.HOURS);
+                    chatRoom1 = chatRoomJpaRepository.save(chatRoom1); // DB 저장
                     Member receiver = memberRepository.findByNickname(userinfoDto.getReceiver()).orElseGet(Member::new);
 
                     answer = ChatCreateResponseDto.builder()
-                            .roomId(chatRoom.getRoomId())
-                            .sender(chatRoom.getUsername())
-                            .receiver(chatRoom.getReceiver())
+                            .roomId(chatRoom1.getRoomId())
+                            .sender(chatRoom1.getUsername())
+                            .receiver(chatRoom1.getReceiver())
                             .receiverProfileUrl(receiver.getImageUrl())
                             .build();
 
                     result=  new ResponseEntity<>(Message.success(answer),HttpStatus.OK);
+                    break;
                 }
                 result= new ResponseEntity<>(Message.fail("duplicated",noneAnswer), HttpStatus.OK);
             }
