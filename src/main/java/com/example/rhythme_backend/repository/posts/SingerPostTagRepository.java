@@ -14,8 +14,6 @@ import java.util.Optional;
 public interface SingerPostTagRepository extends JpaRepository<SingerPostTag,Long> {
     List<SingerPostTag> findAllById(Long id);
     List<SingerPostTag> deleteBySingerPostId(SingerPost singerPost);
-
     List<SingerPostTag> findAllBySingerPostId(SingerPost singerPost);
-
     Optional<SingerPostTag> deleteAllBySingerPostId(SingerPost singerPostId);
 }

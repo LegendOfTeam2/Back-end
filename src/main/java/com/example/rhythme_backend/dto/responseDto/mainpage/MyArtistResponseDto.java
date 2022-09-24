@@ -7,6 +7,7 @@ import lombok.Getter;
 @Builder
 public class MyArtistResponseDto {
 
+    private String nickname;
     private Long followingId;
 
 }

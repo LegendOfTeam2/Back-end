@@ -1,4 +1,4 @@
-name: rhythmeuser
+name: rhythme_user
 
 on:
   push:
@@ -89,8 +89,10 @@ jobs:
        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       run: 
         aws deploy create-deployment 
-        --application-name rhythme
+        --application-name rhythme-app
         --deployment-group-name rhythme-group
         --file-exists-behavior OVERWRITE 
         --s3-location bucket=rhythmebucket,bundleType=zip,key=rhythme.zip
         --region ap-northeast-2
+        
+

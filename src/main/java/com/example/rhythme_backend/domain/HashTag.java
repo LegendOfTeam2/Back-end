@@ -4,7 +4,6 @@ package com.example.rhythme_backend.domain;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @NoArgsConstructor

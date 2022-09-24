@@ -20,7 +20,7 @@ public class MakerPostTag {
     @JoinColumn(name = "maker_post_id")
     private MakerPost makerPostId;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "tag_id")
     private Tag tagId;
 

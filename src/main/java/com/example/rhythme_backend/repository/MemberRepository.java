@@ -11,9 +11,9 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
     Optional<Member> findByKakaoId(Long kakaoId);
     Optional<Member> findByGoogleId(String googleId);
     Boolean existsByNickname(String nickname);
+    Boolean existsByEmail(String email);
     Optional<Member> findByNickname(String nickname);
-    Optional<Member>findById(Long id);
-    List<Member> findTop10ByOrderByFollowersDesc();
-
-
+    Optional<Member> findById(Long id);
+    List<Member> findTop30ByOrderByFollowersDesc();
+    List<Member> findAllByNicknameContainingOrderByFollowersDesc(String searchText);
 }

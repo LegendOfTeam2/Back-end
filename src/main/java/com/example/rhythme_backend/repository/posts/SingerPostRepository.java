@@ -12,10 +12,10 @@ import java.util.Optional;
 public interface SingerPostRepository extends JpaRepository<SingerPost,Long> {
     @Override
     Optional<SingerPost> findById(Long id);
-    List<SingerPost> findTop10ByOrderByCreatedAtDesc();
-    List<SingerPost> findAllByMember(Member member);
-    List<SingerPost> findTop10ByOrderByLikesDesc();
+    List<SingerPost> findTop30ByOrderByCreatedAtDesc();
+    List<SingerPost> findTop30ByOrderByLikesDesc();
+    List<SingerPost> findAllByMemberOrderByIdDesc(Member member);
     List<SingerPost> findTopByOrderByLikesDesc();
     List<SingerPost> findByTitleContainingOrContentContainingOrderByCreatedAtDesc(String title, String content);
-    List<SingerPost> findAllByOrderByCreatedAt();
+    Long countByMember(Member member);
 }

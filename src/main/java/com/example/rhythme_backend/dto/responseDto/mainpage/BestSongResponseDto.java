@@ -9,6 +9,7 @@ import lombok.Getter;
 @Builder
 public class BestSongResponseDto {
 
+    private Long postId;
     private MediaUrl mediaUrl;
     private ImageUrl imageUrl;
     private String nickname;
@@ -17,5 +18,6 @@ public class BestSongResponseDto {
     private Long likes;
     private Boolean collaborate;
     private String content;
+    private String profileImage;
 
 }
