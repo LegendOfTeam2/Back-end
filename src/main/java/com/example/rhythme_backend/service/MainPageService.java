@@ -336,8 +336,8 @@ public class MainPageService {
                     .build();
             makerPlayListRepository.save(makerPlayList);
         } else if (position.equals("Singer")) {
-            if (singerPlayListRepository.existsBySingerPost(singerPost)) {
-                singerPlayListRepository.deleteBySingerPost(singerPost);
+            if (singerPlayListRepository.existsBySingerPostAndMember(singerPost,member)) {
+                singerPlayListRepository.deleteBySingerPostAndMember(singerPost,member);
             }
             SingerPlayList singerPlayList = SingerPlayList.builder()
                     .member(member)
