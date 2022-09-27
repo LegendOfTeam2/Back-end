@@ -32,37 +32,35 @@ public class RedisConfig {
     private int redisPort;
 
 
-//    @Value("${spring.redis.password}")
-//    private String password;
-
+    @Value("${redis.password}")
+    private String password;
 
 //    @Bean
 //    public RedisConfiguration defaultRedisConfig() {
 //        RedisStandaloneConfiguration config = new RedisStandaloneConfiguration();
 //        config.setHostName(redisHost);
-////        config.setPassword(RedisPassword.of(password));
+//        config.setPort(redisPort);
+//        config.setPassword(RedisPassword.of(password));
 //        return config;
 //    }
 
-
     @Bean
-    public RedisConnectionFactory connectionFactory() {
-        return new LettuceConnectionFactory(redisHost, redisPort);
+    public RedisConnectionFactory redisConnectionFactory() {
+        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(redisHost, redisPort);
+        redisStandaloneConfiguration.setPassword(password);
+        return new LettuceConnectionFactory(redisStandaloneConfiguration);
     }
-
-
     /**
      * redis pub/sub 메시지를 처리하는 listener 설정
-    redisPublisher 에서 메세지가 발행(publish) 되면
-    MessageListener 에서 처리합니다
-    */
+     redisPublisher 에서 메세지가 발행(publish) 되면
+     MessageListener 에서 처리합니다
+     */
     @Bean
     public RedisMessageListenerContainer redisMessageListener(RedisConnectionFactory connectionFactory) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
         return container;
     }
-
 
     /*
      * redisTemplate
@@ -80,7 +78,7 @@ public class RedisConfig {
         redisTemplate.setHashKeySerializer(new StringRedisSerializer());
         redisTemplate.setHashValueSerializer(new Jackson2JsonRedisSerializer<>(Object.class));
         //redis connectionFactory 사용
-        redisTemplate.setConnectionFactory(connectionFactory());
+        redisTemplate.setConnectionFactory(redisConnectionFactory());
         return redisTemplate;
     }
 
@@ -93,16 +91,13 @@ public class RedisConfig {
         final StringRedisTemplate stringRedisTemplate = new StringRedisTemplate();
         stringRedisTemplate.setKeySerializer(new StringRedisSerializer());
         stringRedisTemplate.setValueSerializer(new StringRedisSerializer());
-        stringRedisTemplate.setConnectionFactory(connectionFactory());
+        stringRedisTemplate.setConnectionFactory(redisConnectionFactory());
         return stringRedisTemplate;
     }
 
 
 
 }
-
-
-
 
 
 

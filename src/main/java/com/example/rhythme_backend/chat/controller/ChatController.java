@@ -59,7 +59,7 @@ public class ChatController {
         }
             // 초반 버전 message 로직
 //            sendingOperations.convertAndSend("/topic/chat/room/"+message.getRoomId(),message);
-            redisPublisher.publish(chatRoomRepository.getTopic(message.getRoomId()),chatMessage);
+//            redisPublisher.publish(chatRoomRepository.getTopic(message.getRoomId()),chatMessage);
             chatService.save(message);
         }
 
