@@ -265,6 +265,7 @@ public class MemberService {
                             .build());
         }
     }
+
 //    리펙토링 할 때 사용하기 (삭제ㄴㄴ)
 //    @Transactional(readOnly = true)
 //    public Member getPresentEmail(String email) {

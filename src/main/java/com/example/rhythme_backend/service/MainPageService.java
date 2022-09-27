@@ -327,8 +327,8 @@ public class MainPageService {
         MakerPost makerPost = makerPostRepository.findById(postId).orElseGet(MakerPost::new);
         SingerPost singerPost = singerPostRepository.findById(postId).orElseGet(SingerPost::new);
         if (position.equals("Maker")) {
-            if (makerPlayListRepository.existsByMakerPost(makerPost)) {
-                makerPlayListRepository.deleteByMakerPost(makerPost);
+            if (makerPlayListRepository.existsByMakerPostAndMember(makerPost,member)) {
+                makerPlayListRepository.deleteByMakerPostAndMember(makerPost,member);
             }
             MakerPlayList makerPlayList = MakerPlayList.builder()
                     .member(member)
