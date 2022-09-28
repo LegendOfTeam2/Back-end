@@ -1,10 +1,7 @@
 package com.example.rhythme_backend.domain.chat;
 
 import com.example.rhythme_backend.domain.Member;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -14,9 +11,18 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Builder
 public class ChatRoom {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column
     private String roomId;
+    @Column
     private String roomName;
 
 
