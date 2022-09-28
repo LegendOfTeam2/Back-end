@@ -2,6 +2,7 @@ package com.example.rhythme_backend.controller;
 
 import com.example.rhythme_backend.dto.requestDto.MyImageRequestDto;
 import com.example.rhythme_backend.service.MainPageService;
+import com.example.rhythme_backend.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 public class MainPageController {
 
     private final MainPageService mainPageService;
+    private final PostService postService;
 
     @GetMapping("/api/bestsong")
     public ResponseEntity<?> getBestSong() {
@@ -64,9 +66,29 @@ public class MainPageController {
         return mainPageService.getMyImage(request,requestDto);
     }
 
-    @GetMapping("api/post/{postId}")
+    @GetMapping("/api/post/{postId}")
     public ResponseEntity<?> detailPage(@PathVariable Long postId, @RequestParam String position) {
         return mainPageService.getDetailPage(postId,position);
+    }
+    @PostMapping("/auth/playlist/{postId}")
+    public ResponseEntity<?> postPlaylist(@PathVariable Long postId, HttpServletRequest request, @RequestParam String position) {
+        return mainPageService.savePlaylist(postId,request,position);
+    }
+
+    @GetMapping("/auth/playlist")
+    public ResponseEntity<?> getPlayList(HttpServletRequest request) {
+        return mainPageService.getPlayList(request);
+    }
+
+    @DeleteMapping("/auth/playlist")
+    public ResponseEntity<?> deletePlayList(HttpServletRequest request) {
+        return mainPageService.deletePlayList(request);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<?> searchAll(@RequestParam(required = false, defaultValue = "") String searchText,
+                                           @RequestParam String category) {
+        return postService.AllSearch(searchText,category);
     }
 
 }

@@ -2,20 +2,19 @@ package com.example.rhythme_backend.service;
 
 import com.example.rhythme_backend.domain.Follow;
 import com.example.rhythme_backend.domain.Member;
+import com.example.rhythme_backend.domain.Message;
 import com.example.rhythme_backend.dto.requestDto.FollowRequestDto;
-import com.example.rhythme_backend.exception.CustomException;
-import com.example.rhythme_backend.exception.ErrorCode;
 import com.example.rhythme_backend.repository.FollowRepository;
 import com.example.rhythme_backend.repository.MemberRepository;
-import com.example.rhythme_backend.util.ResponseDto;
 import com.example.rhythme_backend.util.Validation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.transaction.Transaction;
 import java.util.Optional;
 
 @Service
@@ -27,10 +26,10 @@ public class FollowService {
     private final Validation validation;
 
     @Transactional
-    public ResponseDto<?> upDownFollow(String nickname, HttpServletRequest request) {
-        Member follower = validation.validateMember(request);
+    public ResponseEntity<?> upDownFollow(String nickname, HttpServletRequest request) {
+        Member follower = validation.validateMemberToAccess(request);
         validation.checkAccessToken(request, follower);
-        Member following = isPresentMemberFollow(nickname);
+        Member following = validation.isPresentMemberFollow(nickname);
         Optional<Follow> findFollowing = followRepository.findByFollowerAndFollowing(follower, following);
         
         if(findFollowing.isEmpty()) {
@@ -39,12 +38,14 @@ public class FollowService {
             followRepository.save(follow);
             Long followers = followRepository.countAllByFollowingId(following.getId());
             following.updateFollowers(followers);
-            return ResponseDto.success(true);
+            memberRepository.save(following);
+            return new ResponseEntity<>(Message.success(true), HttpStatus.OK);
         } else {
             followRepository.deleteById(findFollowing.get().getId());
             Long followers = followRepository.countAllByFollowingId(following.getId());
-            follower.updateFollowers(followers);
-            return ResponseDto.success(false);
+            following.updateFollowers(followers);
+            memberRepository.save(following);
+            return new ResponseEntity<>(Message.success(false), HttpStatus.OK);
         }
     }
         //  팔로우 // 팔로워 리스트 가져오는 서비스 로직// 챌린지로 추후 이야기 하기로 함.
@@ -70,10 +71,5 @@ public class FollowService {
 //        }
 //    }
 
-    public Member isPresentMemberFollow(String  nickname) {
-        Optional<Member> optionalMember = memberRepository.findByNickname(nickname);
-        return optionalMember.orElseThrow(
-                () -> new CustomException(ErrorCode.MEMBER_NOT_FOUND)
-        );
-    }
+
 }

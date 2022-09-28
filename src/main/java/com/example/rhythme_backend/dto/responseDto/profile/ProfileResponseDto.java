@@ -12,7 +12,9 @@ public class ProfileResponseDto {
     private List<String> hashtag;
     private String introduce;
     private String imageUrl;
-    private Long myPostConunt;
+    private Long makerPostCnt;
+    private Long singerPostCnt;
+    private Long allPostCnt;
     private Long follower;
     private Long following;
 }

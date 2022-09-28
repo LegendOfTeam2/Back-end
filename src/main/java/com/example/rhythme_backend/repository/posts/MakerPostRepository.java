@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface MakerPostRepository extends JpaRepository<MakerPost,Long> {
     @Override
     Optional<MakerPost> findById(Long id);
-    List<MakerPost> findAllByMember(Member member);
+    List<MakerPost> findAllByMemberOrderByIdDesc(Member member);
     List<MakerPost> findByTitleContainingOrContentContainingOrderByCreatedAtDesc(String title, String content);
     List<MakerPost> findTopByOrderByLikesDesc();
     List<MakerPost> findTop30ByOrderByLikesDesc();

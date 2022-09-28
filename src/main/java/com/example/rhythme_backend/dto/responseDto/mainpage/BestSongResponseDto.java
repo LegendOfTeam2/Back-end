@@ -18,5 +18,6 @@ public class BestSongResponseDto {
     private Long likes;
     private Boolean collaborate;
     private String content;
+    private String profileImage;
 
 }

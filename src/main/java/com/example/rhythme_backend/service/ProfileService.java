@@ -50,28 +50,30 @@ public class ProfileService {
 
     private final HashTagRepository hashTagRepository;
 
-
     public ProfileResponseDto profileGetOne(String nickname){
         //팔로워 팔로잉은 따로 API 있음
         Member member = memberRepository.findByNickname(nickname).orElseGet(Member::new);
         Long follower = followRepository.countByFollower(member);
         Long following = followRepository.countByFollowing(member);
         Long makerPostCnt = makerPostRepository.countByMember(member);
+        Long singerPostCnt = singerPostRepository.countByMember(member);
+        Long allPostCnt = makerPostCnt + singerPostCnt;
         List<HashTag> HashTagList = hashTagRepository.findAllByMember(member);
         List<String> stringList = new ArrayList<>();
         for(HashTag a : HashTagList){
             stringList.add(a.getHashtag());
         }
-
         return ProfileResponseDto.builder()
                 .hashtag(stringList)
                 .nickname(nickname)
+                .introduce(member.getIntroduce())
                 .imageUrl(member.getImageUrl())
-                .myPostConunt(makerPostCnt)
+                .makerPostCnt(makerPostCnt)
+                .singerPostCnt(singerPostCnt)
+                .allPostCnt(allPostCnt)
                 .follower(follower)
                 .following(following)
                 .build();
-
     }
 
 @Transactional
@@ -96,10 +98,10 @@ public class ProfileService {
             HttpStatus.OK);
 }
 
-    public List<ProfileUploadPostResponseDto> profileGetMyUpload(String nickname) {
+    public ResponseEntity<?> profileGetMyUpload(String nickname) {
         Member member = memberRepository.findByNickname(nickname).orElseGet(Member::new);
-        List<MakerPost> makerPostList = makerPostRepository.findAllByMember(member);
-        List<SingerPost> singerPostList = singerPostRepository.findAllByMember(member);
+        List<MakerPost> makerPostList = makerPostRepository.findAllByMemberOrderByIdDesc(member);
+        List<SingerPost> singerPostList = singerPostRepository.findAllByMemberOrderByIdDesc(member);
         List<ProfileUploadPostResponseDto> answer = new ArrayList<>();
         for (MakerPost a : makerPostList) {
             answer.add(ProfileUploadPostResponseDto.builder()
@@ -114,8 +116,6 @@ public class ProfileService {
                     .createdAt(a.getCreatedAt())
                     .modifiedAt(a.getModifiedAt())
                     .build());
-            return answer;
-
         }
         for (SingerPost a : singerPostList) {
             answer.add(ProfileUploadPostResponseDto.builder()
@@ -130,16 +130,15 @@ public class ProfileService {
                     .createdAt(a.getCreatedAt())
                     .modifiedAt(a.getModifiedAt())
                     .build());
-            return answer;
         }
-        return answer;
+        return new ResponseEntity<>(Message.success(answer),HttpStatus.OK);
     }
 
-    public List<ProfileUploadPostResponseDto> profileGetMyLike(String nickname){
+    public ResponseEntity<?> profileGetMyLike(String nickname){
         List<ProfileUploadPostResponseDto> answer = new ArrayList<>();
         Member member = memberRepository.findByNickname(nickname).orElseGet(Member::new);
-        List<MakerLike> makerLikeList = makerLikeRepository.findByMemberId(member);
-        List<SingerLike> singerLikeList = singerLikeRepository.findByMemberId(member);
+        List<MakerLike> makerLikeList = makerLikeRepository.findByMemberIdOrderByMakerPostDesc(member);
+        List<SingerLike> singerLikeList = singerLikeRepository.findByMemberIdOrderBySingerPostDesc(member);
         for (MakerLike a : makerLikeList) {
             MakerPost exportFromA = a.getMakerPost();
             answer.add(ProfileUploadPostResponseDto.builder()
@@ -154,8 +153,6 @@ public class ProfileService {
                     .createdAt(exportFromA.getCreatedAt())
                     .modifiedAt(exportFromA.getModifiedAt())
                     .build());
-            return answer;
-
         }
         for (SingerLike a : singerLikeList) {
             SingerPost exportFromA = a.getSingerPost();
@@ -171,11 +168,10 @@ public class ProfileService {
                     .createdAt(exportFromA.getCreatedAt())
                     .modifiedAt(exportFromA.getModifiedAt())
                     .build());
-            return answer;
         }
-
-        return answer;
+        return new ResponseEntity<>(Message.success(answer),HttpStatus.OK);
     }
+    
     public ImageUrl imageUrlSave(PostCreateRequestDto postCreateRequestDto){
         ImageUrl imageUrl =  ImageUrl.builder()
                 .postId(null)
