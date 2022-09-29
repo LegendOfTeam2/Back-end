@@ -12,7 +12,8 @@ public class ChatRoomResponseDto {
     private String lastMessage;
     private String roomId;
     private String sender;
-    private String profileUrl;
+    private String senderProfileUrl;
+    private String receiverProfileUrl;
     private String receiver;
     private String lastMessageTime;
 }
