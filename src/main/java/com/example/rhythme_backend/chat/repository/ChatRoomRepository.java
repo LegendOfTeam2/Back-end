@@ -1,5 +1,6 @@
 package com.example.rhythme_backend.chat.repository;
 
+import com.example.rhythme_backend.chat.domain.chat.ChatMessage;
 import com.example.rhythme_backend.chat.domain.chat.ChatRoom;
 import com.example.rhythme_backend.chat.dto.ChatCreateResponseDto;
 import com.example.rhythme_backend.chat.dto.ChatRoomListDto;
@@ -15,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -54,10 +54,12 @@ public class ChatRoomRepository {
 //            } else {
 //                chatRoomResponseDto.setLastMessage(chatMessage.getMessage());
 //            }
+            ChatMessage lastMessage = chatMessageJpaRepository.findTop1ByRoomIdOrderByCreatedAtDesc(chatRoom.getRoomId());
             Member sender = memberRepository.findByNickname(chatRoom.getUsername()).orElseGet(Member::new);
             Member receiver = memberRepository.findByNickname(chatRoom.getReceiver()).orElseGet(Member::new);
             LocalDateTime createdAt = LocalDateTime.now();
             String createdAtString = createdAt.format(DateTimeFormatter.ofPattern("dd,MM,yyyy,HH,mm,ss", Locale.KOREA));
+            chatRoomResponseDto.setLastMessage(lastMessage.getMessage());
             chatRoomResponseDto.setRoomId(chatRoom.getRoomId());
             chatRoomResponseDto.setLastMessageTime(createdAtString);
             chatRoomResponseDto.setSender(chatRoom.getUsername());
