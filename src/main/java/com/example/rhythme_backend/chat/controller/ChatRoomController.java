@@ -44,8 +44,7 @@ public class ChatRoomController {
     @PostMapping("/room")
     @ResponseBody
     public ResponseEntity<?> createRoom(@RequestBody UserinfoDto userinfoDto) {
-        // 채팅방 레포에 생성.
-        return new ResponseEntity<>(Message.success(chatRoomRepository.createChatRoom(userinfoDto)), HttpStatus.OK);
+        return chatRoomRepository.createChatRoom(userinfoDto);
     }
 
     // 내 채팅방 목록 반환

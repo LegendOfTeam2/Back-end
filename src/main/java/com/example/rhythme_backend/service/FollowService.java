@@ -39,13 +39,13 @@ public class FollowService {
             Long followers = followRepository.countAllByFollowingId(following.getId());
             following.updateFollowers(followers);
             memberRepository.save(following);
-            return new ResponseEntity<>(Message.success("true"), HttpStatus.OK);
+            return new ResponseEntity<>(Message.success(true), HttpStatus.OK);
         } else {
             followRepository.deleteById(findFollowing.get().getId());
             Long followers = followRepository.countAllByFollowingId(following.getId());
             following.updateFollowers(followers);
             memberRepository.save(following);
-            return new ResponseEntity<>(Message.success("false"), HttpStatus.OK);
+            return new ResponseEntity<>(Message.success(false), HttpStatus.OK);
         }
     }
         //  팔로우 // 팔로워 리스트 가져오는 서비스 로직// 챌린지로 추후 이야기 하기로 함.

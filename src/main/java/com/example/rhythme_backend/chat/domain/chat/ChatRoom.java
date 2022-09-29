@@ -44,7 +44,7 @@ public class ChatRoom implements Serializable {
         //채팅방 생성
         public static ChatRoom create( UserinfoDto userinfoDto) {
             ChatRoom chatRoom = new ChatRoom();
-            chatRoom.roomId = chatRoom.roomId = UUID.randomUUID().toString();
+            chatRoom.roomId = UUID.randomUUID().toString();
             chatRoom.username=userinfoDto.getSender();
             chatRoom.receiver=userinfoDto.getReceiver();
             return chatRoom;

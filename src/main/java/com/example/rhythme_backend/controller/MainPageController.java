@@ -85,10 +85,10 @@ public class MainPageController {
         return mainPageService.deletePlayList(request);
     }
 
-    @GetMapping("/allpost/search")
-    public ResponseEntity<?> searchAllPost(@RequestParam(required = false, defaultValue = "") String searchText,
+    @GetMapping("/search")
+    public ResponseEntity<?> searchAll(@RequestParam(required = false, defaultValue = "") String searchText,
                                            @RequestParam String category) {
-        return postService.AllPostSearch(searchText,category);
+        return postService.AllSearch(searchText,category);
     }
 
 }

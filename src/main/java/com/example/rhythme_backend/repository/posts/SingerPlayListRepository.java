@@ -12,6 +12,7 @@ public interface SingerPlayListRepository extends JpaRepository<SingerPlayList,L
     List<SingerPlayList> findByMemberOrderByCreatedAtDesc(Member member);
     Long deleteAllByMember(Member member);
     Long deleteBySingerPost(SingerPost singerPost);
-    Boolean existsBySingerPost(SingerPost singerPost);
+    Boolean existsBySingerPostAndMember(SingerPost singerPost,Member member);
+    Long deleteBySingerPostAndMember(SingerPost singerPost,Member member);
 
 }

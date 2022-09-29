@@ -1,17 +1,10 @@
 package com.example.rhythme_backend.chat.service;
 
-
-import com.example.rhythme_backend.chat.domain.InvitedUsers;
-import com.example.rhythme_backend.chat.domain.ResignChatMessage;
-import com.example.rhythme_backend.chat.domain.ResignChatRoom;
 import com.example.rhythme_backend.chat.domain.chat.ChatMessage;
-import com.example.rhythme_backend.chat.domain.chat.ChatRoom;
 import com.example.rhythme_backend.chat.dto.ChatMessageDto;
-import com.example.rhythme_backend.chat.dto.UserinfoDto;
 import com.example.rhythme_backend.chat.repository.*;
 import com.example.rhythme_backend.domain.Member;
 import com.example.rhythme_backend.repository.MemberRepository;
-import com.example.rhythme_backend.service.UserDetailsImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -27,7 +19,7 @@ import java.util.Locale;
 @RequiredArgsConstructor
 public class ChatService {
 
-    private final RedisPublisher redisPublisher;
+//    private final RedisPublisher redisPublisher;
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMessageRepository chatMessageRepository;
     private final MemberRepository userRepository;
@@ -57,17 +49,6 @@ public class ChatService {
             messageDto.setMessage(messageDto.getSender() + "님이 입장하셨습니다.");
             String roomId = messageDto.getRoomId();
 
-            List<InvitedUsers> invitedUsersList = invitedUsersRepository.findAllByRoomId(roomId);
-            for (InvitedUsers invitedUsers : invitedUsersList) {
-                if (invitedUsers.getUser().equals(user)) {
-                    invitedUsers.setReadCheck(true);
-                }
-            }
-            // 이미 그방에 초대되어 있다면 중복으로 저장을 하지 않게 한다.
-            if (!invitedUsersRepository.existsByUserAndRoomId(user.getNickname(), messageDto.getRoomId())) {
-                InvitedUsers invitedUsers = new InvitedUsers(roomId, user);
-                invitedUsersRepository.save(invitedUsers);
-            }
             //받아온 메세지 타입이 QUIT 일때
         } else if (ChatMessage.MessageType.QUIT.equals(messageDto.getType())) {
             messageDto.setMessage(messageDto.getSender() + "님이 나가셨습니다.");
@@ -76,12 +57,15 @@ public class ChatService {
             }
             chatMessageJpaRepository.deleteByRoomId(messageDto.getRoomId());
         }
-        chatMessageRepository.save(messageDto); // 캐시에 저장 했다.
+
+//        chatMessageJpaRepository.save(messageDto); // 캐시에 저장 했다.
         ChatMessage chatMessage = new ChatMessage(messageDto, createdAt);
         chatMessageJpaRepository.save(chatMessage); // DB 저장
 
         // Websocket 에 발행된 메시지를 redis 로 발행한다(publish)
-        redisPublisher.publish(ChatRoomRepository.getTopic(messageDto.getRoomId()), chatMessage);
+
+//        redisPublisher.publish(ChatRoomRepository.getTopic(messageDto.getRoomId()), chatMessage);
+
     }
 
     //redis에 저장되어있는 message 들 출력

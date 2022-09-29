@@ -13,6 +13,7 @@ import com.example.rhythme_backend.domain.post.SingerPostTag;
 import com.example.rhythme_backend.dto.requestDto.post.PostCreateRequestDto;
 import com.example.rhythme_backend.dto.requestDto.post.PostPatchRequestDto;
 import com.example.rhythme_backend.dto.responseDto.post.*;
+import com.example.rhythme_backend.repository.MemberRepository;
 import com.example.rhythme_backend.repository.TagRepository;
 import com.example.rhythme_backend.repository.like.MakerLikeRepository;
 import com.example.rhythme_backend.repository.like.SingerLikeRepository;
@@ -45,13 +46,13 @@ public class PostService{
     private final MakerLikeRepository makerLikeRepository;
     private final MakerPlayListRepository makerPlayListRepository;
     private final SingerPlayListRepository singerPlayListRepository;
-    //AWS S3
+    private final MemberRepository memberRepository;
     private final S3Service s3Service;
     private final SingerLikeRepository singerLikeRepository;
     private final Validation validation;
 
     //============게시물 검색 로직  (makerPost,SingerPost 검색)
-    public ResponseEntity<?>  AllPostSearch(String searchText , String category) {
+    public ResponseEntity<?>  AllSearch(String searchText , String category) {
         if (category.equals("Singer")) {
             List<SingerPost> singerPostList = singerPostRepository.findByTitleContainingOrContentContainingOrderByCreatedAtDesc(searchText, searchText);
             List<SearchSingerPostResponseDto> searchSingerPostResponseDtoList = new ArrayList<>();
@@ -89,6 +90,20 @@ public class PostService{
                 );
             }
             return new ResponseEntity<>(Message.success(searchMakerPostResponseDtoList), HttpStatus.OK);
+        }
+        if (category.equals("Member")) {
+            List<Member> memberList = memberRepository.findAllByNicknameContainingOrderByFollowersDesc(searchText);
+            List<SearchMemberResponseDto> searchMemberResponseDtoList = new ArrayList<>();
+            for (Member member : memberList) {
+                searchMemberResponseDtoList.add(
+                        SearchMemberResponseDto.builder()
+                                .nickname(member.getNickname())
+                                .follower(member.getFollowers())
+                                .imageUrl(member.getImageUrl())
+                                .build()
+                );
+            }
+            return  new ResponseEntity<>(Message.success(searchMemberResponseDtoList),HttpStatus.OK);
         }
      return new ResponseEntity<>(Message.success("잘못된 접근 입니다"), HttpStatus.BAD_REQUEST);
     }
@@ -367,6 +382,7 @@ public class PostService{
         }
         return tagIds;
     }
+    
     public void makerPostTagSave(List<String> tags,MakerPost makerPost){
         for(String tag : tags){
             Tag tag1 = tagRepository.save(
