@@ -40,7 +40,6 @@ public class SingerPost extends Timestamped {
     @OneToOne(fetch = FetchType.EAGER)
     private ImageUrl imageUrl;
 
-
     @JoinColumn(name = "media_url")
     @OneToOne(fetch = FetchType.EAGER)
     private MediaUrl mediaUrl;
