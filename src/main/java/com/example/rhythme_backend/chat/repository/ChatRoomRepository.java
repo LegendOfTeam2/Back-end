@@ -54,13 +54,15 @@ public class ChatRoomRepository {
 //            } else {
 //                chatRoomResponseDto.setLastMessage(chatMessage.getMessage());
 //            }
+            Member sender = memberRepository.findByNickname(chatRoom.getUsername()).orElseGet(Member::new);
             Member receiver = memberRepository.findByNickname(chatRoom.getReceiver()).orElseGet(Member::new);
             LocalDateTime createdAt = LocalDateTime.now();
             String createdAtString = createdAt.format(DateTimeFormatter.ofPattern("dd,MM,yyyy,HH,mm,ss", Locale.KOREA));
             chatRoomResponseDto.setRoomId(chatRoom.getRoomId());
             chatRoomResponseDto.setLastMessageTime(createdAtString);
             chatRoomResponseDto.setSender(chatRoom.getUsername());
-            chatRoomResponseDto.setProfileUrl(receiver.getImageUrl());
+            chatRoomResponseDto.setSenderProfileUrl(sender.getImageUrl());
+            chatRoomResponseDto.setReceiverProfileUrl(receiver.getImageUrl());
             chatRoomResponseDto.setReceiver(chatRoom.getReceiver());
             chatRoomResponseDtoList.add(chatRoomResponseDto);
         }

@@ -37,10 +37,10 @@ public class ChatController {
     public void enter(ChatMessageDto message) {
         LocalDateTime now = LocalDateTime.now();
         ChatMessage chatMessage =new ChatMessage(message,now);
-        if (ChatMessage.MessageType.ENTER.equals(message.getType())) {
-            message.setMessage(message.getSender()+"님이 입장하였습니다.");
-            chatRoomRepository.enterChatRoom(chatMessage.getRoomId());
-        }
+//        if (ChatMessage.MessageType.ENTER.equals(message.getType())) {
+//            message.setMessage(message.getSender()+"님이 입장하였습니다.");
+//            chatRoomRepository.enterChatRoom(chatMessage.getRoomId());
+//        }
 
         sendingOperations.convertAndSend("/sub/chat/room/"+message.getRoomId(),message);
         chatMessageJpaRepository.save(chatMessage);
