@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 @RequiredArgsConstructor
 public class MainPageController {
-
+ 
     private final MainPageService mainPageService;
     private final PostService postService;
 
