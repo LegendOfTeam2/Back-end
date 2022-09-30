@@ -1,8 +1,6 @@
 package com.example.rhythme_backend.domain;
 
-
 import lombok.*;
-
 import javax.persistence.*;
 
 @Entity
