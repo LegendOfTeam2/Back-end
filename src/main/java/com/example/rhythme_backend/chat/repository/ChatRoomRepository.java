@@ -64,33 +64,38 @@ public class ChatRoomRepository {
         for (ChatRoom chatRoom : chatRooms) {
             Integer messageCheck = chatMessageJpaRepository.countChatMessageByRoomId(chatRoom.getRoomId());
             if(messageCheck==0){
+                Member sender = memberRepository.findByNickname(chatRoom.getUsername()).orElseGet(Member::new);
+                Member receiver = memberRepository.findByNickname(chatRoom.getReceiver()).orElseGet(Member::new);
+                LocalDateTime createdAt = LocalDateTime.now();
+                String createdAtString = createdAt.format(DateTimeFormatter.ofPattern("dd,MM,yyyy,HH,mm,ss", Locale.KOREA));
+
                 chatRoomResponseDtoList.add(ChatRoomResponseDto.builder()
-                        .lastMessage("nullCheck")
-                        .roomId("nullCheck")
-                        .lastMessageTime("nullCheck")
-                        .sender("nullCheck")
-                        .receiver("nullCheck")
-                        .senderProfileUrl("nullCheck")
-                        .receiverProfileUrl("nullCheck")
+                        .lastMessage("아직 메세지를 보내지 않았습니다.")
+                        .roomId(chatRoom.getRoomId())
+                        .lastMessageTime(createdAtString)
+                        .sender(chatRoom.getUsername())
+                        .receiver(chatRoom.getReceiver())
+                        .senderProfileUrl(sender.getImageUrl())
+                        .receiverProfileUrl(receiver.getImageUrl())
                         .build());
-                return new ChatRoomListDto(chatRoomResponseDtoList, true);
+               continue;
+            }else if(messageCheck>1){
+                ChatMessage lastMessage = chatMessageJpaRepository.findTop1ByRoomIdOrderByCreatedAtDesc(chatRoom.getRoomId());
+                Member sender = memberRepository.findByNickname(chatRoom.getUsername()).orElseGet(Member::new);
+                Member receiver = memberRepository.findByNickname(chatRoom.getReceiver()).orElseGet(Member::new);
+                LocalDateTime createdAt = LocalDateTime.now();
+                String createdAtString = createdAt.format(DateTimeFormatter.ofPattern("dd,MM,yyyy,HH,mm,ss", Locale.KOREA));
+
+                chatRoomResponseDtoList.add(ChatRoomResponseDto.builder()
+                        .lastMessage(lastMessage.getMessage())
+                        .roomId(chatRoom.getRoomId())
+                        .lastMessageTime(createdAtString)
+                        .sender(chatRoom.getUsername())
+                        .receiver(chatRoom.getReceiver())
+                        .senderProfileUrl(sender.getImageUrl())
+                        .receiverProfileUrl(receiver.getImageUrl())
+                        .build());
             }
-            ChatMessage lastMessage = chatMessageJpaRepository.findTop1ByRoomIdOrderByCreatedAtDesc(chatRoom.getRoomId());
-            Member sender = memberRepository.findByNickname(chatRoom.getUsername()).orElseGet(Member::new);
-            Member receiver = memberRepository.findByNickname(chatRoom.getReceiver()).orElseGet(Member::new);
-            LocalDateTime createdAt = LocalDateTime.now();
-            String createdAtString = createdAt.format(DateTimeFormatter.ofPattern("dd,MM,yyyy,HH,mm,ss", Locale.KOREA));
-
-            chatRoomResponseDtoList.add(ChatRoomResponseDto.builder()
-                    .lastMessage(lastMessage.getMessage())
-                            .roomId(chatRoom.getRoomId())
-                            .lastMessageTime(createdAtString)
-                            .sender(chatRoom.getUsername())
-                            .receiver(chatRoom.getReceiver())
-                            .senderProfileUrl(sender.getImageUrl())
-                            .receiverProfileUrl(receiver.getImageUrl())
-                    .build());
-
         }
         return new ChatRoomListDto(chatRoomResponseDtoList, true);
     }
