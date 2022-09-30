@@ -22,7 +22,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 @RequiredArgsConstructor
 @Repository
@@ -46,23 +48,49 @@ public class ChatRoomRepository {
         List<ChatRoom> chatRooms1 = chatRoomJpaRepository.findByReceiver(user.getNickname());
         chatRooms.addAll(chatRooms1);
         List<ChatRoomResponseDto> chatRoomResponseDtoList = new ArrayList<>();
-        for (ChatRoom chatRoom : chatRooms) {
 
-            ChatRoomResponseDto chatRoomResponseDto = new ChatRoomResponseDto();
+        if(chatRooms.size()==0){
+            chatRoomResponseDtoList.add(ChatRoomResponseDto.builder()
+                    .lastMessage("nullCheck")
+                    .roomId("nullCheck")
+                    .lastMessageTime("nullCheck")
+                    .sender("nullCheck")
+                    .receiver("nullCheck")
+                    .senderProfileUrl("nullCheck")
+                    .receiverProfileUrl("nullCheck")
+                    .build());
+            return new ChatRoomListDto(chatRoomResponseDtoList, true);
+        }
+        for (ChatRoom chatRoom : chatRooms) {
+            Integer messageCheck = chatMessageJpaRepository.countChatMessageByRoomId(chatRoom.getRoomId());
+            if(messageCheck==0){
+                chatRoomResponseDtoList.add(ChatRoomResponseDto.builder()
+                        .lastMessage("nullCheck")
+                        .roomId("nullCheck")
+                        .lastMessageTime("nullCheck")
+                        .sender("nullCheck")
+                        .receiver("nullCheck")
+                        .senderProfileUrl("nullCheck")
+                        .receiverProfileUrl("nullCheck")
+                        .build());
+                return new ChatRoomListDto(chatRoomResponseDtoList, true);
+            }
             ChatMessage lastMessage = chatMessageJpaRepository.findTop1ByRoomIdOrderByCreatedAtDesc(chatRoom.getRoomId());
             Member sender = memberRepository.findByNickname(chatRoom.getUsername()).orElseGet(Member::new);
             Member receiver = memberRepository.findByNickname(chatRoom.getReceiver()).orElseGet(Member::new);
             LocalDateTime createdAt = LocalDateTime.now();
             String createdAtString = createdAt.format(DateTimeFormatter.ofPattern("dd,MM,yyyy,HH,mm,ss", Locale.KOREA));
 
-            chatRoomResponseDto.setLastMessage(lastMessage.getMessage());
-            chatRoomResponseDto.setRoomId(chatRoom.getRoomId());
-            chatRoomResponseDto.setLastMessageTime(createdAtString);
-            chatRoomResponseDto.setSender(chatRoom.getUsername());
-            chatRoomResponseDto.setSenderProfileUrl(sender.getImageUrl());
-            chatRoomResponseDto.setReceiverProfileUrl(receiver.getImageUrl());
-            chatRoomResponseDto.setReceiver(chatRoom.getReceiver());
-            chatRoomResponseDtoList.add(chatRoomResponseDto);
+            chatRoomResponseDtoList.add(ChatRoomResponseDto.builder()
+                    .lastMessage(lastMessage.getMessage())
+                            .roomId(chatRoom.getRoomId())
+                            .lastMessageTime(createdAtString)
+                            .sender(chatRoom.getUsername())
+                            .receiver(chatRoom.getReceiver())
+                            .senderProfileUrl(sender.getImageUrl())
+                            .receiverProfileUrl(receiver.getImageUrl())
+                    .build());
+
         }
         return new ChatRoomListDto(chatRoomResponseDtoList, true);
     }
