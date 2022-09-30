@@ -24,22 +24,8 @@ import java.util.List;
 public class ChatRoomController {
 
     private final ChatRoomRepository chatRoomRepository;
-    private final ChatRoomJpaRepository chatRoomJpaRepository;
     private final ChatMessageRepository chatMessageRepository;
 
-    // 채팅 리스트 화면
-//    @GetMapping("/room")
-//    public String rooms(Model model) {
-//        return "/chat/room";
-//    }
-//
-    // 모든 채팅방 목록 반환
-//    @GetMapping("/rooms")
-//    @ResponseBody
-//    public ChatRoomListDto roomList(HttpServletRequest request) {
-//        return chatRoomRepository.findAllRoom(request);
-//    }
-//
     // 채팅방 생성
     @PostMapping("/room")
     @ResponseBody

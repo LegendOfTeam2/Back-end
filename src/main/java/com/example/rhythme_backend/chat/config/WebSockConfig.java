@@ -22,7 +22,6 @@ public class WebSockConfig implements WebSocketMessageBrokerConfigurer {
         registry.addEndpoint("/ws/chat").setAllowedOriginPatterns("*")
                 .withSockJS();
         // Heartbeat Message : 프록시가 커넥션이 끊겼다고 판단하지 않도록 한다
-
     }
 
     @Override

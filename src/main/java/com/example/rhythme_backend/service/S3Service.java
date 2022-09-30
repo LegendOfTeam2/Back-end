@@ -115,9 +115,7 @@ public class S3Service  {
 
     // 파일 유효성 검사
     private String getFileExtension(String fileName) {
-//        if (fileName.length() == 0) {
-//            throw new PrivateException(Code.WRONG_INPUT_IMAGE);
-//        }
+
         ArrayList<String> fileValidate = new ArrayList<>();
         fileValidate.add(".mp3");
         fileValidate.add(".mkv");
@@ -128,9 +126,7 @@ public class S3Service  {
         fileValidate.add(".JPEG");
         fileValidate.add(".PNG");
         String idxFileName = fileName.substring(fileName.lastIndexOf("."));
-//        if (!fileValidate.contains(idxFileName)) {
-//            throw new PrivateException(Code.WRONG_IMAGE_FORMAT);
-//        }
+
         return fileName.substring(fileName.lastIndexOf("."));
     }
 }

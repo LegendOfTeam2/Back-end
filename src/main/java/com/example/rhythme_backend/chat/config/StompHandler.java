@@ -20,8 +20,6 @@ public class StompHandler implements ChannelInterceptor {
     private final ChatRoomService chatRoomService;
     private final ChatMessageRepository chatMessageRepository;
 
-//    private final InvitedUsersRepository invitedUsersRepository;
-
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
@@ -39,7 +37,6 @@ public class StompHandler implements ChannelInterceptor {
         } else if (StompCommand.UNSUBSCRIBE == accessor.getCommand() || StompCommand.DISCONNECT == accessor.getCommand()) {
             String roomId = chatRoomService.getRoomId((String) Optional.ofNullable(message.getHeaders().get("simpDestination")).orElse("InvalidRoomId"));
             chatMessageRepository.removeUserEnterInfo(sessionId, roomId);
-//            chatMessageRepository.minusUserCnt(roomId);
         }
         return message;
     }
