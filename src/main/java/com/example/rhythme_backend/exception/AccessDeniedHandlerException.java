@@ -1,6 +1,6 @@
 package com.example.rhythme_backend.exception;
 
-import com.example.rhythme_backend.util.ResponseDto;
+import com.example.rhythme_backend.jwt.ResponseDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;

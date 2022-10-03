@@ -2,6 +2,7 @@ package com.example.rhythme_backend.chat.controller;
 
 
 import com.example.rhythme_backend.chat.dto.ChatMessageDto;
+import com.example.rhythme_backend.chat.dto.ChatRoomListDto;
 import com.example.rhythme_backend.chat.dto.UserinfoDto;
 import com.example.rhythme_backend.chat.repository.ChatMessageRepository;
 import com.example.rhythme_backend.chat.repository.ChatRoomJpaRepository;
@@ -24,34 +25,24 @@ import java.util.List;
 public class ChatRoomController {
 
     private final ChatRoomRepository chatRoomRepository;
-    private final ChatRoomJpaRepository chatRoomJpaRepository;
     private final ChatMessageRepository chatMessageRepository;
 
-    // 채팅 리스트 화면
-//    @GetMapping("/room")
-//    public String rooms(Model model) {
-//        return "/chat/room";
-//    }
-//
-    // 모든 채팅방 목록 반환
-//    @GetMapping("/rooms")
-//    @ResponseBody
-//    public ChatRoomListDto roomList(HttpServletRequest request) {
-//        return chatRoomRepository.findAllRoom(request);
-//    }
-//
     // 채팅방 생성
     @PostMapping("/room")
     @ResponseBody
     public ResponseEntity<?> createRoom(@RequestBody UserinfoDto userinfoDto) {
         return chatRoomRepository.createChatRoom(userinfoDto);
     }
-
     // 내 채팅방 목록 반환
     @GetMapping("/rooms")
     @ResponseBody
     public ResponseEntity<?> room( HttpServletRequest request) {
-        return new ResponseEntity<>(Message.success(chatRoomRepository.findAllRoom(request)) ,HttpStatus.OK);
+        ChatRoomListDto answer = chatRoomRepository.findAllRoom(request);
+        if(answer.getMessageDto().get(0).getLastMessage().equals("nullCheck")){
+            return new ResponseEntity<>(Message.fail(null,"참여한 메세지 방이 없습니다."),HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(Message.success(answer),HttpStatus.OK);
+        }
     }
 
     // 특정 채팅방 입장 채팅 방 메시지 내용을 준다.

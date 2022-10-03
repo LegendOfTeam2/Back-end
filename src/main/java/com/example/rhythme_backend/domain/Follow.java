@@ -3,7 +3,6 @@ package com.example.rhythme_backend.domain;
 import com.example.rhythme_backend.dto.requestDto.FollowRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 import javax.persistence.*;
 
 @Entity

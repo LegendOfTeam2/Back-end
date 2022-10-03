@@ -390,9 +390,6 @@ public class MainPageService {
     @Transactional
     public ResponseEntity<?> deletePlayList(HttpServletRequest request) {
         Member member = validation.validateMemberToAccess(request);
-        if (!memberRepository.existsByNickname(member.getNickname())) {
-           return new ResponseEntity<>(Message.fail("MEMBER_NOT_FOUND","허가되지 않은 접근입니다."),HttpStatus.BAD_REQUEST);
-        }
         makerPlayListRepository.deleteAllByMember(member);
         singerPlayListRepository.deleteAllByMember(member);
         return new ResponseEntity<>(Message.success("플레이리스트에서 삭제되었습니다."),HttpStatus.OK);

@@ -38,12 +38,5 @@ public class ChatMessageRepository {
             //redis에 정보가 없으니, 다음부터 조회할때는 redis를 사용하기 위하여 넣어준다.
             return chatMessageDtoList;
         }
-    // 구독 요청시
-    public void setUserEnterInfo(String roomId, String sessionId) {
-//        hashOpsEnterInfo.put(ENTER_INFO, sessionId, roomId);
-    }
 
-    public void removeUserEnterInfo(String sessionId, String roomId) {
-//        hashOpsEnterInfo.delete(ENTER_INFO, sessionId, roomId);
-    }
 }

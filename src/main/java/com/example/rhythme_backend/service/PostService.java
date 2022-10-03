@@ -338,18 +338,6 @@ public class PostService{
     }
 
 
-//    // Nickname으로 아이디 찾은 Optional 처리 로직.
-//    public Member validateByNickname(String nickname){
-//        Member member;
-//        Optional<Member> memberRepositoryByNickname = memberRepository.findByNickname(nickname);
-//        if(memberRepositoryByNickname.isPresent()){
-//            member = memberRepositoryByNickname.get();
-//        }else{
-//            throw new NullPointerException("찾는 닉네임 정보가 없습니다.");
-//        }
-//        return member;
-//    }
-
     // URL엔티티에 저장 로직
     public ImageUrl imageUrlSave(PostCreateRequestDto requestDto){
         ImageUrl imageUrl =  ImageUrl.builder()
@@ -426,11 +414,4 @@ public class PostService{
         return singerPostRepository.findById(postId).orElseGet(SingerPost::new);
     }
 
-    public void imageUrlDelete(){
-//        imageUrlRepository.deleteByPostId();
-    }
-
-    public void mediaUrlDelete(){
-
-    }
 }

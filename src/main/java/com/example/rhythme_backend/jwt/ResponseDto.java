@@ -1,4 +1,4 @@
-package com.example.rhythme_backend.util;
+package com.example.rhythme_backend.jwt;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
