@@ -39,7 +39,7 @@ public class ChatRoomController {
     public ResponseEntity<?> room( HttpServletRequest request) {
         ChatRoomListDto answer = chatRoomRepository.findAllRoom(request);
         if(answer.getMessageDto().get(0).getLastMessage().equals("nullCheck")){
-            return new ResponseEntity<>(Message.success("참여한 메세지 방이 없습니다."),HttpStatus.OK);
+            return new ResponseEntity<>(Message.fail(null,"참여한 메세지 방이 없습니다."),HttpStatus.OK);
         }else{
             return new ResponseEntity<>(Message.success(answer),HttpStatus.OK);
         }
