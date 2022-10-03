@@ -94,6 +94,7 @@ public class ProfileService {
                     .build();
             hashTagRepository.save(hashTag);
         }
+        memberRepository.save(member);
         RefreshToken putRefreshToken = validation.getDeleteToken(member);
         refreshTokenRepository.delete(putRefreshToken);
         TokenDto tokenDto = tokenProvider.generateTokenDto(member);
