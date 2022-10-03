@@ -113,10 +113,9 @@ public class TokenProvider {
 
     public TokenDto generateAccessTokenDto(Member member) {
         long now = (new Date().getTime());
-
         Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
         String accessToken = Jwts.builder()
-                .setSubject(member.getEmail())
+                .setSubject(member.getNickname())
                 .claim(AUTHORITIES_KEY, ROLE_MEMBER.toString())
                 .setExpiration(accessTokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS256)
