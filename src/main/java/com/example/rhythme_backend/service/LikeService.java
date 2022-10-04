@@ -28,11 +28,8 @@ import java.util.Optional;
 public class LikeService {
 
     private final SingerPostRepository singerPostRepository;
-
     private final MakerPostRepository makerPostRepository;
-
     private final SingerLikeRepository singerLikeRepository;
-
     private final MakerLikeRepository makerLikeRepository;
     private final Validation validation;
 
@@ -50,13 +47,13 @@ public class LikeService {
             Long likes = singerLikeRepository.countAllBySingerPostId(postId);
             singerPost.singerUpdateLikes(likes);
             singerPostRepository.save(singerPost);
-            return new ResponseEntity<>(Message.success("true"), HttpStatus.OK);
+            return new ResponseEntity<>(Message.success(true), HttpStatus.OK);
         } else {
             singerLikeRepository.deleteById(findSingerLike.getId());
             Long likes = singerLikeRepository.countAllBySingerPostId(postId);
             singerPost.singerUpdateLikes(likes);
             singerPostRepository.save(singerPost);
-            return new ResponseEntity<>(Message.success("false"), HttpStatus.OK);
+            return new ResponseEntity<>(Message.success(false), HttpStatus.OK);
         }
     }
 
@@ -76,13 +73,13 @@ public class LikeService {
             Long likes = makerLikeRepository.countAllByMakerPostId(postId);
             makerPost.makerUpdateLikes(likes);
             makerPostRepository.save(makerPost);
-            return new ResponseEntity<>(Message.success("true"), HttpStatus.OK);
+            return new ResponseEntity<>(Message.success(true), HttpStatus.OK);
         } else {
             makerLikeRepository.deleteById(findMakerLike.getId());
             Long likes = makerLikeRepository.countAllByMakerPostId(postId);
             makerPost.makerUpdateLikes(likes);
             makerPostRepository.save(makerPost);
-            return new ResponseEntity<>(Message.success("false"), HttpStatus.OK);
+            return new ResponseEntity<>(Message.success(false), HttpStatus.OK);
         }
     }
 

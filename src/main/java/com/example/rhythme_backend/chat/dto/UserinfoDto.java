@@ -10,9 +10,11 @@ import lombok.Setter;
 public class UserinfoDto {
     private String sender;
     private String receiver;
+    private String receiverProfileUrl;
 
-    public UserinfoDto(String sender , String receiver) {
+    public UserinfoDto(String sender , String receiver , String receiverProfileUrl) {
         this.sender = sender;
         this.receiver = receiver;
+        this.receiverProfileUrl =receiverProfileUrl;
     }
 }

@@ -20,13 +20,17 @@ public class WebSockConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws/chat").setAllowedOriginPatterns("*")
+
                 .withSockJS();
+        // Heartbeat Message : 프록시가 커넥션이 끊겼다고 판단하지 않도록 한다
     }
 
     @Override
-    public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/sub");
-        config.setApplicationDestinationPrefixes("/pub");
+    public void configureMessageBroker(MessageBrokerRegistry registry) {
+
+        registry.enableSimpleBroker("/sub");
+
+        registry.setApplicationDestinationPrefixes("/pub");
     }
 
     /*

@@ -13,6 +13,7 @@ public interface MakerPlayListRepository extends JpaRepository<MakerPlayList,Lon
     List<MakerPlayList> findByMemberOrderByCreatedAtDesc(Member member);
     Long deleteAllByMember(Member member);
     Long deleteByMakerPost(MakerPost makerPost);
-    Boolean existsByMakerPost(MakerPost makerPost);
+    Long deleteByMakerPostAndMember(MakerPost makerPost,Member member);
+    Boolean existsByMakerPostAndMember(MakerPost makerPost,Member member);
 
 }

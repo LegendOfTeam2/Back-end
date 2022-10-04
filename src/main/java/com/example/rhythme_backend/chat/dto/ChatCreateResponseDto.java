@@ -1,7 +1,6 @@
 package com.example.rhythme_backend.chat.dto;
 
 import lombok.*;
-
 @Getter
 @Setter
 @NoArgsConstructor

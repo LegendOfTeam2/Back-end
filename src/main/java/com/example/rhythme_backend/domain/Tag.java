@@ -3,11 +3,7 @@ package com.example.rhythme_backend.domain;
 import com.example.rhythme_backend.domain.post.MakerPostTag;
 import com.example.rhythme_backend.domain.post.SingerPostTag;
 import lombok.*;
-import org.hibernate.annotations.*;
-
 import javax.persistence.*;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
 import java.util.List;
 
 @Entity

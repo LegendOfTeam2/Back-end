@@ -8,18 +8,23 @@ import com.example.rhythme_backend.domain.like.SingerLike;
 import com.example.rhythme_backend.domain.media.ImageUrl;
 import com.example.rhythme_backend.domain.post.MakerPost;
 import com.example.rhythme_backend.domain.post.SingerPost;
+import com.example.rhythme_backend.dto.TokenDto;
 import com.example.rhythme_backend.dto.requestDto.post.PostCreateRequestDto;
 import com.example.rhythme_backend.dto.requestDto.profile.ModifyProfileRequestDto;
 import com.example.rhythme_backend.dto.responseDto.profile.ProfileResponseDto;
 import com.example.rhythme_backend.dto.responseDto.profile.ProfileUploadPostResponseDto;
+import com.example.rhythme_backend.jwt.TokenProvider;
 import com.example.rhythme_backend.repository.FollowRepository;
 import com.example.rhythme_backend.repository.HashTagRepository;
 import com.example.rhythme_backend.repository.MemberRepository;
+import com.example.rhythme_backend.repository.RefreshTokenRepository;
 import com.example.rhythme_backend.repository.like.MakerLikeRepository;
 import com.example.rhythme_backend.repository.like.SingerLikeRepository;
 import com.example.rhythme_backend.repository.media.ImageUrlRepository;
 import com.example.rhythme_backend.repository.posts.MakerPostRepository;
 import com.example.rhythme_backend.repository.posts.SingerPostRepository;
+import com.example.rhythme_backend.util.RefreshToken;
+import com.example.rhythme_backend.util.Validation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -27,6 +32,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,17 +42,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProfileService {
     private final MemberRepository memberRepository;
-
     private final MakerPostRepository makerPostRepository;
-
     private final SingerPostRepository singerPostRepository;
-
     private final MakerLikeRepository makerLikeRepository;
-
     private final SingerLikeRepository singerLikeRepository;
-
     private final ImageUrlRepository imageUrlRepository;
     private final FollowRepository followRepository;
+    private final Validation validation;
+    private final RefreshToken refreshToken;
+    private final TokenProvider tokenProvider;
+    private final RefreshTokenRepository refreshTokenRepository;
 
 
     private final HashTagRepository hashTagRepository;
@@ -76,10 +82,9 @@ public class ProfileService {
                 .build();
     }
 
-@Transactional
-    public ResponseEntity<?> profileModify(String nickname , ModifyProfileRequestDto requestDto) {
-        Member member = memberRepository.findByNickname(nickname).orElseThrow(
-            () -> new IllegalArgumentException("닉네임이 일치하지 않습니다"));
+    @Transactional
+    public ResponseEntity<?> profileModify(ModifyProfileRequestDto requestDto, HttpServletResponse response, HttpServletRequest request) {
+        Member member = validation.validateMemberToAccess(request);
         member.update(requestDto);
         hashTagRepository.deleteByMember(member);
         for(String a : requestDto.getHashtag()){
@@ -89,6 +94,10 @@ public class ProfileService {
                     .build();
             hashTagRepository.save(hashTag);
         }
+        RefreshToken putRefreshToken = validation.getDeleteToken(member);
+        refreshTokenRepository.delete(putRefreshToken);
+        TokenDto tokenDto = tokenProvider.generateTokenDto(member);
+        validation.tokenToHeaders(tokenDto,response);
     return new ResponseEntity<>(Message.success(ModifyProfileRequestDto.builder()
             .nickname(requestDto.getNickname())
             .imageUrl(requestDto.getImageUrl())

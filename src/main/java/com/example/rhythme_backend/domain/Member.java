@@ -9,7 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
 import javax.persistence.*;
 
 @Entity
@@ -50,14 +49,6 @@ public class Member extends Timestamped {
     @Column
     private String deleteCheck;
 
-//    @Column
-//    @JsonIgnore
-//    String notExist;
-//
-//    public Member(String notExist) {
-//        this.notExist = notExist;
-//    }
-
     public boolean validatePassword(PasswordEncoder passwordEncoder, String password) {
         return passwordEncoder.matches(password, this.password);
     }
@@ -65,11 +56,6 @@ public class Member extends Timestamped {
     public void updateFollowers(Long followers) {
         this.followers = followers;
     }
-    public void updateImageUrl(String imageUrl){
-        this.imageUrl = imageUrl;
-    }
-    public void updateIntroduce(String introduce){
-        this.introduce = introduce;}
 
     public void update(ModifyProfileRequestDto modifyProfileRequestDto) {
         this.nickname = modifyProfileRequestDto.getNickname();

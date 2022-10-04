@@ -20,8 +20,6 @@ public class StompHandler implements ChannelInterceptor {
     private final ChatRoomService chatRoomService;
     private final ChatMessageRepository chatMessageRepository;
 
-//    private final InvitedUsersRepository invitedUsersRepository;
-
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
@@ -32,14 +30,10 @@ public class StompHandler implements ChannelInterceptor {
             // 구독 요청시 유저의 카운트수를 저장하고 최대인원수를 관리하며 , 세션정보를 저장한다.
         } else if (StompCommand.SUBSCRIBE == accessor.getCommand()) {
             String roomId = chatRoomService.getRoomId((String) Optional.ofNullable(message.getHeaders().get("simpDestination")).orElse("InvalidRoomId"));
-            chatMessageRepository.plusUserCnt(roomId);
-            chatMessageRepository.setUserEnterInfo(roomId, sessionId);
 
             // 채팅방 나간 유저의 카운트 수를 반영하고, 방에서 세션정보를 지움
         } else if (StompCommand.UNSUBSCRIBE == accessor.getCommand() || StompCommand.DISCONNECT == accessor.getCommand()) {
             String roomId = chatRoomService.getRoomId((String) Optional.ofNullable(message.getHeaders().get("simpDestination")).orElse("InvalidRoomId"));
-            chatMessageRepository.removeUserEnterInfo(sessionId, roomId);
-            chatMessageRepository.minusUserCnt(roomId);
         }
         return message;
     }

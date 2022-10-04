@@ -39,37 +39,14 @@ public class FollowService {
             Long followers = followRepository.countAllByFollowingId(following.getId());
             following.updateFollowers(followers);
             memberRepository.save(following);
-            return new ResponseEntity<>(Message.success("true"), HttpStatus.OK);
+            return new ResponseEntity<>(Message.success(true), HttpStatus.OK);
         } else {
             followRepository.deleteById(findFollowing.get().getId());
             Long followers = followRepository.countAllByFollowingId(following.getId());
             following.updateFollowers(followers);
             memberRepository.save(following);
-            return new ResponseEntity<>(Message.success("false"), HttpStatus.OK);
+            return new ResponseEntity<>(Message.success(false), HttpStatus.OK);
         }
     }
-        //  팔로우 // 팔로워 리스트 가져오는 서비스 로직// 챌린지로 추후 이야기 하기로 함.
-//    @Transactional(readOnly = true)
-//    public ResponseEntity<?> getMemberByAllFollower(String nickname, HttpServletRequest request) {
-//        validateMember(request);
-//        Member member = isPresentMemberFollow(nickname);
-//        List<Follow> followList = followRepository.findAllByFollowing(member);
-//        List<FollowingResponseDto> followedResponseDtoList = new ArrayList<>();
-//        for(Follow follow : followList) {
-//            followedResponseDtoList.add(new FollowingResponseDto(follow.getFollower().getId(),follow.getFollower().getNickname()));
-//        }
-//        return new ResponseEntity<>(Message.success(followedResponseDtoList), HttpStatus.OK);
-//    }
-//    @Transactional(readOnly = true)
-//    public ResponseEntity<?> getMemberByAllFoloowing(String nickname , HttpServletRequest request){
-//        validateMember(request);
-//        Member member = isPresentMemberFollow(nickname);
-//        List<Follow> followList = followRepository.findAllByFollower(member);
-//        List<FollowedResponseDto> followedResponseDtoList = new ArrayList<>();
-//        for(Follow follow : followList) {
-//            followedResponseDtoList.add(new FollowedResponseDto(follw))
-//        }
-//    }
-
 
 }

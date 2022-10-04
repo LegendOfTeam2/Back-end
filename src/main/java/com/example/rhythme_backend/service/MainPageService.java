@@ -327,8 +327,8 @@ public class MainPageService {
         MakerPost makerPost = makerPostRepository.findById(postId).orElseGet(MakerPost::new);
         SingerPost singerPost = singerPostRepository.findById(postId).orElseGet(SingerPost::new);
         if (position.equals("Maker")) {
-            if (makerPlayListRepository.existsByMakerPost(makerPost)) {
-                makerPlayListRepository.deleteByMakerPost(makerPost);
+            if (makerPlayListRepository.existsByMakerPostAndMember(makerPost,member)) {
+                makerPlayListRepository.deleteByMakerPostAndMember(makerPost,member);
             }
             MakerPlayList makerPlayList = MakerPlayList.builder()
                     .member(member)
@@ -336,8 +336,8 @@ public class MainPageService {
                     .build();
             makerPlayListRepository.save(makerPlayList);
         } else if (position.equals("Singer")) {
-            if (singerPlayListRepository.existsBySingerPost(singerPost)) {
-                singerPlayListRepository.deleteBySingerPost(singerPost);
+            if (singerPlayListRepository.existsBySingerPostAndMember(singerPost,member)) {
+                singerPlayListRepository.deleteBySingerPostAndMember(singerPost,member);
             }
             SingerPlayList singerPlayList = SingerPlayList.builder()
                     .member(member)
@@ -362,9 +362,11 @@ public class MainPageService {
                             .imageUrl(makerPlayList.getMakerPost().getImageUrl().getImageUrl())
                             .collaborate(makerPlayList.getMakerPost().getCollaborate())
                             .lyrics(makerPlayList.getMakerPost().getLyrics())
-                            .nickname(member.getNickname())
-                            .follower(member.getFollowers())
+                            .nickname(makerPlayList.getMakerPost().getMember().getNickname())
+                            .follower(makerPlayList.getMakerPost().getMember().getFollowers())
                             .createdAt(makerPlayList.getCreatedAt())
+                            .memberImageUrl(makerPlayList.getMakerPost().getMember().getImageUrl())
+                            .position("Maker")
                             .build());
         }
         for (SingerPlayList singerPlayList : singerPlayLists) {
@@ -375,9 +377,11 @@ public class MainPageService {
                             .imageUrl(singerPlayList.getSingerPost().getImageUrl().getImageUrl())
                             .collaborate(singerPlayList.getSingerPost().getCollaborate())
                             .lyrics(singerPlayList.getSingerPost().getLyrics())
-                            .nickname(member.getNickname())
-                            .follower(member.getFollowers())
+                            .nickname(singerPlayList.getSingerPost().getMember().getNickname())
+                            .follower(singerPlayList.getSingerPost().getMember().getFollowers())
                             .createdAt(singerPlayList.getCreatedAt())
+                            .memberImageUrl(singerPlayList.getSingerPost().getMember().getImageUrl())
+                            .position("Singer")
                             .build());
         }
         return new ResponseEntity<>(Message.success(playListResponseDtoList),HttpStatus.OK);
@@ -386,9 +390,6 @@ public class MainPageService {
     @Transactional
     public ResponseEntity<?> deletePlayList(HttpServletRequest request) {
         Member member = validation.validateMemberToAccess(request);
-        if (!memberRepository.existsByNickname(member.getNickname())) {
-           return new ResponseEntity<>(Message.fail("MEMBER_NOT_FOUND","허가되지 않은 접근입니다."),HttpStatus.BAD_REQUEST);
-        }
         makerPlayListRepository.deleteAllByMember(member);
         singerPlayListRepository.deleteAllByMember(member);
         return new ResponseEntity<>(Message.success("플레이리스트에서 삭제되었습니다."),HttpStatus.OK);
