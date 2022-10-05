@@ -75,11 +75,11 @@ public class ChatRoomRepository {
                         .lastMessageTime(createdAtString)
                         .sender(chatRoom.getUsername())
                         .receiver(chatRoom.getReceiver())
-                        .senderProfileUrl(sender.getImageUrl())
-                        .receiverProfileUrl(receiver.getImageUrl())
+                        .senderProfileUrl(profileUrlCheck(sender))
+                        .receiverProfileUrl(profileUrlCheck(receiver))
                         .build());
                continue;
-            }else if(messageCheck>1){
+            }else if(messageCheck>=1){
                 ChatMessage lastMessage = chatMessageJpaRepository.findTop1ByRoomIdOrderByCreatedAtDesc(chatRoom.getRoomId());
                 Member sender = memberRepository.findByNickname(chatRoom.getUsername()).orElseGet(Member::new);
                 Member receiver = memberRepository.findByNickname(chatRoom.getReceiver()).orElseGet(Member::new);
@@ -92,8 +92,8 @@ public class ChatRoomRepository {
                         .lastMessageTime(createdAtString)
                         .sender(chatRoom.getUsername())
                         .receiver(chatRoom.getReceiver())
-                        .senderProfileUrl(sender.getImageUrl())
-                        .receiverProfileUrl(receiver.getImageUrl())
+                        .senderProfileUrl(profileUrlCheck(sender))
+                        .receiverProfileUrl(profileUrlCheck(receiver))
                         .build());
             }
         }
@@ -158,6 +158,14 @@ public class ChatRoomRepository {
         return  result;
     }
 
+    public String profileUrlCheck(Member member){
+        String answer = "";
+       if(member.getImageUrl()==null){
+           return answer;
+       }else{
+           return member.getImageUrl();
+       }
+    }
 
     public Member validateMember(HttpServletRequest request) {
         if (!tokenProvider.validateToken(request.getHeader("Authorization").substring(7))) {
