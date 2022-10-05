@@ -1,7 +1,9 @@
 package com.example.rhythme_backend.chat.domain.chat;
 
 import com.example.rhythme_backend.chat.dto.ChatMessageDto;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -32,7 +34,8 @@ public class ChatMessage {
     @Column(nullable = false)
     private String profileUrl;
 
-    @Column(nullable = false)
+    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss", timezone="Asia/Seoul")
+    @CreatedDate
     private LocalDateTime createdAt;
 
 
