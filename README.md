@@ -5,6 +5,10 @@
 
 <br/>
 
+## [🎵 리드미 보러가기 ](https://rhythme.shop/)
+## [🎹 리드미 노션 보러가기 ](https://www.notion.so/RhythMe-b25eee6b5e84496eb550700e9113ebdb)
+
+
 ## ⭐️ 프로젝트 소개
 
 RhythMe 는?
@@ -21,7 +25,6 @@ RhythMe 는?
 
 💌리드미에서 숨겨진 재능을 뽐내주세요! 💌
 
-_**Singer 와 Maker 의 만남**_
 
 <br/>
 
@@ -69,7 +72,14 @@ _**Singer 와 Maker 의 만남**_
 <br/>
 
 ## 🌟 프로젝트 주요 기능
-<Link href="https://www.notion.so/RhythMe-b25eee6b5e84496eb550700e9113ebdb">  리드미 노션보러가기>
+1. 재생한 목록들이 자동으로 추가되는 🎹플레이 리스트 기능!
+2. 마음에 드는 아티스트가 있다면, 주저 없이 follow!!👋
+3. 인기 있는 게시물과 아티스트를 파악할 수 있어요!🍀
+4. 🔎검색 및 조회 기능
+5. 🙋‍♂️마이 페이지에서는 내가 올린 게시글도 모아 보고 내가 좋아한 게시글도 모아서 확인 할 수 있답니다!
+<br>[🎵 리드미 브로셔 보러가기 ](https://www.notion.so/Rhythme-d30d0fa47660459abc93e19837c1edf7)
+
+
 
 ## 🍀ERD
 
@@ -101,3 +111,5 @@ _**Singer 와 Maker 의 만남**_
   <br/>
 </div>
 
+##  ⚡트러블 슈팅
+[🎵 리드미 Backend 트러블 슈팅 보러가기 ](https://www.notion.so/Trouble-Shooting-da4079a3f93942e3aeefd10f9648a8ec)
