@@ -55,7 +55,7 @@ public class S3Service  {
 
         // forEach 구문을 통해 multipartFile로 넘어온 파일들 하나씩 fileNameList에 추가
         for (MultipartFile file : multipartFile) {
-            String fileName = createFileName(file.getOriginalFilename());
+            String fileName = createImageFileName(file.getOriginalFilename());
             ObjectMetadata objectMetadata = new ObjectMetadata();
             objectMetadata.setContentLength(file.getSize());
             objectMetadata.setContentType(file.getContentType());
@@ -73,10 +73,9 @@ public class S3Service  {
 
     public List<String> uploadMedia(List<MultipartFile> multipartFile) {
         List<String> imgUrlList = new ArrayList<>();
-
         // forEach 구문을 통해 multipartFile로 넘어온 파일들 하나씩 fileNameList에 추가
         for (MultipartFile file : multipartFile) {
-            String fileName = createFileName(file.getOriginalFilename());
+            String fileName = createMediaFileName(file.getOriginalFilename());
             ObjectMetadata objectMetadata = new ObjectMetadata();
             objectMetadata.setContentLength(file.getSize());
             objectMetadata.setContentType(file.getContentType());
@@ -108,16 +107,17 @@ public class S3Service  {
     }
 
     // 이미지파일명 중복 방지
-    private String createFileName(String fileName) {
-        return UUID.randomUUID().toString().concat(getFileExtension(fileName));
+    private String createImageFileName(String fileName) {
+        return UUID.randomUUID().toString().concat(getImageFileExtension(fileName));
+    }
+
+    private String createMediaFileName(String fileName) {
+        return UUID.randomUUID().toString().concat(getMediaFileExtension(fileName));
     }
 
     // 파일 유효성 검사
-    private String getFileExtension(String fileName) {
-
+    private String getImageFileExtension(String fileName) {
         ArrayList<String> fileValidate = new ArrayList<>();
-        fileValidate.add(".mp3");
-        fileValidate.add(".mkv");
         fileValidate.add(".jpg");
         fileValidate.add(".jpeg");
         fileValidate.add(".png");
@@ -125,7 +125,15 @@ public class S3Service  {
         fileValidate.add(".JPEG");
         fileValidate.add(".PNG");
         String idxFileName = fileName.substring(fileName.lastIndexOf("."));
-
         return fileName.substring(fileName.lastIndexOf("."));
     }
+
+    private String getMediaFileExtension(String fileName) {
+        ArrayList<String> fileValidate = new ArrayList<>();
+        fileValidate.add(".mp3");
+        fileValidate.add(".mkv");
+        String idxFileName = fileName.substring(fileName.lastIndexOf("."));
+        return fileName.substring(fileName.lastIndexOf("."));
+    }
+
 }
