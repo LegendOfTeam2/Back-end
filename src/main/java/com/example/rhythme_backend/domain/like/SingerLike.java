@@ -8,7 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 import javax.persistence.*;
 
 @Getter
@@ -29,7 +28,6 @@ public class SingerLike {
     @JoinColumn(name = "singerpost_id")
     @JsonIgnore
     private SingerPost singerPost;
-
 
     @Builder
     public SingerLike(SingerLikeRequestDto requestDto) {

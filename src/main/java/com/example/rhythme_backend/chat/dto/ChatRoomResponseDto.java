@@ -1,12 +1,13 @@
 package com.example.rhythme_backend.chat.dto;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Setter
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
+
 
 public class ChatRoomResponseDto {
     private String lastMessage;

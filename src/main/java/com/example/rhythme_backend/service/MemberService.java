@@ -138,7 +138,6 @@ public class MemberService {
     //============ 카카오 로그인
     @Transactional
     public TokenDto kakaoLogin(String code) throws JsonProcessingException {
-        // 1. "인가 코드"로 "액세스 토큰" 요청
         String accessToken = kakaoOauth.getAccessToken(code);
         // 2. 토큰으로 카카오 API 호출
         KakaoUserInfoDto kakaoUserInfo = kakaoOauth.getKakaoUserInfo(accessToken);
@@ -181,7 +180,7 @@ public class MemberService {
     @Transactional
     public void request(Constant.SocialLoginType socialLoginType) throws IOException {
         String redirectURL;
-        if (socialLoginType == Constant.SocialLoginType.GOOGLE) {//각 소셜 로그인을 요청하면 소셜로그인 페이지로 리다이렉트 해주는 프로세스이다.
+        if (socialLoginType == Constant.SocialLoginType.GOOGLE) {
             redirectURL = googleOauth.getOauthRedirectURL();
         } else {
             throw new IllegalArgumentException("알 수 없는 소셜 로그인 형식입니다.");
@@ -265,12 +264,5 @@ public class MemberService {
                             .build());
         }
     }
-
-//    리펙토링 할 때 사용하기 (삭제ㄴㄴ)
-//    @Transactional(readOnly = true)
-//    public Member getPresentEmail(String email) {
-//        Optional<Member> optionalMember = memberRepository.findByEmail(email);
-//        return optionalMember.orElseGet(()->new Member("notExist"));
-//    }
 
 }

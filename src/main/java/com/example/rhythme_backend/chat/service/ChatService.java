@@ -1,6 +1,5 @@
 package com.example.rhythme_backend.chat.service;
 
-
 import com.example.rhythme_backend.chat.domain.chat.ChatMessage;
 import com.example.rhythme_backend.chat.dto.ChatMessageDto;
 import com.example.rhythme_backend.chat.repository.*;
@@ -10,7 +9,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -20,7 +18,6 @@ import java.util.Locale;
 @RequiredArgsConstructor
 public class ChatService {
 
-//    private final RedisPublisher redisPublisher;
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMessageRepository chatMessageRepository;
     private final MemberRepository userRepository;
@@ -28,8 +25,7 @@ public class ChatService {
 
     private final InvitedUsersRepository invitedUsersRepository;
     private final ChatRoomJpaRepository chatRoomJpaRepository;
-    private final ResignChatRoomJpaRepository resignChatRoomJpaRepository;
-    private final ResignChatMessageJpaRepository resignChatMessageJpaRepository;
+
 
 
     @Transactional
@@ -58,12 +54,10 @@ public class ChatService {
             }
             chatMessageJpaRepository.deleteByRoomId(messageDto.getRoomId());
         }
+
 //        chatMessageJpaRepository.save(messageDto); // 캐시에 저장 했다.
         ChatMessage chatMessage = new ChatMessage(messageDto, createdAt);
         chatMessageJpaRepository.save(chatMessage); // DB 저장
-
-        // Websocket 에 발행된 메시지를 redis 로 발행한다(publish)
-//        redisPublisher.publish(ChatRoomRepository.getTopic(messageDto.getRoomId()), chatMessage);
     }
 
     //redis에 저장되어있는 message 들 출력
@@ -71,21 +65,6 @@ public class ChatService {
         return chatMessageRepository.findAllMessage(roomId);
     }
 
-
-
-    //채팅방에 참여한 사용자 정보 조회
-//    public List<UserinfoDto> getUserinfo(UserDetailsImpl userDetails, String roomId) {
-//        userRepository.findById(userDetails.getMember().getId()).orElseThrow(
-//                () -> new IllegalArgumentException("테스트 에러 메세지")
-//        );
-//        List<InvitedUsers> invitedUsers = invitedUsersRepository.findAllByPostId(Long.parseLong(roomId));
-//        List<UserinfoDto> users = new ArrayList<>();
-//        for (InvitedUsers invitedUser : invitedUsers) {
-//            Member user = invitedUser.getUser();
-//            users.add(new UserinfoDto(user.getNickname(), user.getImageUrl(), user.getId()));
-//        }
-//        return users;
-//    }
 
 
 }

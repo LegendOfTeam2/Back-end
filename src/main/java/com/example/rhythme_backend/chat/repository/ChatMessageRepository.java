@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Locale;
 
 
-
 @RequiredArgsConstructor
 @Repository
 public class ChatMessageRepository {
@@ -22,8 +21,6 @@ public class ChatMessageRepository {
     public static final String ENTER_INFO = "ENTER_INFO"; // 채팅룸에 입장한 클라이언트의 sessionId와 채팅룸 id를 맵핑한 정보 저장
 
     private final ChatMessageJpaRepository chatMessageJpaRepository;
-
-
 
 
     //채팅 리스트 가져오기
@@ -41,12 +38,5 @@ public class ChatMessageRepository {
             //redis에 정보가 없으니, 다음부터 조회할때는 redis를 사용하기 위하여 넣어준다.
             return chatMessageDtoList;
         }
-    // 구독 요청시
-    public void setUserEnterInfo(String roomId, String sessionId) {
-//        hashOpsEnterInfo.put(ENTER_INFO, sessionId, roomId);
-    }
 
-    public void removeUserEnterInfo(String sessionId, String roomId) {
-//        hashOpsEnterInfo.delete(ENTER_INFO, sessionId, roomId);
-    }
 }

@@ -1,7 +1,6 @@
 package com.example.rhythme_backend.jwt;
 
 import com.example.rhythme_backend.service.UserDetailsServiceImpl;
-import com.example.rhythme_backend.util.ResponseDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;

@@ -1,9 +1,7 @@
 package com.example.rhythme_backend.chat.domain.chat;
 
 import com.example.rhythme_backend.chat.dto.ChatMessageDto;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -12,6 +10,8 @@ import java.time.LocalDateTime;
 @Getter
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class ChatMessage {
     // 메시지 타입 : 입장, 채팅, 나가기
     public enum MessageType {
@@ -34,7 +34,6 @@ public class ChatMessage {
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
-
 
 
 
