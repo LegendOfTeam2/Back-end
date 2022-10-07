@@ -124,7 +124,7 @@ public class MainPageService {
             return new ResponseEntity<>(Message.success(bestSongResponseDtoList), HttpStatus.OK);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public ResponseEntity<?> recentMaker() {
         List<MakerPost> makerPostList = makerPostRepository.findTop30ByOrderByCreatedAtDesc();
         List<RecentMakerResponseDto> recentMakerResponseDtoList = new ArrayList<>();
@@ -144,7 +144,7 @@ public class MainPageService {
         return new ResponseEntity<>(Message.success(recentMakerResponseDtoList),HttpStatus.OK);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public ResponseEntity<?> recentSinger() {
         List<SingerPost> singerPostList = singerPostRepository.findTop30ByOrderByCreatedAtDesc();
         List<RecentSingerResponseDto> recentSingerResponseDtoList = new ArrayList<>();
@@ -164,7 +164,7 @@ public class MainPageService {
         return new ResponseEntity<>(Message.success(recentSingerResponseDtoList),HttpStatus.OK);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public ResponseEntity<?> bestMaker() {
         List<MakerPost> makerPostList = makerPostRepository.findTop30ByOrderByLikesDesc();
         List<BestMakerResponseDto> bestMakerResponseDtoList = new ArrayList<>();
@@ -184,7 +184,7 @@ public class MainPageService {
         return new ResponseEntity<>(Message.success(bestMakerResponseDtoList),HttpStatus.OK);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public ResponseEntity<?> bestSinger() {
         List<SingerPost> singerPostList = singerPostRepository.findTop30ByOrderByLikesDesc();
         List<BestSingerResponseDto> bestSingerResponseDtoList = new ArrayList<>();
@@ -204,7 +204,7 @@ public class MainPageService {
         return new ResponseEntity<>(Message.success(bestSingerResponseDtoList),HttpStatus.OK);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public ResponseEntity<?> MostLikeArtist() {
         List<Member> memberList = memberRepository.findTop30ByOrderByFollowersDesc();
         List<PowerArtistResponseDto> powerArtistResponseDtoList = new ArrayList<>();
@@ -218,7 +218,7 @@ public class MainPageService {
         return new ResponseEntity<>(Message.success(powerArtistResponseDtoList),HttpStatus.OK);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public ResponseEntity<?> makerLikeList(HttpServletRequest request) {
         Member member = validation.validateMemberToAccess(request);
         List<MakerLike> makerLikeList = makerLikeRepository.findAllByMemberIdOrderByMakerPost(member);
@@ -231,7 +231,7 @@ public class MainPageService {
         return new ResponseEntity<>(Message.success(myMakerResponseDtoList),HttpStatus.OK);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public ResponseEntity<?> singerLikeList(HttpServletRequest request) {
         Member member = validation.validateMemberToAccess(request);
         List<SingerLike> singerLikeList = singerLikeRepository.findAllByMemberIdOrderBySingerPost(member);
@@ -244,7 +244,7 @@ public class MainPageService {
         return new ResponseEntity<>(Message.success(mySingerResponseDtoList),HttpStatus.OK);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public ResponseEntity<?> followList(HttpServletRequest request) {
         Member member = validation.validateMemberToAccess(request);
         List<Follow> followList = followRepository.findAllByFollowerOrderByFollowing(member);
@@ -258,7 +258,7 @@ public class MainPageService {
         return new ResponseEntity<>(Message.success(myArtistResponseDtoList),HttpStatus.OK);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public ResponseEntity<?> getMyImage(HttpServletRequest request, MyImageRequestDto requestDto) {
         String[] BearerSplit = request.getHeader("Authorization").split(" ");
         String accessToken = BearerSplit[1];
@@ -273,7 +273,7 @@ public class MainPageService {
         return new ResponseEntity<>(Message.success(myImageResponseDto),HttpStatus.OK);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public ResponseEntity<?> getDetailPage(Long postId, String position) {
         MakerPost makerPost = makerPostRepository.findById(postId).orElseGet(MakerPost::new);
         SingerPost singerPost = singerPostRepository.findById(postId).orElseGet(SingerPost::new);
