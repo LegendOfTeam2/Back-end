@@ -329,7 +329,7 @@ public class MainPageService {
         return new ResponseEntity<>(Message.fail("POSITION_NOT_FOUND","리드미에서 지원하지 않는 포지션입니다."),HttpStatus.OK);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public ResponseEntity<?> savePlaylist(Long postId, HttpServletRequest request, String position) {
         Member member = validation.validateMemberToAccess(request);
         MakerPost makerPost = makerPostRepository.findById(postId).orElseGet(MakerPost::new);
@@ -356,7 +356,7 @@ public class MainPageService {
         return new ResponseEntity<>(Message.success("플레이리스트에 저장되었습니다."),HttpStatus.OK);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public ResponseEntity<?> getPlayList(HttpServletRequest request) {
         Member member = validation.validateMemberToAccess(request);
         List<PlayListResponseDto> playListResponseDtoList = new ArrayList<>();
@@ -396,7 +396,7 @@ public class MainPageService {
         return new ResponseEntity<>(Message.success(playListResponseDtoList),HttpStatus.OK);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public ResponseEntity<?> deletePlayList(HttpServletRequest request) {
         Member member = validation.validateMemberToAccess(request);
         makerPlayListRepository.deleteAllByMember(member);
