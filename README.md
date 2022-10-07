@@ -1,20 +1,30 @@
 # RhythMe
-<img height="250" src="https://user-images.githubusercontent.com/108949232/190432270-6ae11497-694c-4648-9ece-4eaa8fa7aa05.jpeg" alt="메인로고" width=1200 height=1000 ></img>
-> **_배고픈 음악인을 위한 사이트_** 🧑🏿‍🎤🧑‍🎤<br/><br/>
+
+<img width="1200" height="400" src= "https://user-images.githubusercontent.com/77786713/194231425-b6681287-1a8c-448c-8bb9-48ce21dd4eff.png" alt="메인로고"  ></img>
+> **_음악인을 위한 사이트_** 🧑🏿‍🎤🧑‍🎤<br/><br/>
 > **개발기간: 2022.08.26 ~ 2022.10.07**
 
 <br/>
 
+## [🎵 리드미 보러가기 ](https://rhythme.shop/)
+## [🎹 리드미 노션 보러가기 ](https://www.notion.so/RhythMe-b25eee6b5e84496eb550700e9113ebdb)
+
+
 ## ⭐️ 프로젝트 소개
 
+RhythMe 는?
 
-혼자 모든 곡 작업을 하기 막막한 분들
+**음악을 좋아하는 사람들을 만나 서로를 이어주는 공간** 입니다.
 
-원하는 사운드 또는 목소리 를 찾고 계시는 분들
+음악 작업 경험이 없는 사람들도 쉽게 서로 🍀**콜라보레이션** 하여 멋진 작업물을 만들 수 있습니다
 
-이 두분을 매칭 해주는 사이트를 만들기를 생각했습니다
+🤦노래도 불러야 해… 멜로디 구성은 자신 없는데.…🤦 이런 걱정 거리를 날려버리고!! 🤩
 
-_**Singer 와 Maker 의 만남**._
+🤚혼자 모든 곡 작업을 하기 막막한 분!🤚
+
+🎼 **원하는 사운드 또는 목소리** 를 찾고 계시는 분! 🎵
+
+💌리드미에서 숨겨진 재능을 뽐내주세요! 💌
 
 <br/>
 
@@ -37,43 +47,52 @@ _**Singer 와 Maker 의 만남**._
 ![Spring](https://img.shields.io/badge/spring-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white)
 
 
+<div> 
+      <img src="https://img.shields.io/badge/Spring Boot-6DB33F?style=for-the-badge&logo=Spring Boot&logoColor=white">
+      <img src="https://img.shields.io/badge/Spring Security-6DB33F?style=for-the-badge&logo=Spring Security&logoColor=white">
+      <img src="https://img.shields.io/badge/NGINX-009639?style=for-the-badge&logo=NGINX3&logoColor=white">
+      <img src="https://img.shields.io/badge/codedeploy-6DB33F?style=for-the-badge&logo=codedeploy&logoColor=white">
+  <br>
+      <img src="https://img.shields.io/badge/Java-007396?style=for-the-badge&logo=Java&logoColor=white">
+      <img src="https://img.shields.io/badge/JSON Web Tokens-000000?style=for-the-badge&logo=JSON Web Tokens&logoColor=white">   
+      <img src="https://img.shields.io/badge/Gradle-02303A?style=for-the-badge&logo=Gradle&logoColor=white"> 
+      
+  <br>
+   <img src="https://img.shields.io/badge/IntelliJ IDEA-000000?style=for-the-badge&logo=IntelliJ IDEA&logoColor=white">   
+   <img src="https://img.shields.io/badge/Sourcetree-0052CC?style=for-the-badge&logo=Sourcetree&logoColor=white"> 
+   <img src="https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=Postman&logoColor=white">
+   
+   <img src="https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=Notion&logoColor=white">
+   <br>
+   <img src="https://img.shields.io/badge/AmazonEC2-FF9900?style=for-the-badge&logo=AmazonEC2&logoColor=white">
+   <img src="https://img.shields.io/badge/Amazon S3-569A31?style=for-the-badge&logo=Amazon S3&logoColor=white"> 
+   <img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=MySQL&logoColor=white">
+   <img src="https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=Ubuntu&logoColor=white">
+  <br>
+   <img src="https://img.shields.io/badge/socket.io-010101?style=for-the-badge&logo=socket.io&logoColor=white">
+   <img src="https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=Git&logoColor=white">
+   <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
+   <img src="https://img.shields.io/badge/GitHub Actions-2088FF?style=for-the-badge&logo=GitHub Actions&logoColor=white">
+   <img src="https://img.shields.io/badge/kakao login-FFCD00?style=for-the-badge&logo=kakao&logoColor=black">   
+   <img src="https://img.shields.io/badge/google login-4285F4?style=for-the-badge&logo=google&logoColor=white">
+
 
 <br/>
 
 ## 🌟 프로젝트 주요 기능
 
-> 🔑 구글이랑 카카오 계정을 통해 회원가입, 로그인을 할 수 있어요!
+1. 재생한 목록들이 자동으로 추가되는 🎹플레이 리스트 기능!
+2. 마음에 드는 아티스트가 있다면, 주저 없이 follow!!👋
+3. 인기 있는 게시물과 아티스트를 파악할 수 있어요!🍀
+4. 🔎검색 및 조회 기능
+5. 🙋‍♂️마이 페이지에서는 내가 올린 게시글도 모아 보고 내가 좋아한 게시글도 모아서 확인 할 수 있답니다!
+<br>[🎵 리드미 브로셔 보러가기 ](https://www.notion.so/Rhythme-d30d0fa47660459abc93e19837c1edf7)
 
-<img src="https://user-images.githubusercontent.com/108949232/190432848-87c54321-fcb5-49e6-91c5-89594af3ebc4.png" alt="1번" width=50% height=50%>
+   
+## 🍀ERD
 
+<img width="994" alt="마지막" src="https://user-images.githubusercontent.com/77786713/194245540-f309024c-9b27-4aa9-a7d8-08ee85170154.png">
 
-> 🎼 업로드한 게시물을 최신순 인기순 으로 확인 할 수 있습니다!
-
-<img src="https://user-images.githubusercontent.com/108949232/190433018-92f8c4e0-1c6f-4b25-9048-3a8d6b28da6e.png" alt="2-1번" width=30%>
-<img src="https://user-images.githubusercontent.com/108949232/190433163-2196d15a-83e6-4642-b652-2296a64793d3.png" alt="2-2번" width=30% height=30%>
-<img width=30% height=30% alt="스크린샷 2022-09-15 오후 10 39 12" src="https://user-images.githubusercontent.com/108949232/190433321-04e05c7a-715b-40ba-a78f-350ae38a5abe.png">
-
-
-> 🎵 가사 곡소개 포지션 콜라보 의사 제목 앨범 커버 오디오를 직접 업로드 할 수 있습니다!
-
-<img width=50% height=50% alt="스크린샷 2022-09-15 오후 10 44 45" src="https://user-images.githubusercontent.com/108949232/190433543-4e2a3e56-cd80-45e1-a078-6031a8bc7d79.png">
-
-
-> 🎹 올린 음악을 재생바로 들으실수 있습니다! 
-
-<img width=80% alt="스크린샷 2022-09-15 오후 10 48 04" src="https://user-images.githubusercontent.com/108949232/190433830-abcdb461-f015-47e9-8e5f-ac99df77d4d2.png">
-
-
-> 🤝 마음에 드는 음악을 발견 하셨다면 채팅으로 같이 곡잡업을 할 수 있는지 물어볼수 있습니다!
-
-<img width=50% alt="스크린샷 2022-09-15 오후 10 50 12" src="https://user-images.githubusercontent.com/108949232/190433968-24ef4e4d-6262-469a-b545-84e6ada7229a.png">
-
-
-> 🧚‍♀️ 자기에 맞는 포지션을 고른뒤 업로드 개수를 올려보세요 사용자가 싱어인지 메이커인지 알 수 있는 배지를 드립니다 :)
-
-<img src="https://user-images.githubusercontent.com/108949232/190437932-2bfd55d4-4473-4c89-89e0-d3f52322dd4b.png" width=100%>
-
-<br/>
 
 ## ⚒ 아키텍쳐 
 
@@ -81,41 +100,25 @@ _**Singer 와 Maker 의 만남**._
 
 <img width="994" alt="마지막" src="https://user-images.githubusercontent.com/108949232/190438450-599a5044-c9a5-4f73-8782-baa5c5210446.png">
 
-## FE
-> **React**
-- 컴퍼넌트로 레고 블럭과 같은 작은 단위로 개발을 한다
-이렇게 하면 가독성이 높고 간단하여 캡슐화,확장성,결합성,재사용과 같은 장점이  있어 짧은 시간에 완성도 있는 서비스를 만들기 용이하다.
+##  기술스텍
 
-- 또한 개발을 하다보면 막히는 부분, 오류가 있는 부분이 많은데 다른 라이브러리에 비해 사용자가 많고, 커뮤니티 자료가 많아서 막히는 부분에서 찾아볼 자료가 많고 사용하기 편해서 선정 했다.
-
-> **Zustand**
-- 자주 사용하던 Redux와 같은 Flux 아키텍처를 사용하고, 거의 없다시피한 보일러 플레이트 코드와 간편한 사용법 그리고 Redux devtools를 사용 할 수 있어 디버깅이 가능하다는 점으로 인해 이번 프로젝트의 전역상태 라이브러리로 선정.
-
-> **styled-components**
-- GlobalStyle의 전역 스타일 지정과 ThemeProvider의 스타일 코드 재사용성으로 인해 스타일 라이브러리로 선정.
-
-## BE
-
-> **GitAction/CodeDeploy**
-- 깃 액션과 AWS CodeDeploy를 사용 하여 프론트와 통신을 실제 사용 환경에서 빠르게 테스트 해볼 수 있음
-
-> **CI/CD**
-- 빌드/테스트/배포를 자동화 시켜서 기존 bulid,filezilla 사용 에 비해 개발 속도 향상
+> **CICD**
+- GitAction/CodeDeploy을 사용하여 빌드/테스트/배포를 자동화 시켜서 기존 bulid,filezilla 사용 에 비해 개발 속도 향상
 
 > **WabSocket**
 - 양방향 통신인 WebSocket 을 사용하여 싱어와 메이커가 실시간으로 소통하며 음원을 만들 수 있도록 함
 
 > **Spring Boot/Spring Data JPA/Spring Spring Security**
-- Java 언어가 그렇듯이 Spring Boot로 만든 웹 애플리케이션은 가상 머신을 사용하여 시스템 환겨에 상관없이 독립적인 배포가 수월합니다.
+- Java 언어가 그렇듯이 Spring Boot로 만든 웹 애플리케이션은 가상 머신을 사용하여 시스템 환경에 상관없이 독립적인 배포가 수월합니다.
 
 -국내 Java Spring 사용자가 월등히 많아 커뮤니티 활성화 및 참고 자료가 방대하여 원하는 기능을 개발하기 수월한 장점이 있습니다
 
+> **Nginx**
+- certbot을 이용하여 해당 도메인에 대한 인증서가 발급해(.pem 파일) Https로 보안을 강화 하였습니다.
+
 <br/>
+</div>
 
+##  ⚡트러블 슈팅
+[🎵 리드미 Backend 트러블 슈팅 보러가기 ](https://www.notion.so/Trouble-Shooting-da4079a3f93942e3aeefd10f9648a8ec)
 
-
-## 🔥 기술적 도전(보류)
-
-### ⏺ 보류
-- 보류
-- 보류
