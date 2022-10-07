@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -18,8 +17,6 @@ import javax.servlet.http.HttpServletResponse;
 public class ProfilePageController {
 
     private final ProfileService profileService;
-
-
 
     @GetMapping("/profile/{nickname}")
     public ResponseEntity<?> profileGetOne(@PathVariable String nickname){
@@ -36,7 +33,7 @@ public class ProfilePageController {
         return profileService.profileGetMyLike(nickname);
     }
 
-    @PutMapping("/profile")
+    @PutMapping("/auth/profile")
     public ResponseEntity<?> profileChange(@RequestBody ModifyProfileRequestDto requestDto, HttpServletResponse response, HttpServletRequest request){
         return profileService.profileModify(requestDto,response,request);
     }

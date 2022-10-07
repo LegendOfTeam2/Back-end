@@ -45,6 +45,7 @@ public class MainPageService {
     private final TokenProvider tokenProvider;
 
 
+    @Transactional(readOnly = true)
     public ResponseEntity<?> bestSong() {
         List<BestSongResponseDto> bestSongResponseDtoList = new ArrayList<>();
         List<MakerPost> makerPostList = makerPostRepository.findTopByOrderByLikesDesc();
@@ -123,6 +124,7 @@ public class MainPageService {
             return new ResponseEntity<>(Message.success(bestSongResponseDtoList), HttpStatus.OK);
     }
 
+    @Transactional(readOnly = true)
     public ResponseEntity<?> recentMaker() {
         List<MakerPost> makerPostList = makerPostRepository.findTop30ByOrderByCreatedAtDesc();
         List<RecentMakerResponseDto> recentMakerResponseDtoList = new ArrayList<>();
@@ -142,6 +144,7 @@ public class MainPageService {
         return new ResponseEntity<>(Message.success(recentMakerResponseDtoList),HttpStatus.OK);
     }
 
+    @Transactional(readOnly = true)
     public ResponseEntity<?> recentSinger() {
         List<SingerPost> singerPostList = singerPostRepository.findTop30ByOrderByCreatedAtDesc();
         List<RecentSingerResponseDto> recentSingerResponseDtoList = new ArrayList<>();
@@ -161,6 +164,7 @@ public class MainPageService {
         return new ResponseEntity<>(Message.success(recentSingerResponseDtoList),HttpStatus.OK);
     }
 
+    @Transactional(readOnly = true)
     public ResponseEntity<?> bestMaker() {
         List<MakerPost> makerPostList = makerPostRepository.findTop30ByOrderByLikesDesc();
         List<BestMakerResponseDto> bestMakerResponseDtoList = new ArrayList<>();
@@ -180,6 +184,7 @@ public class MainPageService {
         return new ResponseEntity<>(Message.success(bestMakerResponseDtoList),HttpStatus.OK);
     }
 
+    @Transactional(readOnly = true)
     public ResponseEntity<?> bestSinger() {
         List<SingerPost> singerPostList = singerPostRepository.findTop30ByOrderByLikesDesc();
         List<BestSingerResponseDto> bestSingerResponseDtoList = new ArrayList<>();
@@ -199,6 +204,7 @@ public class MainPageService {
         return new ResponseEntity<>(Message.success(bestSingerResponseDtoList),HttpStatus.OK);
     }
 
+    @Transactional(readOnly = true)
     public ResponseEntity<?> MostLikeArtist() {
         List<Member> memberList = memberRepository.findTop30ByOrderByFollowersDesc();
         List<PowerArtistResponseDto> powerArtistResponseDtoList = new ArrayList<>();
@@ -252,6 +258,7 @@ public class MainPageService {
         return new ResponseEntity<>(Message.success(myArtistResponseDtoList),HttpStatus.OK);
     }
 
+    @Transactional(readOnly = true)
     public ResponseEntity<?> getMyImage(HttpServletRequest request, MyImageRequestDto requestDto) {
         String[] BearerSplit = request.getHeader("Authorization").split(" ");
         String accessToken = BearerSplit[1];
@@ -266,6 +273,7 @@ public class MainPageService {
         return new ResponseEntity<>(Message.success(myImageResponseDto),HttpStatus.OK);
     }
 
+    @Transactional(readOnly = true)
     public ResponseEntity<?> getDetailPage(Long postId, String position) {
         MakerPost makerPost = makerPostRepository.findById(postId).orElseGet(MakerPost::new);
         SingerPost singerPost = singerPostRepository.findById(postId).orElseGet(SingerPost::new);
@@ -321,7 +329,7 @@ public class MainPageService {
         return new ResponseEntity<>(Message.fail("POSITION_NOT_FOUND","리드미에서 지원하지 않는 포지션입니다."),HttpStatus.OK);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public ResponseEntity<?> savePlaylist(Long postId, HttpServletRequest request, String position) {
         Member member = validation.validateMemberToAccess(request);
         MakerPost makerPost = makerPostRepository.findById(postId).orElseGet(MakerPost::new);
@@ -348,6 +356,7 @@ public class MainPageService {
         return new ResponseEntity<>(Message.success("플레이리스트에 저장되었습니다."),HttpStatus.OK);
     }
 
+    @Transactional(readOnly = true)
     public ResponseEntity<?> getPlayList(HttpServletRequest request) {
         Member member = validation.validateMemberToAccess(request);
         List<PlayListResponseDto> playListResponseDtoList = new ArrayList<>();
@@ -387,7 +396,7 @@ public class MainPageService {
         return new ResponseEntity<>(Message.success(playListResponseDtoList),HttpStatus.OK);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public ResponseEntity<?> deletePlayList(HttpServletRequest request) {
         Member member = validation.validateMemberToAccess(request);
         makerPlayListRepository.deleteAllByMember(member);
