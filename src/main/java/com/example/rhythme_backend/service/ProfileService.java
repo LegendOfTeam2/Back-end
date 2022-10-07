@@ -46,10 +46,8 @@ public class ProfileService {
     private final SingerPostRepository singerPostRepository;
     private final MakerLikeRepository makerLikeRepository;
     private final SingerLikeRepository singerLikeRepository;
-    private final ImageUrlRepository imageUrlRepository;
     private final FollowRepository followRepository;
     private final Validation validation;
-    private final RefreshToken refreshToken;
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
 
@@ -180,17 +178,6 @@ public class ProfileService {
                     .build());
         }
         return new ResponseEntity<>(Message.success(answer),HttpStatus.OK);
-    }
-    
-    public ImageUrl imageUrlSave(PostCreateRequestDto postCreateRequestDto){
-        ImageUrl imageUrl =  ImageUrl.builder()
-                .postId(null)
-                .position(postCreateRequestDto.getPosition())
-                .imageUrl(postCreateRequestDto.getImageUrl())
-                .build();
-
-        imageUrlRepository.save(imageUrl);
-        return imageUrl;
     }
 
 }
