@@ -82,7 +82,7 @@ public class ProfileService {
                 .build();
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public ResponseEntity<?> profileModify(ModifyProfileRequestDto requestDto, HttpServletResponse response, HttpServletRequest request) {
         Member member = validation.validateMemberToAccess(request);
         member.update(requestDto);
