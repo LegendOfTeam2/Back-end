@@ -109,7 +109,7 @@ public class PostService{
     }
 
     //============ 카테고리별 게시판 전체 조회 로직.
-    @Transactional(readOnly = true)
+    @Transactional
     public ResponseEntity<?> getAllMakerPost(){
         List<MakerPost> makerPostList = makerPostRepository.findAll();
         List<MakerPostGetResponseDto> makerPostGetResponseDtoList = new ArrayList<>();
